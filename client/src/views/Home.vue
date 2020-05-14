@@ -1,18 +1,33 @@
+<!-- https://auth0.com/blog/beginner-vuejs-tutorial-with-user-login -->
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="container">
+      <div class="bgimg">
+      <h1>Welcome to the world of inclusive reviews</h1>
+      <h4>Make sure to check out the Top Picks below</h4>
+      </div>
+    <FilmList />
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import FilmList from '../components/FilmList';
 export default {
-  name: 'Home',
+  name: 'home',
   components: {
-    HelloWorld
+    FilmList
   }
 }
 </script>
+
+<style scoped>
+/*.bgimg {
+  background-image:  url("../assets/film-negative.jpg");
+  height: 50%;
+  opacity: 0.65;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}*/
+</style>

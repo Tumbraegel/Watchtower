@@ -1,4 +1,3 @@
-<!-- https://auth0.com/blog/beginner-vuejs-tutorial-with-user-login -->
 <template>
   <div class="home">
     <div class="container">

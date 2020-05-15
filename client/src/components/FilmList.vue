@@ -30,7 +30,8 @@ export default {
           description: 'Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.',
           release: '2019',
           duration: '2h 12min',
-          cast: 'Song Kangho, Park Sodam, Choi Wooshik, Cho Yeojeong, Lee Sunkyun, Lee Jungeun'
+          cast: 'Song Kangho, Park Sodam, Choi Wooshik, Cho Yeojeong, Lee Sunkyun, Lee Jungeun',
+          image: 'https://upload.wikimedia.org/wikipedia/en/5/53/Parasite_%282019_film%29.png'
         },
         {
           id: 2,
@@ -39,7 +40,8 @@ export default {
           description: 'On an isolated island in Brittany at the end of the eighteenth century, a female painter is obliged to paint a wedding portrait of a young woman. ',
           release: '2019',
           duration: '2h 02min',
-          cast: ' Noémie Merlant, Adèle Haenel, Luàna Bajrami'
+          cast: ' Noémie Merlant, Adèle Haenel, Luàna Bajrami',
+          image: 'https://upload.wikimedia.org/wikipedia/en/c/cb/Portrait_of_a_Lady_on_Fire.jpg'
         },
         {
           id: 3,
@@ -48,7 +50,8 @@ export default {
           description: 'T\'Challa, heir to the hidden but advanced kingdom of Wakanda, must step forward to lead his people into a new future and must confront a challenger from his country\'s past.',
           release: '2018',
           duration: '2h 14min',
-          cast: 'Chadwick Boseman, Michael B. Jordan, Lupita Nyong\'o'
+          cast: 'Chadwick Boseman, Michael B. Jordan, Lupita Nyong\'o',
+          image: 'https://upload.wikimedia.org/wikipedia/en/0/0c/Black_Panther_film_poster.jpg'
         }
       ]
     }  

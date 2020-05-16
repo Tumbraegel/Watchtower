@@ -1,6 +1,6 @@
 <template>
   <div class="film-single">
-    <section class="film-banner">
+    <div class="row film-banner">
         <div class="container">
           <h1 class="title">
             {{ film.title }}
@@ -9,20 +9,23 @@
             {{ film.release }}
           </h2>
         </div>
-    </section>
-    <section class="film-content">
+    </div>
+
+    <div class="row film-content">
       <div class="container">
-        <p class="description">Film description</p>
+        <div class="row">
+          <div class="col-md-9">
         <p class=""><strong>Plot: </strong>{{ film.description }}</p>
         <p class=""><strong>Genre: </strong>{{ film.genre }}</p>
         <p class=""><strong>Cast: </strong>{{ film.cast }}</p>
-        <div class="film-image">
-          <div class="">
-            {{ film.image }}
+        </div>
+          <div class="col-md-2">
+            <img :src=film.image :alt=film.title>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+
   </div>
 </template>
 
@@ -85,11 +88,5 @@
   }
   .film-single {
     margin-top: 30px;
-  }
-  .film-image {
-    margin-top: 50px;
-  }
-  .description {
-    margin-bottom: 30px;
   }
 </style>

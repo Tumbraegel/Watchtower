@@ -7,8 +7,8 @@
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title">{{ film.title }}</h5>
-        <p class="card-text">{{ film.release }}</p>
-        <p class="card-text"><small class="text-muted">{{ film.genre }}</small></p>
+        <p class="card-text">{{ film.releaseDate }}</p>
+        <p class="card-text"><small class="text-muted">{{ film.genres }}</small></p>
       </div>
     </div>
   </div>

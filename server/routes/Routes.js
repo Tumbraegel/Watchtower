@@ -18,4 +18,12 @@ router.get('/film/:id', (req, res) => {
     }).catch((error) => console.log(error));
 });
 
+// GET films filtered by genre
+router.get('/genre/:genre', (req, res) => {
+    const genre = Object(req.params.genre);
+    repo.findByGenre(genre).then((films) => {
+        res.json(films);
+    }).catch((error) => console.log(error));
+});
+
 module.exports = router;

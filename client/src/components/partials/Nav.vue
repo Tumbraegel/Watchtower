@@ -16,7 +16,7 @@
             <router-link to="/about" class="nav-link">About</router-link>
         </li>
         <li class="nav-item active">
-            <router-link to="/genres" class="nav-link">Genres</router-link>
+            <router-link to="/genre" class="nav-link">Genres</router-link>
         </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">

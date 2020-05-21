@@ -4,9 +4,7 @@
     <h2>Film List</h2>
     <div class="row row-cols-1 row-cols-md-3">
         <div v-for="film in films" :film="film" :key="film._id" class="col mb-4">
-          <router-link :to="'/film/' + film._id">
             <FilmCard :film="film" />
-           </router-link>
         </div>
     </div>
   </div>
@@ -24,7 +22,7 @@ export default {
     return {
       film: {},
       films: []
-    }  ;
+    };
   },
   created() {
     this.getFilmData();

@@ -22,6 +22,11 @@ Vue.use(VueRouter)
     path: '/film/:id',
     name: 'film',
     component: () => import('../views/Film.vue')
+  },
+  {
+    path: '/genre',
+    name: 'genre',
+    component: () => import('../views/Genre.vue')
   }
 ]
 

@@ -3,8 +3,8 @@ import App from './App.vue'
 import router from './router'
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css'
-// import 'bootstrap/dist/js/bootstrap.min.js'
-// import 'jquery/src/jquery.js'
+
+//https://vuejs.org/v2/cookbook/adding-instance-properties.html#Real-World-Example-Replacing-Vue-Resource-with-Axios
 
 const http = axios.create({
   baseURL: process.env.BACKEND_URL ? process.env.BACKEND_URL : 'http://localhost:8000',

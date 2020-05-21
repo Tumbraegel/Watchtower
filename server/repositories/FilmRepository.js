@@ -14,6 +14,10 @@ class FilmRepository {
     findById(id) {
         return this.model.findById(id);
     }
+
+    findByGenre(genre) {
+        return this.model.find({ genres: genre});
+    }
 }
 
 module.exports = new FilmRepository(Film);

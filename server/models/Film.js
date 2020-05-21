@@ -8,7 +8,10 @@ const FilmSchema = new Schema({
     releaseDate: String,
     duration: String,
     cast: String,
-    image: String
+    image: String,
+    diversityIndicator: Number,
+    queerFriendlinessIndicator: Number,
+    genderEqualityIndicator: Number
 });
 
 module.exports = mongoose.model('Film', FilmSchema);;

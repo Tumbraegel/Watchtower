@@ -9,7 +9,7 @@
           <router-link :to="'/film/' + film._id">
           <h5 class="card-title text-warning">{{ film.title }}</h5>
           </router-link>
-          <p class="card-text">{{ film.releaseDate }}</p>
+          <p class="card-text">{{ film.year }}</p>
           <p>Rating:</p>
           <p class="card-text">
             <small class="text-muted">{{ film.genres }}</small>

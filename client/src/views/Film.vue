@@ -6,7 +6,7 @@
             {{ film.title }}
           </h1>
           <h2 class="subtitle ">
-            {{ film.releaseDate }}
+            {{ film.released }}
           </h2>
             <button class="btn btn-warning" @click="showModal=true">Review</button>
         </div>
@@ -16,12 +16,12 @@
       <div class="container">
         <div class="row">
           <div class="col-md-9">
-        <p class=""><strong>Plot: </strong>{{ film.description }}</p>
+        <p class=""><strong>Plot: </strong>{{ film.plot }}</p>
         <p class=""><strong>Genre: </strong>{{ film.genres }}</p>
-        <p class=""><strong>Cast: </strong>{{ film.cast }}</p>
+        <p class=""><strong>Cast: </strong>{{ film.actors }}</p>
         </div>
           <div class="col-md-2">
-            <img :src=film.image :alt=film.title>
+            <img :src=film.poster :alt=film.title>
           </div>
           <div class="comment-section" style="margin-top:30px;">
             <h4>Comments</h4>

@@ -18,7 +18,11 @@
           <div class="col-md-9">
         <p class=""><strong>Plot: </strong>{{ film.plot }}</p>
         <p class=""><strong>Genre: </strong>{{ film.genres }}</p>
+        <p class=""><strong>Directors: </strong>{{ film.directors }}</p>
         <p class=""><strong>Cast: </strong>{{ film.actors }}</p>
+        <p class=""><strong>Language: </strong>{{ film.language }}</p>
+        <p class=""><strong>Rated: </strong>{{ film.rated }}</p>
+        <p class=""><strong>Awards: </strong>{{ film.awards }}</p>
         </div>
           <div class="col-md-2">
             <img :src=film.poster :alt=film.title>

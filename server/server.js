@@ -37,7 +37,8 @@ db.on('error', err => {
 })
 
 app.use('/', routes);
-//imdbData.runScript();
+// Run API script
+// imdbData.runScript();
 
 // Server listening on port
 app.listen(config.APP_PORT);

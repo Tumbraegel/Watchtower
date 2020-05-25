@@ -10,15 +10,17 @@ class FilmRepository {
         return this.model.find();
     }
 
-    // Retrieve film by id
+    // Retrieve film by ObjectId
     findById(id) {
         return this.model.findById(id);
     }
 
+    // Retrieve film by specific genre
     findByGenre(genre) {
-        return this.model.find({ genres: genre});
+        return this.model.find({ genres: genre });
     }
 
+    // Get film data from IMDb api and store in db
     createEntry(film) {
         const entry = {
             title: film.Title,
@@ -32,20 +34,20 @@ class FilmRepository {
             actors: film.Actors,
             plot: film.Plot,
             language: film.Language,
-            country: film.Country, 
+            country: film.Country,
             awards: film.Awards,
             poster: film.Poster,
             imdbID: film.imdbID
         };
-        // Check if film already in db
-        if(this.model.find({ imdbID: film.imdbID}))
-        {
-            console.log(film.Title + " already exists in database.");
-        }
-        else {
-            const newFilm = new this.model(entry);
-            return newFilm.save();
-        }
+        const newFilm = new this.model(entry);
+        return newFilm.save(function (err, res) {
+            if (err) {
+                console.log("\'" + film.Title + "\'" + " already exists in database.");
+            }
+            else {
+                console.log("\'" + film.Title + "\'" + "  successfully stored in database.");
+            }
+        })
     }
 }
 

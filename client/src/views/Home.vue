@@ -5,18 +5,18 @@
       <h1>Welcome to this review website</h1>
       <h4>Make sure to check out the Top Picks below</h4>
       </div>
-    <FilmList />
+    <!--<FilmList />-->
     </div>
   </div>
 </template>
 
 <script>
-import FilmList from '../components/FilmList';
+// import FilmList from '../components/FilmList';
 export default {
   name: 'home',
-  components: {
+  /*components: {
     FilmList
-  }
+  }*/
 }
 </script>
 

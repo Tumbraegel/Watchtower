@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 
 const config = require('./config/config');
 const routes = require('./routes/Routes');
-const imdbData = require('./routes/imdb_api');
+const imdbAPI = require('./routes/imdb_api');
 
 const app = express();
 
@@ -37,8 +37,10 @@ db.on('error', err => {
 })
 
 app.use('/', routes);
+
 // Run API script
-// imdbData.runScript();
+//imdbAPI.runScript();
+
 
 // Server listening on port
 app.listen(config.APP_PORT);

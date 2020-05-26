@@ -2,10 +2,11 @@
 // LAST ACCESSED 25/05
 const axios = require("axios");
 const repo = require("../repositories/FilmRepository");
-const idList = ["tt3281548", "tt4846340", "tt1392190", "tt5726616", "tt4925292"];
+const imdbData = require('../imdb_data/ID_collection');
 
-class IMDbData {
+class IMDbAPI {
   getFilmInfo(item) {
+    console.log(item);
     axios({
       "method":"GET",
       "url":"https://movie-database-imdb-alternative.p.rapidapi.com/",
@@ -29,10 +30,13 @@ class IMDbData {
   }
 
   runScript() {
-    idList.forEach((item) => {
-      this.getFilmInfo(item);
-    });
+    // processLineByLine returns promise object. the result can be accessed using then()
+    imdbData.processLineByLine().then(list => {
+      list.forEach((item) => {
+        this.getFilmInfo(item);
+      });
+    })
   }
 }
 
-module.exports = new IMDbData();
+module.exports = new IMDbAPI();

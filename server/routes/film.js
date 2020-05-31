@@ -1,11 +1,10 @@
 const express = require('express');
-
 const router = express.Router();
-const repo = require('../repositories/FilmRepository');
+const filmRepo = require('../repositories/FilmRepository');
 
 // GET all films
 router.get('/', (req, res) => {
-    repo.findAll().then((films) => {
+    filmRepo.findAll().then((films) => {
         res.json(films);
     }).catch((error) => console.log(error));
 });
@@ -13,7 +12,7 @@ router.get('/', (req, res) => {
 // GET one film
 router.get('/film/:id', (req, res) => {
     const id = Object(req.params.id);
-    repo.findById(id).then((film) => {
+    filmRepo.findById(id).then((film) => {
         res.json(film);
     }).catch((error) => console.log(error));
 });
@@ -21,7 +20,7 @@ router.get('/film/:id', (req, res) => {
 // GET films filtered by genre
 router.get('/genre/:genre', (req, res) => {
     const genre = Object(req.params.genre);
-    repo.findByGenre(genre).then((films) => {
+    filmRepo.findByGenre(genre).then((films) => {
         res.json(films);
     }).catch((error) => console.log(error));
 });

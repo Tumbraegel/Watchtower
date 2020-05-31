@@ -4,16 +4,16 @@
       <div>
         <h4>Pick a genre:</h4>
       </div>
-      <button class="btn btn-outline-primary" style="margin-right:10px;" @click="getGenre('Drama')">
+      <button class="btn btn-outline-primary" style="margin-right:10px;" @click="getFilmData('Drama')">
         Drama
       </button>
-      <button class="btn btn-outline-primary" style="margin-right:10px;" @click="getGenre('Thriller')">
+      <button class="btn btn-outline-primary" style="margin-right:10px;" @click="getFilmData('Thriller')">
         Thriller
       </button>
-      <button class="btn btn-outline-primary" style="margin-right:10px;" @click="getGenre('Action')">
+      <button class="btn btn-outline-primary" style="margin-right:10px;" @click="getFilmData('Action')">
         Action
       </button>
-      <button class="btn btn-outline-warning" style="margin-right:10px;" @click="getGenre('#')">
+      <button class="btn btn-outline-warning" style="margin-right:10px;" @click="getFilmData('None')">
         Clear Filters
       </button>
       <genre-list :filteredFilms="filteredFilms" />
@@ -30,30 +30,31 @@ export default {
   },
   data() {
     return {
-      films: [],
+      //films: [],
       filteredFilms: [],
-      genre: "",
+      //genre: "",
     };
   },
   created() {
-      this.getFilmData();
+      //this.getFilmData('');
   },
   methods: {
-    getFilmData() {
-      this.$http.get("/").then((res) => {
-        this.films = res.data;
+    getFilmData(genre) {
+      this.$http.get("/genre/" + genre).then((res) => {
+        this.filteredFilms = res.data;
       });
     },
-    getGenre(genre) {
+
+    /*getGenre(genre) {
       this.genre = genre;
-      this.filterFilmsByGenre(genre);
+      this.getFilmData(genre);
     },
 
     filterFilmsByGenre(genre) {
       this.filteredFilms = this.films.filter((film) =>
         film.genres.includes(genre)
       );
-    },
+    },*/
   },
 };
 </script>

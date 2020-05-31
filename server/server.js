@@ -10,7 +10,8 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 
 const config = require('./config/config');
-const routes = require('./routes/Routes');
+const film = require('./routes/film');
+const user = require('./routes/user');
 const imdbAPI = require('./routes/imdb_api');
 
 const app = express();
@@ -36,11 +37,11 @@ db.on('error', err => {
   console.error('connection error:', err)
 })
 
-app.use('/', routes);
+app.use('/', film);
+app.use('/user', user);
 
 // Run API script
 //imdbAPI.runScript();
-
 
 // Server listening on port
 app.listen(config.APP_PORT);

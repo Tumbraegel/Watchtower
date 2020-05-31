@@ -6,7 +6,6 @@ const imdbData = require('../imdb_data/ID_collection');
 
 class IMDbAPI {
   getFilmInfo(item) {
-    console.log(item);
     axios({
       "method":"GET",
       "url":"https://movie-database-imdb-alternative.p.rapidapi.com/",

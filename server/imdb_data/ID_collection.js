@@ -8,7 +8,7 @@ class IMDbData {
     async processLineByLine() {
         const listOfIDs = [];
         let finalListOfIDs = [];
-        const fileStream = fs.createReadStream('./imdb_data/data.tsv');
+        const fileStream = fs.createReadStream('./imdb_data/test.tsv');
 
         const rl = readline.createInterface({
             input: fileStream,
@@ -36,7 +36,9 @@ class IMDbData {
         }
         */
 
-        finalListOfIDs = listOfIDs.splice(500, 1000);
+        console.log(listOfIDs);
+        // DONT RUN THIS BEFORE CHECKING IF SPLICE ACTUALLY ONLY REQUESTS UNDER 1000 ITEMS!!!!
+        finalListOfIDs = listOfIDs.splice(0,2);
 
         return finalListOfIDs;
     }

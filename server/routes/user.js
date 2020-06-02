@@ -7,12 +7,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../models/User');
-const auth = require('../middleware/auth');
+const auth = require('../config/auth_config');
 
 // POST new user
 router.post('/register', [check('username', 'enter valid username').not().isEmpty(), 
     check('email', 'enter valid email').isEmail(), 
-    check('hash', 'enter valid password').isLength({ min: 8 })],
+    check('password', 'enter valid password').isLength({ min: 8 })],
 
     async (req, res) => {
         const errors = validationResult(req);
@@ -22,7 +22,7 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
             });
         }
 
-        const { username, email, hash } = req.body;
+        const { username, email, password } = req.body;
 
         try {
             let user = await User.findOne({ email });
@@ -33,11 +33,11 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
             }
 
             user = new User({
-                username, email, hash
+                username, email, password
             });
 
             const salt = await bcrypt.genSalt(10);
-            user.hash = await bcrypt.hash(hash, salt);
+            user.password = await bcrypt.hash(password, salt);
 
             await user.save()
 
@@ -60,7 +60,7 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
 // POST user login
 router.post(
     '/login',[check('email', 'enter valid email').isEmail(), 
-    check('hash', 'enter valid password').isLength({ min: 8})],
+    check('password', 'enter valid password').isLength({ min: 8})],
 
     async (req, res) => {
       const errors = validationResult(req);
@@ -71,7 +71,7 @@ router.post(
         });
       }
   
-      const { email, hash } = req.body;
+      const { email, password } = req.body;
 
       try {
         let user = await User.findOne({ email });
@@ -80,7 +80,7 @@ router.post(
             message: 'User does not exist.'
           });
   
-        const isMatch = await bcrypt.compare(hash, user.hash);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch)
           return res.status(400).json({
             message: 'Incorrect password!'

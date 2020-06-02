@@ -9,7 +9,7 @@ class UserRepository {
         const newUser = { 
             username: userInfo.username, 
             email: userInfo.email,
-            hash: userInfo.hash };
+            password: userInfo.password };
 
         const user = new this.model(newUser);
     

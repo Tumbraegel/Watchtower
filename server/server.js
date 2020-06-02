@@ -9,7 +9,7 @@ const cors = require('cors');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
-const config = require('./config/config');
+const config = require('./config/db_config');
 const film = require('./routes/film');
 const user = require('./routes/user');
 const imdbAPI = require('./routes/imdb_api');

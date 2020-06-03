@@ -16,9 +16,7 @@ const FilmSchema = new mongoose.Schema({
     awards: String,
     poster: String,
     imdbID: {type: String, unique: true},
-    diversityIndicator: Number,
-    queerFriendlinessIndicator: Number,
-    genderEqualityIndicator: Number
+    reviewCriteria: {type: Array},
 });
 
 module.exports = mongoose.model('Film', FilmSchema);;

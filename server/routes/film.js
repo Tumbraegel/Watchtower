@@ -12,7 +12,16 @@ router.get('/', (req, res) => {
 // GET one film
 router.get('/film/:id', (req, res) => {
     const id = Object(req.params.id);
-    filmRepo.findById(id).then((film) => {
+    filmRepo.findByImdbID(id).then((film) => {
+        res.json(film);
+    }).catch((error) => console.log(error));
+});
+
+// POST film review
+router.post('/film/:id', (req, res) => {
+    const id = Object(req.params.id);
+    // ALSO UPDATE USER review array
+    filmRepo.addReview(id, req.body).then((film) => {
         res.json(film);
     }).catch((error) => console.log(error));
 });

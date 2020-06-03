@@ -6,7 +6,7 @@
             {{ film.title }}
           </h1>
           <h2 class="subtitle ">
-            {{ film.released }}
+            {{ film.year }}
           </h2>
             <button class="btn btn-warning" @click="showModal=true">Review</button>
         </div>
@@ -59,31 +59,38 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form>
+
                   <div>
                   <p>Choose Indicators</p>
-                  <small class="form-text text-muted" style="margin-bottom:15px;">Just go with your gut feeling!</small>
+                  <a href="#" class="badge badge-warning" style="margin-right: 6px;" @click="reviewSelected('Diversity')">Diversity</a>
+                  <a href="#" class="badge badge-info" style="margin-right: 6px;" @click="reviewSelected('Queer Friendliness')">Queer Friendliness</a>
+                  <a href="#" class="badge badge-primary" style="margin-right: 6px;" @click="reviewSelected('Gender Equality')">Gender Equality</a>
                   </div>
-                  <div class="form-group">
-                    <label for="myRange1" style="margin-right:90px; color:#4d4d4d;">Diversity</label>
-                    <input type="range" min="0" max="10" value="5" class="slider" id="myRange1">
-                  </div>
-                  <div class="form-group">
-                    <label for="myRange2" style="margin-right:20px; color:#4d4d4d;">Queer Friendliness</label>
-                    <input type="range" min="0" max="10" value="5" class="slider" id="myRange2">
-                  </div>
-                  <div class="form-group">
-                    <label for="myRange3" style="margin-right:40px; color:#4d4d4d;">Gender Equality</label>
-                    <input type="range" min="0" max="10" value="5" class="slider" id="myRange3">
+                  
+                  <div v-if="!isHidden">
+                    <label for="myRange1" style="margin-right:30px; color:#4d4d4d;">{{ reviewCriterion }}</label>
+                    <input type="range" min="0" max="10" value="5" id="myRange1" v-model="reviewResult">
+                    
+                    <br>
+                    <!--<small class="form-text text-muted" style="margin-bottom:15px;">Just go with your gut feeling!</small>-->
+                    <button v-if="showConfirmButton" class="btn btn-dark" @click=confirmResult>Confirm</button>
+                    <button v-if="showClearButton" class="btn btn-light" @click=clearResult>Clear</button>
+                  <hr>
+                  <p>Optional {{ reviewTest }}</p>
+
                   </div>
                   <hr>
                   <div style="margin-bottom:25px;">
-                    <a href="#">
+                    Your review criteria:
+                    <div v-for="criterion in allReviewResults" :key="criterion.name">
+                      <span class="badge badge-light" style="margin-right: 6px;">{{ criterion.name }} : {{ criterion.result }}</span>
+                    </div>
+
+                    <!--<a href="#">
                       Click here for more detailed review options.
-                    </a>
+                    </a>-->
                   </div>
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+                  <button @click="submitReview" class="btn btn-primary">Submit all</button>
               </div>
             </div>
           </div>
@@ -101,7 +108,14 @@
     data() {
       return {
         film: {},
-        showModal: false
+        showModal: false,
+        reviewCriterion: '',
+        reviewTest: '',
+        reviewResult: 0,
+        allReviewResults: [],
+        isHidden: true,
+        showClearButton: false,
+        showConfirmButton: true
       }
     },
     created() {
@@ -110,11 +124,62 @@
   methods: {
     getFilmData() {
       this.$http.get("/film/" + this.$route.params.id).then(res => {
-        this.film = res.data;
+        this.film = res.data[0];
       });
+  },
+
+    reviewSelected(value) {
+      this.reviewCriterion = value;
+      this.isHidden = false;
+      this.chooseReviewTest(value);
+    },
+
+    chooseReviewTest(value) {
+      if(value == 'Diversity') this.reviewTest = 'Duvernay Test';
+      if(value == 'Queer Friendliness') this.reviewTest = 'Russo Test';
+      if(value == 'Gender Equality') this.reviewTest = 'Bechdel Test';
+    },
+
+    confirmResult() {
+      const results = this.allReviewResults;
+      const criterionToRemove = results.findIndex(criterion => criterion.name === this.reviewCriterion);
+      const criterion = {
+        name: this.reviewCriterion,
+        result: this.reviewResult,
+      }
+
+      if (criterionToRemove != -1) {
+        results.splice(criterionToRemove,1)
+      }
+
+      results.push(criterion);
+      this.showClearButton = true;
+      this.isHidden = true;
+    },
+
+    clearResult() {
+      const value = this.reviewCriterion;
+      const results = this.allReviewResults;
+      const criterionToRemove = results.findIndex(criterion => criterion.name === value)
+      results.splice(criterionToRemove,1);
+    },
+
+    submitReview() {
+      // POST Request with allReviewResults array
+      const options = {
+        headers: {'Content-Type': 'application/json'}
+      }
+      const payload = this.allReviewResults;
+      console.log("Payload " + payload);
+
+      this.$http.post('/film/' + this.$route.params.id, JSON.stringify(payload), options).then((response) => {
+            console.log(response);
+          }, (error) => {
+            console.log(error.response);
+        });
+    }
   }
-  }
-  }
+}
 </script>
 
 <style lang="scss" scoped>

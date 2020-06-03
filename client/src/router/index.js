@@ -21,7 +21,19 @@ Vue.use(VueRouter)
   {
     path: '/film/:id',
     name: 'film',
-    component: () => import('../views/Film.vue')
+    component: () => import('../views/Film.vue'),
+    meta: {
+      requiresAuth: true
+    }
+    /*beforeEnter: ((to, from, next) => {
+      if (to.meta.requiresAuth) {
+        if (localStorage.getItem("jwt") != null) {
+          next(); // allow user to continue
+        } else {
+          next({ name: "login" }); // redirect to main page
+        }
+      }
+    })*/
   },
   {
     path: '/genre',
@@ -45,5 +57,16 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+// Global navigation guard
+/*router.beforeEach((to, from, next) => {
+      if (to.meta.requiresAuth) {
+        if (localStorage.getItem("jwt") != null) {
+          next(); // allow user to continue
+        } else {
+          next({ name: "home" }); // redirect to main page
+        }
+      }
+    });*/
 
 export default router

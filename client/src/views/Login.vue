@@ -39,7 +39,6 @@
 
 <script>
 import router from '../router';
-import swal from 'sweetalert';
 export default {
   name: 'login',
 

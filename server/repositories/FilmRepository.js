@@ -10,6 +10,11 @@ class FilmRepository {
         return this.model.find();
     }
 
+    // Retrieve all films that have been reviewed at least once
+    findAllReviewedFilms() {
+        return this.model.find({reviewCriteria: {$exists: true, $not: {$size: 0}}})
+    }
+
     // Retrieve film by ObjectId
     findById(id) {
         return this.model.findById(id);

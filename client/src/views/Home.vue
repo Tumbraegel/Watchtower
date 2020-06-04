@@ -5,18 +5,52 @@
       <h1>Welcome to this review website</h1>
       <h4>Make sure to check out the Top Picks below</h4>
       </div>
-    <!--<FilmList />-->
+      <film-list :featuredFilms="featuredFilms" />
     </div>
   </div>
 </template>
 
 <script>
-// import FilmList from '../components/FilmList';
+import FilmList from '../components/FilmList';
 export default {
   name: 'home',
-  /*components: {
+  components: {
     FilmList
-  }*/
+  },
+
+  data() {
+    return {
+      listOfFilmsWithReviews: [],
+      featuredFilms: []
+    };
+  },
+
+  created() {
+    this.getFilmData();
+  },
+
+  methods: {
+    randomiseFeaturedFilms() {
+      const array = this.listOfFilmsWithReviews;
+        const film = array[Math.floor(Math.random() * array.length)];
+        this.featuredFilms.push(film);
+    },
+
+    getFilmData() {
+      this.$http.get("/").then((res) => {
+        const films = res.data;
+        
+        films.forEach(element => {
+          // filter out films without reviews
+          if(element.reviewCriteria.length)
+          this.listOfFilmsWithReviews.push(element);
+        });
+        this.randomiseFeaturedFilms();
+      });
+    },
+
+
+  }
 }
 </script>
 

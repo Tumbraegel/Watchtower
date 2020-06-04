@@ -3,12 +3,9 @@
     <div class="row film-banner">
         <div class="container">
           <h1 class="title">
-            {{ film.title }}
+            {{ film.title }} ({{ film.year }})
           </h1>
-          <h2 class="subtitle ">
-            {{ film.year }}
-          </h2>
-            <button class="btn btn-warning" @click="showModal=true">Review</button>
+            <button class="btn btn-custom" @click="showModal=true">Review</button>
         </div>
     </div>
 
@@ -131,10 +128,10 @@
     reviewSelected(value) {
       this.reviewCriterion = value;
       this.isHidden = false;
-      this.chooseReviewTest(value);
+      this.setReviewTest(value);
     },
 
-    chooseReviewTest(value) {
+    setReviewTest(value) {
       if(value == 'Diversity') this.reviewTest = 'Duvernay Test';
       if(value == 'Queer Friendliness') this.reviewTest = 'Russo Test';
       if(value == 'Gender Equality') this.reviewTest = 'Bechdel Test';
@@ -182,9 +179,9 @@
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   .film-banner{
-    background-color: #00d1b2;
+    background-color: #4d4d4d;
     color: #fff;
     font-weight: 200;
     line-height: 1.5;
@@ -193,6 +190,19 @@
   }
   .film-single {
     margin-top: 30px;
+  }
+
+  .btn-custom {
+    border-color: #06A797;
+    background-color: #06A797;
+    color: whitesmoke;
+    transition-duration: 0.4s;
+  }
+
+  .btn-custom:hover {
+    border-color: #06A797;
+    background-color: #4d4d4d;
+    color: #06A797;
   }
 
   .modal-mask {

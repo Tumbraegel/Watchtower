@@ -13,11 +13,6 @@
 export default {
   name: 'GenreList',
   props: ['filteredFilms'],
-  data () {
-    return {
-      films: [],
-    };
-  },
 }
 </script>
 

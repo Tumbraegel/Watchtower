@@ -24,37 +24,23 @@
 <script>
 import GenreList from "../components/GenreList";
 export default {
-  name: "genre",
+  name: 'genre',
   components: {
     GenreList,
   },
+  
   data() {
     return {
-      //films: [],
-      filteredFilms: [],
-      //genre: "",
+      filteredFilms: []
     };
   },
-  created() {
-      //this.getFilmData('');
-  },
+
   methods: {
     getFilmData(genre) {
       this.$http.get("/genre/" + genre).then((res) => {
         this.filteredFilms = res.data;
       });
     },
-
-    /*getGenre(genre) {
-      this.genre = genre;
-      this.getFilmData(genre);
-    },
-
-    filterFilmsByGenre(genre) {
-      this.filteredFilms = this.films.filter((film) =>
-        film.genres.includes(genre)
-      );
-    },*/
   },
 };
 </script>

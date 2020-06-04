@@ -6,7 +6,7 @@
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <router-link :to="'/film/' + film._id">
+          <router-link :to="'/film/' + film.imdbID">
           <h5 class="card-title text-warning">{{ film.title }}</h5>
           </router-link>
           <p class="card-text">{{ film.year }}</p>

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const filmRepo = require('../repositories/FilmRepository');
+const reviewRepo = require('../repositories/ReviewRepository');
 
 // GET all films
 router.get('/', (req, res) => {
@@ -19,10 +20,9 @@ router.get('/film/:id', (req, res) => {
 
 // POST film review
 router.post('/film/:id', (req, res) => {
-    const id = Object(req.params.id);
-    // ALSO UPDATE USER review array
-    filmRepo.addReview(id, req.body).then((film) => {
-        res.json(film);
+    const id = req.params.id;
+    reviewRepo.create(id, req.body).then((review) => {
+        res.json(review);
     }).catch((error) => console.log(error));
 });
 

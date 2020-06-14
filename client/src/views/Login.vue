@@ -9,27 +9,35 @@
               Don't have an account yet?
             </router-link>
           </p>
-          <form @submit="loginUser">
+          <form @submit.prevent="loginUser">
             <div class="form-group">
               <input
                 type="email"
+                name="email"
                 class="form-control"
-                id="exampleInputEmail1"
                 aria-describedby="emailHelp"
                 placeholder="Enter email"
-                v-model="email"
+                v-model="user.email"
               />
             </div>
             <div class="form-group">
               <input
                 type="password"
+                name="password"
                 class="form-control"
-                id="exampleInputPassword1"
                 placeholder="Password"
-                v-model="password"
+                v-model="user.password"
               />
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <div class="form-group">
+            <button type="submit" class="btn btn-primary" :disabled="loading">
+              <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+              <span>Login</span>
+            </button>
+            </div>
+            <div class="form-group">
+              <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
+            </div>
           </form>
         </div>
       </div>
@@ -39,38 +47,49 @@
 
 <script>
 import router from '../router';
+import User from '../models/user';
+
 export default {
   name: 'login',
-
   data() {
     return {
-      email: '',
-      password: ''
+      user: new User('', ''),
+      loading: false,
+      message: ''
     }
   },
 
-  methods: {
-    loginUser(e) {
-      e.preventDefault();
+  computed: {
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    }
+  },
+  created() {
+    if (this.loggedIn) {
+      router.push({name: 'home'});
+    }
+  },
 
-      const options = {
-        headers: {'Content-Type': 'application/json'}
-      }
-
-      const payload = {
-        email : this.email,
-        password : this.password
-        };
-
-      this.$http.post('/user/login', JSON.stringify(payload), options).then((response) => {
-            console.log(response);
-            router.push({name: 'home'});
-          }, (error) => {
-            console.log(error.response);
-        });
+   methods: {
+    loginUser() {
+      //this.loading = true;
+        if (this.user.email && this.user.password) {
+          this.$store.dispatch('auth/login', this.user).then(
+            () => {
+              router.push({name: 'home'});
+            },
+            error => {
+              //this.loading = false;
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+            }
+          );
+        }
     }
   }
-}
+};
 </script>
 
 <style scoped></style>

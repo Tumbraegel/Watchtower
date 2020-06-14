@@ -30,28 +30,12 @@ class FilmRepository {
         return this.model.find({ genres: genre });
     }
 
-    addReview(id, data) {
-        const film = { imdbID: id };
-        const update = { reviewCriteria: data }
-        return this.model.findOneAndUpdate(film, update, function (err, res) {
-            if (err) {
-                console.log("There was an error in updating the film data.");
-            }
-            else {
-                console.log("Film was successfully updated.");
-            }
-        });
-/*
-        film.reviewCriteria.push(data);
-        //return this.model.find({ imdbID: id });
-        return film.save(function (err, res) {
-            if (err) {
-                console.log("\'" + film.Title + "\'" + " didn't get updated.");
-            }
-            else {
-                console.log("\'" + film.Title + "\'" + "  was successfully updated.");
-            }
-        })*/
+    // Add reference to respective reviews
+    async addReview(id, review) {
+        // MISSING error handling on save
+        const film = await this.model.findOne({ imdbID: id });
+        film.reviews.push(review._id);
+        film.save();
     }
 
     // Get film data from IMDb api and store in db
@@ -74,7 +58,7 @@ class FilmRepository {
             imdbID: film.imdbID
         };
         const newFilm = new this.model(entry);
-        return newFilm.save(function (err, res) {
+        return newFilm.save().then(function (err, res) {
             if (err) {
                 console.log("\'" + film.Title + "\'" + " already exists in database.");
             }

@@ -38,10 +38,10 @@ db.on('error', err => {
 })
 
 app.use('/', film);
-app.use('/user', user);
+app.use('/api/auth', user);
 
 // Run API script
-//imdbAPI.runScript();
+// imdbAPI.runScript();
 
 // Server listening on port
 app.listen(config.APP_PORT);

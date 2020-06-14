@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="/" @click.prevent>
       <img src="../../assets/logo.jpg" width="35" height="35" alt="Watchtower Logo" />
     </a>
     <button
@@ -29,18 +29,60 @@
       </ul>
       <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+        <button class="btn btn-outline-dark my-2 my-sm-0 btn-distance" type="submit">Search</button>
       </form>
-      <router-link class="btn btn-dark my-2 my-sm-0" :to="{ name: 'login' }">Sign In</router-link>
+
+      <div v-if="!currentUser">
+      <router-link class="btn btn-dark my-2 my-sm-0 btn-distance" :to="{ name: 'register' }">
+        <font-awesome-icon icon="user-plus" /> Register
+        </router-link>
+      <router-link class="btn btn-dark my-2 my-sm-0" :to="{ name: 'login' }">
+        <font-awesome-icon icon="sign-in-alt" /> Sign In
+        </router-link>
+      </div>
+
+      <div v-if="currentUser">
+          <router-link class="btn btn-dark my-2 my-sm-0 btn-distance" to="/me">
+            <font-awesome-icon icon="user" /> Me
+            {{ currentUser.username }}
+          </router-link>
+          <button class="btn btn-dark my-2 my-sm-0" @click.prevent="logout">
+            <font-awesome-icon icon="sign-out-alt" /> Logout
+          </button>
+      </div>
+
     </div>
   </nav>
 </template>
 
 <script>
+import router from '../../router';
+
 export default {
-  name: "Nav"
+  name: "Nav",
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
+    showAdminBoard() {
+      if (this.currentUser && this.currentUser.roles) {
+        return this.currentUser.roles.includes('ROLE_ADMIN');
+      }
+
+      return false;
+    },
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('auth/logout');
+      router.push({name: 'login'});
+    }
+  }
 };
 </script>
 
 <style scoped>
+.btn-distance {
+  margin-right: 5px;
+}
 </style>

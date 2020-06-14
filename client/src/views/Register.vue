@@ -9,38 +9,44 @@
               Already have an account?
             </router-link>
           </p>
-          <form  @submit="createNewUser">
+          <form @submit.prevent="createNewUser">
               <div class="form-group">
               <input
                 type="username"
                 class="form-control"
-                id="username"
+                name="username"
                 aria-describedby="usernameHelp"
                 placeholder="Enter username"
-                v-model="username"
+                v-model="user.username"
               />
             </div>
             <div class="form-group">
               <input
                 type="email"
                 class="form-control"
-                id="email"
+                name="email"
                 aria-describedby="emailHelp"
                 placeholder="Enter email"
-                v-model="email"
+                v-model="user.email"
               />
             </div>
             <div class="form-group">
               <input
                 type="password"
                 class="form-control"
-                id="password"
+                name="password"
                 placeholder="Password"
-                v-model="password"
+                v-model="user.password"
               />
             </div>
+            <div class="form-group">
             <button type="submit" class="btn btn-primary">Sign Up</button>
+            </div>
           </form>
+          <div
+            v-if="message"
+            class="alert"
+          >{{message}}</div>
         </div>
       </div>
     </div>
@@ -50,37 +56,46 @@
 <script>
 import router from '../router';
 import swal from 'sweetalert';
+import User from '../models/user';
+
 export default {
   name: 'register',
 
   data() {
     return {
-      username : '',
-      email : '',
-      password : ''
+      user: new User('', '', ''),
+      submitted: false,
+      message: ''
+    }
+  },
+
+  computed: {
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    }
+  },
+  mounted() {
+    if (this.loggedIn) {
+      router.push({name: 'home'});
     }
   },
 
   methods: {
-    createNewUser(e) {
-      e.preventDefault();
-
-      const options = {
-        headers: {'Content-Type': 'application/json'}
-      }
-      const payload = {
-        username : this.username,
-        email : this.email,
-        password : this.password
-        };
-
-      this.$http.post('/user/register', JSON.stringify(payload), options).then((response) => {
+    createNewUser() {
+      this.message = '';
+      this.submitted = true;
+          this.$store.dispatch('auth/register', this.user).then( function() {
             swal('Done!', 'Account created!', 'success', { buttons: false, timer: 1500 });
-            console.log(response);
             router.push({name: 'login'});
-          }, (error) => {
-            console.log(error.response);
-        });
+          },
+            error => {
+              this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+              this.successful = false;
+            }
+          );
     }
   }
 }

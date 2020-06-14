@@ -38,7 +38,7 @@ class IMDbData {
 
         console.log(listOfIDs);
         // DONT RUN THIS BEFORE CHECKING IF SPLICE ACTUALLY ONLY REQUESTS UNDER 1000 ITEMS!!!!
-        finalListOfIDs = listOfIDs.splice(0,2);
+        finalListOfIDs = listOfIDs.splice(0, 3);
 
         return finalListOfIDs;
     }

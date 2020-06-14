@@ -5,6 +5,8 @@
       <h1>Welcome to this review website</h1>
       <h4>Make sure to check out the Top Picks below</h4>
       </div>
+      <p>Logged in: {{ loginTest }}</p>
+      <p>State: {{ stateTest }}</p>
       <film-list :featuredFilms="featuredFilms" />
     </div>
   </div>
@@ -21,7 +23,9 @@ export default {
   data() {
     return {
       listOfFilmsWithReviews: [],
-      featuredFilms: []
+      featuredFilms: [],
+      loginTest: this.$store.state.auth.status.loggedIn,
+      stateTest: this.$store.state.auth.user
     };
   },
 
@@ -32,8 +36,13 @@ export default {
   methods: {
     randomiseFeaturedFilms() {
       const array = this.listOfFilmsWithReviews;
+
+      // MISSING if condition, right now it can also generate only 2 films
+      for(var i=0; i<3; i++) {
         const film = array[Math.floor(Math.random() * array.length)];
+        if(!this.featuredFilms.includes(film))
         this.featuredFilms.push(film);
+      }
     },
 
     getFilmData() {
@@ -42,14 +51,12 @@ export default {
         
         films.forEach(element => {
           // filter out films without reviews
-          if(element.reviewCriteria.length)
+          if(element.reviews.length)
           this.listOfFilmsWithReviews.push(element);
         });
         this.randomiseFeaturedFilms();
       });
     },
-
-
   }
 }
 </script>

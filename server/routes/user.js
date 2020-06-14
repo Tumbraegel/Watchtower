@@ -61,16 +61,14 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
 router.post(
     '/login',[check('email', 'enter valid email').isEmail(), 
     check('password', 'enter valid password').isLength({ min: 8})],
-
     async (req, res) => {
       const errors = validationResult(req);
-  
       if (!errors.isEmpty()) {
         return res.status(400).json({
           errors: errors.array()
         });
       }
-  
+      
       const { email, password } = req.body;
 
       try {
@@ -117,6 +115,7 @@ router.get('/me', auth, async (req, res) => {
     try {
       // request.user is getting fetched from Middleware after token authentication
       const user = await User.findById(req.user.id);
+      console.log(user);
       res.json(user);
     } catch (e) {
       res.send({ message: 'Error in fetching user' });

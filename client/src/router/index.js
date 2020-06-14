@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Login from '../views/Login.vue'
 
 Vue.use(VueRouter)
 
@@ -13,27 +14,12 @@ Vue.use(VueRouter)
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import('../views/About.vue')
   },
   {
     path: '/film/:id',
     name: 'film',
     component: () => import('../views/Film.vue'),
-    meta: {
-      requiresAuth: true
-    }
-    /*beforeEnter: ((to, from, next) => {
-      if (to.meta.requiresAuth) {
-        if (localStorage.getItem("jwt") != null) {
-          next(); // allow user to continue
-        } else {
-          next({ name: "login" }); // redirect to main page
-        }
-      }
-    })*/
   },
   {
     path: '/genre',
@@ -41,14 +27,19 @@ Vue.use(VueRouter)
     component: () => import('../views/Genre.vue')
   },
   {
-    path: '/user/login',
+    path: '/login',
     name: 'login',
-    component: () => import('../views/Login.vue')
+    component: Login
   },
   {
-    path: '/user/register',
+    path: '/register',
     name: 'register',
-    component: () => import('../views/Register.vue')
+    component: () => import('../views/Register.vue'),
+  },
+  {
+    path: '/me',
+    name: 'profile',
+    component: () => import('../views/Profile.vue'),
   }
 ]
 
@@ -57,16 +48,5 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
-
-// Global navigation guard
-/*router.beforeEach((to, from, next) => {
-      if (to.meta.requiresAuth) {
-        if (localStorage.getItem("jwt") != null) {
-          next(); // allow user to continue
-        } else {
-          next({ name: "home" }); // redirect to main page
-        }
-      }
-    });*/
 
 export default router

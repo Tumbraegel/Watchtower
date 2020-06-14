@@ -5,7 +5,7 @@
           <h1 class="title">
             {{ film.title }} ({{ film.year }})
           </h1>
-            <button class="btn btn-custom" @click="showModal=true">Review</button>
+            <button class="btn btn-custom" @click="isModalVisible=true">Review</button>
         </div>
     </div>
 
@@ -42,139 +42,55 @@
       </div>
     </div>
 
-<!--TEMPORARY test modal form-->
-  <div v-if="showModal">
-    <transition name="modal">
-      <div class="modal-mask">
-        <div class="modal-wrapper">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Rate this movie</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true" @click="showModal = false">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-
-                  <div>
-                  <p>Choose Indicators</p>
-                  <a href="#" class="badge badge-warning" style="margin-right: 6px;" @click="reviewSelected('Diversity')">Diversity</a>
-                  <a href="#" class="badge badge-info" style="margin-right: 6px;" @click="reviewSelected('Queer Friendliness')">Queer Friendliness</a>
-                  <a href="#" class="badge badge-primary" style="margin-right: 6px;" @click="reviewSelected('Gender Equality')">Gender Equality</a>
-                  </div>
-                  
-                  <div v-if="!isHidden">
-                    <label for="myRange1" style="margin-right:30px; color:#4d4d4d;">{{ reviewCriterion }}</label>
-                    <input type="range" min="0" max="10" value="5" id="myRange1" v-model="reviewResult">
-                    
-                    <br>
-                    <!--<small class="form-text text-muted" style="margin-bottom:15px;">Just go with your gut feeling!</small>-->
-                    <button v-if="showConfirmButton" class="btn btn-dark" @click=confirmResult>Confirm</button>
-                    <button v-if="showClearButton" class="btn btn-light" @click=clearResult>Clear</button>
-                  <hr>
-                  <p>Optional {{ reviewTest }}</p>
-
-                  </div>
-                  <hr>
-                  <div style="margin-bottom:25px;">
-                    Your review criteria:
-                    <div v-for="criterion in allReviewResults" :key="criterion.name">
-                      <span class="badge badge-light" style="margin-right: 6px;">{{ criterion.name }} : {{ criterion.result }}</span>
-                    </div>
-
-                    <!--<a href="#">
-                      Click here for more detailed review options.
-                    </a>-->
-                  </div>
-                  <button @click="submitReview" class="btn btn-primary">Submit all</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </transition>
-  </div>
+  <modal v-show="isModalVisible" @close="closeReviewModal"/>
 
   </div>
 </template>
 
 <script>
+// https://alligator.io/vuejs/vue-jwt-patterns/
+import Modal from '../components/partials/ModalReview';
+
   export default {
     name: 'Film',
+    components: {
+      Modal
+    },
     data() {
       return {
         film: {},
-        showModal: false,
-        reviewCriterion: '',
-        reviewTest: '',
-        reviewResult: 0,
-        allReviewResults: [],
-        isHidden: true,
-        showClearButton: false,
-        showConfirmButton: true
+        isModalVisible: false,
+        jwt: ''
       }
     },
+
+    computed: {
+      jwtData() {
+        // check for . separated signature
+        if (this.jwt) return JSON.parse(atob(this.jwt.split('.')[1]));
+        return {};
+      }
+    },
+
     created() {
     this.getFilmData();
-  },
+    },
+
   methods: {
     getFilmData() {
       this.$http.get("/film/" + this.$route.params.id).then(res => {
         this.film = res.data[0];
+        this.jwt = res.text;
       });
   },
 
-    reviewSelected(value) {
-      this.reviewCriterion = value;
-      this.isHidden = false;
-      this.setReviewTest(value);
-    },
-
-    setReviewTest(value) {
-      if(value == 'Diversity') this.reviewTest = 'Duvernay Test';
-      if(value == 'Queer Friendliness') this.reviewTest = 'Russo Test';
-      if(value == 'Gender Equality') this.reviewTest = 'Bechdel Test';
-    },
-
-    confirmResult() {
-      const results = this.allReviewResults;
-      const criterionToRemove = results.findIndex(criterion => criterion.name === this.reviewCriterion);
-      const criterion = {
-        name: this.reviewCriterion,
-        result: this.reviewResult,
-      }
-
-      if (criterionToRemove != -1) {
-        results.splice(criterionToRemove,1)
-      }
-
-      results.push(criterion);
-      this.showClearButton = true;
-      this.isHidden = true;
-    },
-
-    clearResult() {
-      const value = this.reviewCriterion;
-      const results = this.allReviewResults;
-      const criterionToRemove = results.findIndex(criterion => criterion.name === value)
-      results.splice(criterionToRemove,1);
-    },
-
-    submitReview() {
-      // POST Request with allReviewResults array
-      const options = {
-        headers: {'Content-Type': 'application/json'}
-      }
-      const payload = this.allReviewResults;
-      console.log("Payload " + payload);
-
-      this.$http.post('/film/' + this.$route.params.id, JSON.stringify(payload), options).then((response) => {
-            console.log(response);
-          }, (error) => {
-            console.log(error.response);
-        });
-    }
+    showReviewModal() {
+        this.isModalVisible = true;
+      },
+    
+    closeReviewModal() {
+        this.isModalVisible = false;
+      },
   }
 }
 </script>

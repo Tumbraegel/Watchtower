@@ -3,7 +3,11 @@
     <h2>Genre List</h2>
     <div class="row">
         <div v-for="film in filteredFilms" :film="film" :key="film._id" class="col-12">
-           <li class="list-group-item list-group-item-primary" style="margin-bottom:10px;">{{ film.title }}</li>
+           <li class="list-group-item list-group-item-primary" style="margin-bottom:10px;">
+             <router-link :to="'/film/' + film.imdbID">
+                {{ film.title }}
+             </router-link>
+             </li>
         </div>
     </div>
   </div>

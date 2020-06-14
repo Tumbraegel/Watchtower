@@ -16,7 +16,9 @@ const FilmSchema = new mongoose.Schema({
     awards: String,
     poster: String,
     imdbID: {type: String, unique: true},
-    reviewCriteria: {type: Array},
+    overallRating: Array,
+    // change reviews to [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
 });
 
-module.exports = mongoose.model('Film', FilmSchema);;
+module.exports = mongoose.model('Film', FilmSchema);

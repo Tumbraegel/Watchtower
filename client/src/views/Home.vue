@@ -6,7 +6,6 @@
       <h4>Make sure to check out the Top Picks below</h4>
       </div>
       <p>Logged in: {{ loginTest }}</p>
-      <p>State: {{ stateTest }}</p>
       <film-list :featuredFilms="featuredFilms" />
     </div>
   </div>
@@ -37,7 +36,7 @@ export default {
     randomiseFeaturedFilms() {
       const array = this.listOfFilmsWithReviews;
 
-      // MISSING if condition, right now it can also generate only 2 films
+      // MISSING if condition, right now it can also generate only 2 or 1 film
       for(var i=0; i<3; i++) {
         const film = array[Math.floor(Math.random() * array.length)];
         if(!this.featuredFilms.includes(film))

@@ -36,8 +36,8 @@ export default {
       // MISSING if condition, right now it can also generate only 2 or 1 film
       for(var i=0; i<3; i++) {
         const film = array[Math.floor(Math.random() * array.length)];
-        if(!this.featuredFilms.includes(film))
-        this.featuredFilms.push(film);
+        if(this.featuredFilms.includes(film)) i-=1;
+        else this.featuredFilms.push(film);
       }
     },
 

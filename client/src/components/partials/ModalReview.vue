@@ -98,25 +98,28 @@
 </template>
 
 <script>
+import UserService from '../../services/user_service.js'
+
 export default {
   name: "Modal",
 
   data() {
     return {
       reviewCriterion: '',
-          reviewTest: '',
-          reviewResult: 0,
-          rating: 0,
-          allReviewResults: [],
-          isHidden: true,
-          showClearButton: false,
-          showConfirmButton: true
+      reviewTest: '',
+      reviewResult: 0,
+      rating: 0,
+      allReviewResults: [],
+      isHidden: true,
+      showClearButton: false,
+      showConfirmButton: true
     }
   },
   methods: {
     close() {
-      this.$emit("close");
+        this.$emit('close');
     },
+
     reviewSelected(value) {
       this.reviewCriterion = value;
       this.isHidden = false;
@@ -158,22 +161,14 @@ export default {
     },
 
     submitReview() {
-      // POST Request with allReviewResults array
-      const options = {
-        headers: { "Content-Type": "application/json" }
-      };
+      const id = this.$route.params.id;
       const payload = {
         'rating': this.rating,
         'reviewCriteria': this.allReviewResults};
-      console.log("Payload " + payload);
+      
+      console.log("Payload " + payload.toString());
 
-      this.$http
-        .post(
-          "/film/" + this.$route.params.id,
-          JSON.stringify(payload),
-          options
-        )
-        .then(
+      UserService.postReview(payload, id).then(
           response => {
             console.log(response);
           },
@@ -181,6 +176,7 @@ export default {
             console.log(error.response);
           }
         );
+        this.close();
     }
   }
 };

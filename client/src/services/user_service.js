@@ -3,25 +3,29 @@
 import axios from 'axios';
 import authHeader from './auth_header';
 
-const API_URL = 'http://localhost:8000/api/auth/';
+const API_URL = 'http://localhost:8000';
 
 class UserService {
   getPublicContent() {
     // no auth header needed because resource is not protected
-    return axios.get(API_URL + 'all');
+    return axios.get(API_URL + '/api/auth/all');
   }
 
   getUserProfile() {
-    return axios.get(API_URL + 'me', { headers: authHeader() });
+    return axios.get(API_URL + '/api/auth/me', { headers: authHeader() });
   }
 
   getUserBoard() {
-    return axios.get(API_URL + 'user', { headers: authHeader() });
+    return axios.get(API_URL + '/api/auth/user', { headers: authHeader() });
   }
 
   getAdminBoard() {
-    return axios.get(API_URL + 'admin', { headers: authHeader() });
+    return axios.get(API_URL + '/api/auth/admin', { headers: authHeader() });
+  }
+  
+  postReview(payload, id) {
+    console.log("Payload: " + payload);
+    return axios.post(API_URL + '/film/' + id, payload, { headers: authHeader() });
   }
 }
-
 export default new UserService();

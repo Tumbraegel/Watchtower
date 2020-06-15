@@ -5,7 +5,6 @@
       <h1>Welcome to this review website</h1>
       <h4>Make sure to check out the Top Picks below</h4>
       </div>
-      <p>Logged in: {{ loginTest }}</p>
       <film-list :featuredFilms="featuredFilms" />
     </div>
   </div>
@@ -23,8 +22,6 @@ export default {
     return {
       listOfFilmsWithReviews: [],
       featuredFilms: [],
-      loginTest: this.$store.state.auth.status.loggedIn,
-      stateTest: this.$store.state.auth.user
     };
   },
 

@@ -5,7 +5,7 @@
           <h1 class="title">
             {{ film.title }} ({{ film.year }})
           </h1>
-            <button class="btn btn-custom" @click="isModalVisible=true">Review</button>
+            <button class="btn btn-custom" @click="checkifUserLoggedIn()">Review</button>
         </div>
     </div>
 
@@ -51,32 +51,36 @@
 // https://alligator.io/vuejs/vue-jwt-patterns/
 import Modal from '../components/partials/ModalReview';
 
-  export default {
-    name: 'Film',
-    components: {
+export default {
+  name: 'Film',
+  components: {
       Modal
     },
-    data() {
-      return {
-        film: {},
-        isModalVisible: false,
-        jwt: ''
-      }
-    },
+  
+  data() {
+    return {
+      film: {},
+      isModalVisible: false,
+    }
+  },
 
-    computed: {
-      jwtData() {
-        // check for . separated signature
-        if (this.jwt) return JSON.parse(atob(this.jwt.split('.')[1]));
-        return {};
-      }
-    },
-
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
+  },
     created() {
     this.getFilmData();
     },
 
   methods: {
+    checkifUserLoggedIn() {
+      if(this.currentUser) {
+        this.showReviewModal();
+      }
+      else alert("You need to be signed in to review a film!");
+    },
+
     getFilmData() {
       this.$http.get("/film/" + this.$route.params.id).then(res => {
         this.film = res.data[0];

@@ -22,6 +22,11 @@ class FilmRepository {
 
     // Retrieve film by IMDb ID
     findByImdbID(id) {
+        return this.model.findOne({ imdbID: id });
+    }
+
+    // REFACTOR
+    findFilmByImdbID(id) {
         return this.model.find({ imdbID: id });
     }
 

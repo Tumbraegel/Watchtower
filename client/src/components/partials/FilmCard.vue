@@ -2,7 +2,7 @@
   <div class="card border-dark mb-3" style="max-width: 540px;">
     <div class="row no-gutters">
       <div class="col-md-4">
-        <img src="../../assets/film-1.jpg" class="card-img" alt="Film XYZ" />
+        <img :src=film.poster :alt=film.title class="card-img">
       </div>
       <div class="col-md-8">
         <div class="card-body">
@@ -15,8 +15,6 @@
             <small class="text-muted">{{ film.genres }}</small>
           </p>
           <div>
-          <!-- <button class="btn btn-outline-warning" @click="openModal">Open Modal</button>
-          <modal-details v-model="modalOpen"></modal-details> -->
           </div>
         </div>
       </div>
@@ -25,12 +23,7 @@
 </template>
 
 <script>
-//import ModalDetails from "./ModalDetails";
-
 export default {
-  /*components: {
-    ModalDetails,
-  },*/
   props: ['film'],
   data() {
     return {

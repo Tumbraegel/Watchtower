@@ -1,15 +1,10 @@
 const Review = require('../models/Review');
 const filmRepo = require('../repositories/FilmRepository');
 const User = require('../models/User');
-// const userRepo = require('../repositories/UserRepository');
 
 class ReviewRepository {
     constructor(model) {
         this.model = model;
-    }
-
-    findByUserAndIMDbID(id, user) {
-        return this.model.findOne({ imdbID: id, author: user});
     }
 
     getAllReviewsOfOneUser(user) {
@@ -26,37 +21,26 @@ class ReviewRepository {
             film: film
         };
 
-        // Override review if user reviewed this particular film before
-        // const oldReview = this.findByUserAndIMDbID(id, user._id);
-        let newReview = new this.model(review); 
+        var ObjectId = require('mongoose').Types.ObjectId; 
+        var oldReview = await this.model.findOne({film: ObjectId(film._id), author: ObjectId(user._id)});
 
-        /*
         if (!oldReview)
         {
-            newReview = new this.model(review);
-            newReview.save();
-            console.log("CREATED") 
-        } 
-        else {
-            newReview = this.model.update(oldReview._id, review);
-            console.log("UPDATED")
-        }
-        */
-
-        // CHECK IF ALREADY EXISTS --> if there is an entry with same user && film
-        //const newReview = new this.model(review);
-        return Promise.resolve(newReview.save(function (err, res) {
-            if (err) {
-                console.log(res + "- Error in saving review.");
-            }
-            else {
+            let newReview = new this.model(review);
+            await newReview.save().then(function() {
                 console.log("Review was successfully stored in database.");
                 user.reviews.push(newReview._id);
                 user.save();
                 filmRepo.addReview(id, newReview._id);
-            }
-        }));
-        };
+            }).catch((error) => console.log(error));
+        }
+        else {
+            let newReview = oldReview.overwrite(review);
+            await newReview.save().then(function() {
+                console.log("Review was successfully overwritten in database.");       
+            }).catch((error) => console.log(error));
+        }
+    };
 }
 
 module.exports = new ReviewRepository(Review);

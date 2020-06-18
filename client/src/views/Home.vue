@@ -32,8 +32,6 @@ export default {
   methods: {
     randomiseFeaturedFilms() {
       const array = this.listOfFilmsWithReviews;
-
-      // MISSING if condition, right now it can also generate only 2 or 1 film
       for(var i=0; i<3; i++) {
         const film = array[Math.floor(Math.random() * array.length)];
         if(this.featuredFilms.includes(film)) i-=1;

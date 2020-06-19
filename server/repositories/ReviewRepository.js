@@ -38,9 +38,39 @@ class ReviewRepository {
             let newReview = oldReview.overwrite(review);
             await newReview.save().then(function() {
                 console.log("Review was successfully overwritten in database.");       
-            }).catch((error) => console.log(error));
+            }).catch(error => console.log(error));
         }
+        this.calculateScore(id);
     };
+
+    async calculateScore(id) {
+        const scoreArray = [];
+        let film = await filmRepo.findByImdbID(id);
+
+        await filmRepo.findByImdbID(id).populate("reviews").then(res => {
+            for(const entry of res.reviews) {
+                scoreArray.push(entry.rating);
+            }
+        }).catch((error) => console.log(error));
+        
+        console.log("Score Array: " + scoreArray);
+            const median = this.calculateMedian(scoreArray);
+            film.overallRating = median;
+            film.save().then(res => {
+                console.log("Film rating was successfully updated.");
+            }).catch(error => console.log(error));
+            console.log("MEDIAN " + median);
+    }
+
+    calculateMedian(numbers) {
+        //https://stackoverflow.com/questions/45309447/calculating-median-javascript
+        const sorted = numbers.slice().sort((a, b) => a - b);
+        const middle = Math.floor(sorted.length / 2);
+        if (sorted.length % 2 === 0) {
+            return (sorted[middle - 1] + sorted[middle]) / 2;
+        }
+        return sorted[middle];
+    }
 }
 
 module.exports = new ReviewRepository(Review);

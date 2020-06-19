@@ -13,6 +13,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-9">
+        <p class=""><strong>Score: </strong>{{ film.overallRating }}</p>
         <p class=""><strong>Plot: </strong>{{ film.plot }}</p>
         <p class=""><strong>Genre: </strong>{{ film.genres }}</p>
         <p class=""><strong>Directors: </strong>{{ film.directors }}</p>
@@ -48,7 +49,6 @@
 </template>
 
 <script>
-// https://alligator.io/vuejs/vue-jwt-patterns/
 import Modal from '../components/partials/ModalReview';
 
 export default {
@@ -84,7 +84,6 @@ export default {
     getFilmData() {
       this.$http.get("/film/" + this.$route.params.id).then(res => {
         this.film = res.data[0];
-        this.jwt = res.text;
       });
   },
 

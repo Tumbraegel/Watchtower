@@ -15,9 +15,10 @@ router.get('/', (req, res) => {
 // GET one film
 router.get('/film/:id', (req, res) => {
     const id = Object(req.params.id);
+    //filmRepo.calculateScore(id);
     filmRepo.findFilmByImdbID(id).then((film) => {
         res.json(film);
-    }).catch((error) => console.log(error));
+    }).catch((error) => console.log("Errors " + error));
 });
 
 // POST film review

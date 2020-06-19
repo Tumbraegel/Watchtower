@@ -16,8 +16,7 @@ const FilmSchema = new mongoose.Schema({
     awards: String,
     poster: String,
     imdbID: {type: String, unique: true},
-    overallRating: Array,
-    // change reviews to [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
+    overallRating: Number,
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
 });
 

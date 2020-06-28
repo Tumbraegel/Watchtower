@@ -24,8 +24,11 @@ class UserService {
   }
   
   postReview(payload, id) {
-    console.log("Payload: " + payload);
     return axios.post(API_URL + '/film/' + id, payload, { headers: authHeader() });
+  }
+
+  postComment(payload, id) {
+    return axios.post(API_URL + '/film/' + id + '/comment', payload, { headers: authHeader() });
   }
 }
 export default new UserService();

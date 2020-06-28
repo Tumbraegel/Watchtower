@@ -25,7 +25,7 @@ class FilmRepository {
         return this.model.findOne({ imdbID: id });
     }
 
-    // REFACTOR
+    // FIXME: refactor this
     findFilmByImdbID(id) {
         return this.model.find({ imdbID: id });
     }

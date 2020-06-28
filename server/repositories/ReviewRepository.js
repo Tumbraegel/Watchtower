@@ -21,8 +21,8 @@ class ReviewRepository {
             film: film
         };
 
-        var ObjectId = require('mongoose').Types.ObjectId; 
-        var oldReview = await this.model.findOne({film: ObjectId(film._id), author: ObjectId(user._id)});
+        const ObjectId = require('mongoose').Types.ObjectId; 
+        const oldReview = await this.model.findOne({film: ObjectId(film._id), author: ObjectId(user._id)});
 
         if (!oldReview)
         {

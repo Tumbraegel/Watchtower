@@ -58,9 +58,9 @@
                 <p>{{ comments.body }}</p>
                 <div v-for="comment in comments" :comment="comment" :key="comment._id">
                   <li class="list-group-item list-group-item-outline-primary">
-                    {{comment.body}}
-                    <b>+1</b> |
-                    <b>-1</b>
+                    {{comment.body}} | {{ comment.upvotes.length }} | {{ comment.downvotes.length }}
+                    <button @click="voteForComment('upvote', comment._id)" class="btn btn-comment-vote" style="margin-right: 5px;">&#8593;</button>
+                    <button @click="voteForComment('downvote', comment._id)" class="btn btn-comment-vote">&#8595;</button>
                   </li>
                 </div>
                 <br />
@@ -79,6 +79,7 @@
 <script>
 import Modal from "../components/partials/ModalReview";
 import ModalComment from "../components/partials/ModalComment";
+import UserService from "../services/user_service.js";
 
 export default {
   name: "Film",
@@ -129,6 +130,25 @@ export default {
     closeReviewModal(modal) {
       if (modal == "review") this.isModalVisible = false;
       else if (modal == "comment") this.isModalCommentVisible = false;
+    },
+
+    voteForComment(type, comment_id) {
+      const id = this.$route.params.id;
+      const payload = {
+        comment_id: comment_id,
+        vote: type
+      };
+
+      console.log(type);
+      console.log(comment_id);
+      UserService.postCommentVote(payload, id).then(
+        response => {
+          console.log(response);
+        },
+        error => {
+          console.log(error.response);
+        }
+      );
     }
   }
 };
@@ -175,5 +195,18 @@ export default {
 .modal-wrapper {
   display: table-cell;
   vertical-align: middle;
+}
+
+.btn-comment-vote {
+  color: purple;
+  border-radius: 50px;
+  border-color: purple;
+  padding: 1px 8px 1px 8px;
+  font-size: 13px;
+}
+
+.btn-comment-vote:hover {
+  background-color: purple;
+  color: whitesmoke;
 }
 </style>

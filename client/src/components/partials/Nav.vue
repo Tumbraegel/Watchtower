@@ -28,55 +28,92 @@
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-        <button class="btn btn-outline-dark my-2 my-sm-0 btn-distance" type="submit">Search</button>
+        <input
+          class="form-control mr-sm-2"
+          v-model="query"
+          placeholder="Search"
+          aria-label="Search"
+        />
+        <button
+          @click.prevent="searchFilm"
+          class="btn btn-outline-dark my-2 my-sm-0 btn-distance"
+        >Search</button>
       </form>
 
       <div v-if="!currentUser">
-      <router-link class="btn btn-dark my-2 my-sm-0 btn-distance" :to="{ name: 'register' }">
-        <font-awesome-icon icon="user-plus" /> Register
+        <router-link class="btn btn-dark my-2 my-sm-0 btn-distance" :to="{ name: 'register' }">
+          <font-awesome-icon icon="user-plus" />Register
         </router-link>
-      <router-link class="btn btn-dark my-2 my-sm-0" :to="{ name: 'login' }">
-        <font-awesome-icon icon="sign-in-alt" /> Sign In
+        <router-link class="btn btn-dark my-2 my-sm-0" :to="{ name: 'login' }">
+          <font-awesome-icon icon="sign-in-alt" />Sign In
         </router-link>
       </div>
 
       <div v-if="currentUser">
-          <router-link class="btn btn-dark my-2 my-sm-0 btn-distance" to="/me">
-            <font-awesome-icon icon="user" /> Me
-            {{ currentUser.username }}
-          </router-link>
-          <button class="btn btn-dark my-2 my-sm-0" @click.prevent="logout">
-            <font-awesome-icon icon="sign-out-alt" /> Logout
-          </button>
+        <router-link class="btn btn-dark my-2 my-sm-0 btn-distance" to="/me">
+          <font-awesome-icon icon="user" />
+          Me
+          {{ currentUser.username }}
+        </router-link>
+        <button class="btn btn-dark my-2 my-sm-0" @click.prevent="logout">
+          <font-awesome-icon icon="sign-out-alt" />Logout
+        </button>
       </div>
-
     </div>
   </nav>
 </template>
 
 <script>
-import router from '../../router';
+import router from "../../router";
 
 export default {
   name: "Nav",
+  data() {
+    return {
+      query: "",
+      searchedForFilms: []
+    };
+  },
+
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
     },
     showAdminBoard() {
       if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes('ROLE_ADMIN');
+        return this.currentUser.roles.includes("ROLE_ADMIN");
       }
 
       return false;
-    },
+    }
   },
   methods: {
     logout() {
-      this.$store.dispatch('auth/logout');
-      router.push({name: 'login'});
-    }
+      this.$store.dispatch("auth/logout");
+      router.push({ name: "login" });
+    },
+
+    searchFilm() {
+      this.$http.get("/search/" + this.query).then(
+        response => {
+          if(response.data[0]) { 
+            for(let entry of response.data[0]) {
+              console.log(entry.title);
+            }
+            //this.$router.push('/film/' + response.data[0].imdbID);
+          } 
+          else {
+            //this.sendErrorMessage('This film does not seem to exist in our database');
+            this.$router.push('/error');
+          }
+          this.query = '';
+        },
+        error => {
+          console.log(error.response);
+        }
+      );
+    },
+
   }
 };
 </script>

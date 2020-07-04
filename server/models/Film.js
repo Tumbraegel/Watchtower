@@ -11,7 +11,7 @@ const FilmSchema = new mongoose.Schema({
     writers: String,
     actors: String,
     plot: String,
-    language: String, 
+    language: {type: String, lowercase: true}, 
     country: String, 
     awards: String,
     poster: String,

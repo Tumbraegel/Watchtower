@@ -40,6 +40,16 @@ Vue.use(VueRouter)
     path: '/me',
     name: 'profile',
     component: () => import('../views/Profile.vue'),
+  },
+  {
+    path: '/error',
+    name: 'error',
+    component: () => import('../views/Error.vue'),
+  },
+  {
+    path: '/search-results',
+    name: 'searchResults',
+    component: () => import('../views/SearchResults.vue'),
   }
 ]
 

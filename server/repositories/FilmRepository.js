@@ -35,6 +35,18 @@ class FilmRepository {
         return this.model.find({ genres: genre });
     }
 
+    async findByUserSearch(input) {
+        const listOfFilms = [];
+        await this.model.find({$text: {$search: input}}, {score: {$meta: 'textScore'}}).sort({score:{$meta: 'textScore'}}).then(result => {
+            //console.log(result);
+            listOfFilms.push(result);
+        }).catch(error => {
+            console.log(error);
+        })
+        console.log(listOfFilms);
+        return listOfFilms;
+    }
+
     // Add reference to respective reviews
     async addReview(id, review) {
         // MISSING error handling on save

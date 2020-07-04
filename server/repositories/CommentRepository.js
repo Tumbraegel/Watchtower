@@ -2,10 +2,14 @@ const Comment = require('../models/Comment');
 const filmRepo = require('../repositories/FilmRepository');
 const User = require('../models/User');
 
-
 class CommentRepository {
     constructor(model) {
         this.model = model;
+    }
+
+    // Retrieve comment by ObjectId
+    findById(id) {
+        return this.model.findById(id);
     }
 
     async getAllCommentsPer(id) {
@@ -42,6 +46,20 @@ class CommentRepository {
             await newComment.save().then(function() {
                 console.log("Comment was successfully overwritten in database.");       
             }).catch(error => console.log(error));
+        }
+    }
+
+    async addVote(data, userData) {
+        const user = await User.findById(userData.id);
+        const comment = await this.findById(data.comment_id);
+        // CHECK IF USER ALREADY VOTED
+        if(data.type = 'downvote') {
+            comment.downvotes.push(user._id)
+            comment.save()
+        }
+        else {
+            comment.upvotes.push(user._id)
+            comment.save()
         }
     }
 }

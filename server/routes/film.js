@@ -17,12 +17,26 @@ router.get('/', (req, res) => {
 router.get('/film/:id', async (req, res) => {
     const id = Object(req.params.id);
     const commentList = await commentRepo.getAllCommentsPer(id);
-    // HOW TO ACCESS COMMENTS IN VUE JS
     filmRepo.findFilmByImdbID(id).then(film => {
         film.push({comments: commentList});
-        console.log((film));
         res.json(film);
     }).catch((error) => console.log("Errors " + error));
+});
+
+// GET films filtered by genre
+router.get('/genre/:genre', (req, res) => {
+    const genre = Object(req.params.genre);
+    filmRepo.findByGenre(genre).then(films => {
+        res.json(films);
+    }).catch((error) => console.log(error));
+});
+
+// GET search result
+router.get('/search/:query', async (req, res) => {
+    const query = req.params.query;
+    filmRepo.findByUserSearch(query).then(film => {
+        res.json(film);
+    }).catch((error) => console.log(error));
 });
 
 // POST film review
@@ -41,11 +55,10 @@ router.post('/film/:id/comment', auth, async (req, res) => {
     }).catch((error) => console.log(error));
 });
 
-// GET films filtered by genre
-router.get('/genre/:genre', (req, res) => {
-    const genre = Object(req.params.genre);
-    filmRepo.findByGenre(genre).then(films => {
-        res.json(films);
+// POST vote for specific comment
+router.post('/film/:id/comment/vote', auth, async (req, res) => {
+    commentRepo.addVote(req.body, req.user).then(vote => {
+        res.json(vote);
     }).catch((error) => console.log(error));
 });
 

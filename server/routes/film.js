@@ -34,8 +34,8 @@ router.get('/genre/:genre', (req, res) => {
 // GET search result
 router.get('/search/:query', async (req, res) => {
     const query = req.params.query;
-    filmRepo.findByUserSearch(query).then(film => {
-        res.json(film);
+    filmRepo.findByUserSearch(query).then(films => {
+        res.json(films);
     }).catch((error) => console.log(error));
 });
 

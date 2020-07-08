@@ -94,13 +94,15 @@ export default {
     },
 
     searchFilm() {
+      const payload = [];
       this.$http.get("/search/" + this.query).then(
         response => {
-          if(response.data[0]) { 
-            for(let entry of response.data[0]) {
-              console.log(entry.title);
+          if(response.data) { 
+            for(let entry of response.data) {
+              payload.push({searchKeyword: this.query, film: entry})
             }
-            //this.$router.push('/film/' + response.data[0].imdbID);
+            this.$store.commit('search/searchFor', payload)
+            this.$router.push({name: 'searchResults'});
           } 
           else {
             //this.sendErrorMessage('This film does not seem to exist in our database');

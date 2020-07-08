@@ -2,7 +2,12 @@
   <div class="card border-dark mb-3" style="max-width: 540px;">
     <div class="row no-gutters">
       <div class="col-md-4">
-        <img :src=film.poster :alt=film.title class="card-img">
+        <div v-if="film.poster!='N/A'">
+          <img :src=film.poster :alt=film.title class="card-img">
+        </div>
+        <div v-else>
+          <img src="../../assets/film-1.jpg" :alt=film.title class="card-img">
+        </div>
       </div>
       <div class="col-md-8">
         <div class="card-body">

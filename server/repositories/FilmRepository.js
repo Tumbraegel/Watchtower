@@ -38,20 +38,25 @@ class FilmRepository {
   }
 
   async findByUserSearch(input) {
+    const matches = []; 
     const listOfFilms = [];
-    await this.model
-      .find({ $text: { $search: input } }, { score: { $meta: "textScore" } })
-      .sort({ score: { $meta: "textScore" } })
-      .then((result) => {
-        //console.log(result);
+    await this.findAll().then((result) => {
         listOfFilms.push(result);
       })
       .catch((error) => {
         console.log(error);
       });
-    console.log(listOfFilms);
-    console.log(this.calculateLevenstheinDistance("Snowpiercer", input));
-    return listOfFilms;
+
+    let result = 100;
+    for(const entry of listOfFilms[0]) {
+        if(entry.title != null){
+        const cost = this.calculateLevenstheinDistance(entry.title, input)
+        if(cost < result) result = cost;
+        if(cost < 7) matches.push(entry);
+        }
+    }
+    // console.log(matches);
+    return matches;
   }
 
   // Reference: https://www.geeksforgeeks.org/edit-distance-dp-5/
@@ -80,9 +85,11 @@ class FilmRepository {
 
     for (let i = 1; i <= length1; i++) {
       for (let j = 1; j <= length2; j++) {
-        // if character in string is the same, take diagonal value
+
+        // if character is the same, take diagonal value
         if (string1.charAt(i - 1) == string2.charAt(j - 1))
           matrix[i][j] = matrix[i - 1][j - 1];
+
         // if character is different, take minimum of three surrounding values
         // in matrix (left, diagonal, top)
         else

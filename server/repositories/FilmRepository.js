@@ -37,6 +37,21 @@ class FilmRepository {
     return this.model.find({ genres: genre });
   }
 
+  async getAllGenres() {
+    const genreList = [];
+    const allFilms = await this.findAll();
+    
+    for(let entry of allFilms) {
+      const genres = entry.genres.split(', ');
+      for (const genre of genres) {
+        if(!genreList.includes(genre)) {
+          genreList.push(genre)
+        }
+      }
+    }
+    return genreList;
+  }
+
   async findByUserSearch(input) {
     const matches = []; 
     const listOfFilms = [];

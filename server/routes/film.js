@@ -23,6 +23,12 @@ router.get('/film/:id', async (req, res) => {
     }).catch((error) => console.log("Errors " + error));
 });
 
+router.get('/genre', (req, res) => {
+    filmRepo.getAllGenres().then(genres => {
+        res.json(genres);
+    }).catch((error) => console.log(error));
+});
+
 // GET films filtered by genre
 router.get('/genre/:genre', (req, res) => {
     const genre = Object(req.params.genre);

@@ -30,7 +30,7 @@ export default {
   computed: {
     getSearchKeyword() {
       const result = this.$store.state.search.input;
-      if (result[0] != undefined) return result[0].film.title;
+      if (result[0] != undefined) return result[0].searchKeyword;
       else return null
     },
 

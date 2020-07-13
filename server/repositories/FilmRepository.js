@@ -52,7 +52,7 @@ class FilmRepository {
     return genreList;
   }
 
-  async findByUserSearch(input) {
+  async findByUserSearch(query) {
     const matches = []; 
     const listOfFilms = [];
     await this.findAll().then((result) => {
@@ -65,13 +65,17 @@ class FilmRepository {
     let result = 100;
     for(const entry of listOfFilms[0]) {
         if(entry.title != null){
-        const cost = this.calculateLevenstheinDistance(entry.title, input)
+        const cost = this.calculateLevenstheinDistance(entry.title, query)
         if(cost < result) result = cost;
         if(cost < 7) matches.push(entry);
         }
     }
     // console.log(matches);
     return matches;
+  }
+
+  async findByAdvancedUserSearch(query) {
+    //FIXME: Refactor search methods
   }
 
   // Reference: https://www.geeksforgeeks.org/edit-distance-dp-5/

@@ -38,10 +38,6 @@ export default {
     return {
       filteredFilms: [],
       genreList: [],
-      items: [
-      { message: 'Foo' },
-      { message: 'Bar' }
-    ]
     };
   },
 

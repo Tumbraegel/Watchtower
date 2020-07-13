@@ -45,6 +45,14 @@ router.get('/search/:query', async (req, res) => {
     }).catch((error) => console.log(error));
 });
 
+// GET info for advanced search
+router.get('/advanced-search/:query', async (req, res) => {
+    const query = req.params.query;
+    filmRepo.findByAdvancedUserSearch(query).then(films => {
+        res.json(films);
+    }).catch((error) => console.log(error));
+});
+
 // POST film review
 router.post('/film/:id', auth, async (req, res) => {
     const id = req.params.id;

@@ -50,6 +50,11 @@ Vue.use(VueRouter)
     path: '/search-results',
     name: 'searchResults',
     component: () => import('../views/SearchResults.vue'),
+  },
+  {
+    path: '/advanced-search',
+    name: 'advancedSearch',
+    component: () => import('../views/AdvancedSearch.vue'),
   }
 ]
 

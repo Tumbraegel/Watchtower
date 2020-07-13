@@ -28,6 +28,10 @@
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
+        <div>
+          <router-link class="btn btn-outline-dark my-2 my-sm-0 btn-distance" :to="{ name: 'advancedSearch' }">
+                <font-awesome-icon icon="chevron-right" />
+          </router-link>
         <input
           class="form-control mr-sm-2"
           v-model="query"
@@ -37,25 +41,26 @@
         <button
           @click.prevent="searchFilm"
           class="btn btn-outline-dark my-2 my-sm-0 btn-distance"
-        >Search</button>
+        ><font-awesome-icon icon="search" /></button>
+        </div>
       </form>
 
       <div v-if="!currentUser">
-        <router-link class="btn btn-dark my-2 my-sm-0 btn-distance" :to="{ name: 'register' }">
+        <router-link class="btn btn-outline-dark my-2 my-sm-0 btn-distance" :to="{ name: 'register' }">
           <font-awesome-icon icon="user-plus" />Register
         </router-link>
-        <router-link class="btn btn-dark my-2 my-sm-0" :to="{ name: 'login' }">
+        <router-link class="btn btn-outline-dark my-2 my-sm-0" :to="{ name: 'login' }">
           <font-awesome-icon icon="sign-in-alt" />Sign In
         </router-link>
       </div>
 
       <div v-if="currentUser">
-        <router-link class="btn btn-dark my-2 my-sm-0 btn-distance" to="/me">
+        <router-link class="btn btn-outline-dark my-2 my-sm-0 btn-distance" to="/me">
           <font-awesome-icon icon="user" />
           Me
           {{ currentUser.username }}
         </router-link>
-        <button class="btn btn-dark my-2 my-sm-0" @click.prevent="logout">
+        <button class="btn btn-outline-dark my-2 my-sm-0" @click.prevent="logout">
           <font-awesome-icon icon="sign-out-alt" />Logout
         </button>
       </div>
@@ -115,7 +120,6 @@ export default {
         }
       );
     },
-
   }
 };
 </script>

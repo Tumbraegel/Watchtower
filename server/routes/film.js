@@ -39,16 +39,16 @@ router.get('/genre/:genre', (req, res) => {
 
 // GET search result
 router.get('/search/:query', async (req, res) => {
-    const query = req.params.query;
+    const query = Object(req.params.query);
     filmRepo.findByUserSearch(query).then(films => {
         res.json(films);
     }).catch((error) => console.log(error));
 });
 
-// GET info for advanced search
-router.get('/advanced-search/:query', async (req, res) => {
-    const query = req.params.query;
-    filmRepo.findByAdvancedUserSearch(query).then(films => {
+// POST query for advanced search
+router.post('/advanced-search', async (req, res) => {
+    console.log(req.body);
+    filmRepo.findByUserSearch(req.body).then(films => {
         res.json(films);
     }).catch((error) => console.log(error));
 });

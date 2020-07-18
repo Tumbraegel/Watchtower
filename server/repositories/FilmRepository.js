@@ -53,6 +53,22 @@ class FilmRepository {
   }
 
   async findByUserSearch(query) {
+    console.log(query);
+    if ('advancedSearch' in query) return await this.advancedSearch(query);
+    else return await this.simpleSearch(query);
+  }
+
+  advancedSearch(query) {
+    //FIXME: Refactor search methods
+    console.log('advancedSearch');
+  }
+
+  simpleSearch(query) {
+    console.log('simpleTitleSearch');
+    return this.titleSearch(query);
+  }
+
+  async titleSearch(query) {
     const matches = []; 
     const listOfFilms = [];
     await this.findAll().then((result) => {
@@ -65,17 +81,13 @@ class FilmRepository {
     let result = 100;
     for(const entry of listOfFilms[0]) {
         if(entry.title != null){
-        const cost = this.calculateLevenstheinDistance(entry.title, query)
+        const cost = await this.calculateLevenstheinDistance(entry.title, query)
         if(cost < result) result = cost;
         if(cost < 7) matches.push(entry);
         }
     }
-    // console.log(matches);
+    console.log(matches);
     return matches;
-  }
-
-  async findByAdvancedUserSearch(query) {
-    //FIXME: Refactor search methods
   }
 
   // Reference: https://www.geeksforgeeks.org/edit-distance-dp-5/

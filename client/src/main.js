@@ -27,7 +27,7 @@ const http = axios.create({
 });
 
 Vue.prototype.$http = http;
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 Vue.use(VeeValidate);
 Vue.component('font-awesome-icon', FontAwesomeIcon);

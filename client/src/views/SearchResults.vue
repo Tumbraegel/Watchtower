@@ -40,7 +40,7 @@ export default {
       for(let entry of results) {
         searchResults.push(entry.film);
       }
-      return searchResults;
+      return searchResults.reverse();
     }
   }
 }

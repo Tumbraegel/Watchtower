@@ -10,6 +10,13 @@ class ReviewRepository {
     getAllReviewsOfOneUser(user) {
         return this.model.find({author: user});
     }
+
+    // Retrieve all films that have been reviewed at least once
+    findAllReviewedFilms() {
+        return this.model.find({
+            reviewCriteria: { $exists: true, $not: { $size: 0 } },
+          });
+    }
     
     async create(id, data, userData) {
         const user = await User.findById(userData.id);

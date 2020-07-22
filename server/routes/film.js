@@ -47,7 +47,6 @@ router.get('/search/:query', async (req, res) => {
 
 // POST query for advanced search
 router.post('/advanced-search', async (req, res) => {
-    console.log(req.body);
     filmRepo.findByUserSearch(req.body).then(films => {
         res.json(films);
     }).catch((error) => console.log(error));

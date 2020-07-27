@@ -16,6 +16,10 @@ class UserRepository {
         return user.save();
     }
 
+    findById(id) {
+        return this.model.findById(id);
+    }
+
     findUser(userInfo) {
         return this.model.findOne({email: userInfo.email});
     }

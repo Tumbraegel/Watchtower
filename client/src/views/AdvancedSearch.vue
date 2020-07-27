@@ -82,9 +82,17 @@ export default {
     },
 
     submitSearchQuery(e) {
+      const payload = [];
+
       e.preventDefault();
+      
       this.$http.post('/advanced-search', this.searchQuery).then(
-        () => {
+        response => {
+          console.log(response);
+            for(let entry of response.data) {
+              payload.push(entry.title)
+            }
+          this.$store.commit('search/queryMultipleParameters', payload)
           this.$router.push({name: 'searchResults'});
         }).catch(error => {
           console.log(error.response)

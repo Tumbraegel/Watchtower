@@ -17,7 +17,7 @@
             </p>
             <p class>
               <strong>Plot:</strong>
-              {{ film.plot }}
+              {{ film.plot }} 
             </p>
             <p class>
               <strong>Genre:</strong>
@@ -47,10 +47,18 @@
           <div class="col-md-2">
             <img :src="film.poster" :alt="film.title" />
           </div>
+        </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <chart-item />
+            </div>
+          </div>
+
           <div class="comment-section" style="margin-top:30px;">
             <h4>Comments</h4>
             <div class="row">
-              <div class="col-12">
+              <div class="col-7">
                 <button
                   class="btn btn-outline-warning"
                   @click="checkifUserLoggedIn('comment')"
@@ -62,12 +70,12 @@
                     <button @click="voteForComment('upvote', comment._id)" class="btn btn-comment-vote" style="margin-right: 5px;">&#8593;</button>
                     <button @click="voteForComment('downvote', comment._id)" class="btn btn-comment-vote">&#8595;</button>
                   </li>
+                  <small style="color: lightgray">{{ comment.username }}</small>
                 </div>
                 <br />
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
 
@@ -80,12 +88,14 @@
 import Modal from "../components/partials/ModalReview";
 import ModalComment from "../components/partials/ModalComment";
 import UserService from "../services/user_service.js";
+import ChartItem from '../components/partials/Chart';
 
 export default {
   name: "Film",
   components: {
     Modal,
-    ModalComment
+    ModalComment,
+    ChartItem
   },
 
   data() {

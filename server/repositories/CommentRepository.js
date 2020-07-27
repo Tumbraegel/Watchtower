@@ -13,9 +13,22 @@ class CommentRepository {
     }
 
     async getAllCommentsPer(id) {
+        const commentList = [];
         const film = await filmRepo.findByImdbID(id);
         const ObjectId = require('mongoose').Types.ObjectId; 
-        const commentList = await this.model.find({film: ObjectId(film._id)});
+        const comments = await this.model.find({film: ObjectId(film._id)});
+        
+        // turn mongoose objects into regular objects in order to manipulate content
+        for(let comment of comments) {
+            commentList.push(comment.toObject());
+        }
+
+        for(let comment of commentList) {
+            const id = comment.author;
+            const user = await User.findById(id);
+            comment.username = user.username;
+        }
+
         return commentList;
     }
 

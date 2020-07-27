@@ -23,6 +23,7 @@ router.get('/film/:id', async (req, res) => {
     }).catch((error) => console.log("Errors " + error));
 });
 
+// GET all existing genres
 router.get('/genre', (req, res) => {
     filmRepo.getAllGenres().then(genres => {
         res.json(genres);
@@ -33,6 +34,13 @@ router.get('/genre', (req, res) => {
 router.get('/genre/:genre', (req, res) => {
     const genre = Object(req.params.genre);
     filmRepo.findByGenre(genre).then(films => {
+        res.json(films);
+    }).catch((error) => console.log(error));
+});
+
+// GET search result
+router.get('/reviewed-films', async (req, res) => {
+    await reviewRepo.findAllReviewedFilms().then(films => {
         res.json(films);
     }).catch((error) => console.log(error));
 });

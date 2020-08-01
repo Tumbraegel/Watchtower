@@ -47,13 +47,13 @@ class ScoreChartService {
     return scores;
   }
 
-  // FIXME: population of scores array delayed, resolve promise w/o asyny
-  getScoreData() {
-    let scores = []
-    this.fetchScores().then(res => {
-      scores = res;
-      console.log(res);
-    });
+  // FIXME: population of scores array delayed, resolve promise w/o async
+  getScoreData(scores) {
+    // let scores = []
+    // this.fetchScores().then(res => {
+    //   scores = res;
+    //   console.log(res);
+    // });
 
     console.log(scores);
 

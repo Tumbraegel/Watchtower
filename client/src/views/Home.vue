@@ -5,7 +5,6 @@
         <h1>Welcome to this review website</h1>
         <h4>Make sure to check out the Top Picks below</h4>
       </div>
-      <chart-item />
       <hr>
       <div>
         <h2>Featured Films</h2>
@@ -17,13 +16,11 @@
 
 <script>
 import FilmList from '../components/FilmList';
-import ChartItem from '../components/partials/Chart';
 
 export default {
   name: 'home',
   components: {
     FilmList,
-    ChartItem
   },
 
   data() {

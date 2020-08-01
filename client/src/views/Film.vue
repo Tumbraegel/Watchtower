@@ -7,10 +7,10 @@
       </div>
     </div>
 
-    <div class="row film-content">
+    <div class="row film-content" style="margin-bottom: 30px;">
       <div class="container">
         <div class="row">
-          <div class="col-md-9">
+          <div class="col-md-8">
             <p class>
               <strong>Score:</strong>
               {{ film.overallRating }}
@@ -43,22 +43,11 @@
               <strong>Awards:</strong>
               {{ film.awards }}
             </p>
-          </div>
-          <div class="col-md-2">
-            <img :src="film.poster" :alt="film.title" />
-          </div>
-        </div>
-
-          <div class="row">
-            <div class="col-md-12">
-              <chart-item />
-            </div>
-          </div>
-
-          <div class="comment-section" style="margin-top:30px;">
-            <h4>Comments</h4>
+            
+            <div class="comment-section" style="margin-top:100px;">  
+            <h5>Comments</h5>
             <div class="row">
-              <div class="col-7">
+              <div class="col-11">
                 <button
                   class="btn btn-outline-warning"
                   @click="checkifUserLoggedIn('comment')"
@@ -67,15 +56,26 @@
                 <div v-for="comment in comments" :comment="comment" :key="comment._id">
                   <li class="list-group-item list-group-item-outline-primary">
                     {{comment.body}} | {{ comment.upvotes.length }} | {{ comment.downvotes.length }}
-                    <button @click="voteForComment('upvote', comment._id)" class="btn btn-comment-vote" style="margin-right: 5px;">&#8593;</button>
-                    <button @click="voteForComment('downvote', comment._id)" class="btn btn-comment-vote">&#8595;</button>
+                    <button @click="voteForComment('upvote', comment._id)" class="btn btn-comment-vote" style="float: right; margin-right: 5px;">&#8593;</button>
+                    <button @click="voteForComment('downvote', comment._id)" class="btn btn-comment-vote" style="float: right;">&#8595;</button>
                   </li>
                   <small style="color: lightgray">{{ comment.username }}</small>
                 </div>
                 <br />
               </div>
             </div>
+
           </div>
+          </div>
+          <div class="col-md-3">
+            <div style="margin: auto; width: 50%;">
+              <img :src="film.poster" :alt="film.title" />
+            </div>
+            <div style="margin: auto; width: 80%;">
+              <chart-item />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -103,7 +103,7 @@ export default {
       film: {},
       comments: [],
       isModalVisible: false,
-      isModalCommentVisible: false
+      isModalCommentVisible: false,
     };
   },
 

@@ -7,15 +7,16 @@ class ReviewRepository {
         this.model = model;
     }
 
-    getAllReviewsOfOneUser(user) {
-        return this.model.find({author: user});
-    }
-
     // Retrieve all films that have been reviewed at least once
     findAllReviewedFilms() {
         return this.model.find({
             reviewCriteria: { $exists: true, $not: { $size: 0 } },
           });
+    }
+
+    async getReviewDataOfOneFilm(id) {
+        console.log(id);
+        return await this.model.find({film: id});
     }
     
     async create(id, data, userData) {
@@ -50,6 +51,7 @@ class ReviewRepository {
         this.calculateScore(id);
     };
 
+    // calculate general score for one film based on median value
     async calculateScore(id) {
         const scoreArray = [];
         let film = await filmRepo.findByImdbID(id);

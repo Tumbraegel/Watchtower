@@ -72,7 +72,7 @@
               <img :src="film.poster" :alt="film.title" />
             </div>
             <div style="margin: auto; width: 80%;">
-              <chart-item />
+              <chart-item :filmId="filmId" />
             </div>
           </div>
         </div>
@@ -101,6 +101,7 @@ export default {
   data() {
     return {
       film: {},
+      filmId: this.$route.params.id,
       comments: [],
       isModalVisible: false,
       isModalCommentVisible: false,
@@ -112,6 +113,7 @@ export default {
       return this.$store.state.auth.user;
     }
   },
+
   created() {
     this.getFilmData();
   },
@@ -125,8 +127,8 @@ export default {
       } else alert("You need to be signed in to review a film!");
     },
 
-    getFilmData() {
-      this.$http.get("/film/" + this.$route.params.id).then(res => {
+    async getFilmData() {
+      await this.$http.get("/film/" + this.$route.params.id).then(res => {
         this.film = res.data[0];
         this.comments = res.data[1].comments;
       });

@@ -39,9 +39,12 @@ router.get('/genre/:genre', (req, res) => {
 });
 
 // GET search result
-router.get('/reviewed-films', async (req, res) => {
-    await reviewRepo.findAllReviewedFilms().then(films => {
-        res.json(films);
+router.get('/reviews/:id', async (req, res) => {
+    const id = req.params.id;
+    const film = await filmRepo.findByImdbID(id);
+    await reviewRepo.getReviewDataOfOneFilm(film._id).then(reviews => {
+        console.log(reviews);
+        res.json(reviews);
     }).catch((error) => console.log(error));
 });
 

@@ -4,19 +4,20 @@ const API_URL = 'http://localhost:8000';
 
 class ScoreChartService {
 
-  // FIXME: extract data only for selected film
-  async getAllReviewedFilms() {
+  async getReviewDataOfSelectedFilm(filmId) {
     let films = [];
-      await axios.get(API_URL + '/reviewed-films').then(res => {
-      films = res.data;
-    });
+      if(filmId != '') {
+        await axios.get(API_URL + '/reviews/' + filmId).then(res => {
+          films = res.data;
+        });
+        console.log(films);
+      } 
     return films;
   }
 
-  async fetchScores() {
+  fetchScores(films) {
     const scoreData = [];
     const scores = [0,0,0,0];
-    const films = await this.getAllReviewedFilms();
     
     for(const film of films) {
       scoreData.push(film.rating);
@@ -47,14 +48,7 @@ class ScoreChartService {
     return scores;
   }
 
-  // FIXME: population of scores array delayed, resolve promise w/o async
   getScoreData(scores) {
-    // let scores = []
-    // this.fetchScores().then(res => {
-    //   scores = res;
-    //   console.log(res);
-    // });
-
     console.log(scores);
 
     const scoreChartData = {

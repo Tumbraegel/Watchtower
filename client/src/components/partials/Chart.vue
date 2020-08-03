@@ -22,22 +22,25 @@ import ScoreChartService from "../../models/chart_models/chart_score.js";
 import ModalStatistics from "../partials/ModalStatistics";
 
 export default {
-  name: "Chart",
+  name: "ChartItem",
   components: {
     ModalStatistics
   },
+   props: ['filmId'],
 
   data() {
     return {
       reviewCriteriaChartData,
       ScoreChartService,
-      isModalVisible: false
+      isModalVisible: false,
+      id: this.filmId
     };
   },
 
   async mounted() {
     this.createChart("criteria-chart", this.reviewCriteriaChartData);
-    const scores = await this.ScoreChartService.fetchScores();
+    const films = await this.ScoreChartService.getReviewDataOfSelectedFilm(this.id);
+    const scores = await this.ScoreChartService.fetchScores(films);
     this.createChart(
       "score-chart",
       this.ScoreChartService.getScoreData(scores)

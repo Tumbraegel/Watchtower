@@ -56,10 +56,25 @@
                 <div v-for="comment in comments" :comment="comment" :key="comment._id">
                   <li class="list-group-item list-group-item-outline-primary">
                     {{comment.body}} | {{ comment.upvotes.length }} | {{ comment.downvotes.length }}
-                    <button @click="voteForComment('upvote', comment._id)" class="btn btn-comment-vote" style="float: right; margin-right: 5px;">&#8593;</button>
-                    <button @click="voteForComment('downvote', comment._id)" class="btn btn-comment-vote" style="float: right;">&#8595;</button>
+                    <button @click="voteForComment('upvote', comment._id)" v-if="!comment.upvotes.includes(user._id)" class="btn btn-comment-vote" style="float: right; margin-right: 5px;">&#8595;</button>
+                    <button disabled v-if="comment.upvotes.includes(user._id)" class="btn btn-comment-disabled" style="float: right; margin-right: 5px;">&#8595;</button>
+                    <button @click="voteForComment('downvote', comment._id)" v-if="!comment.downvotes.includes(user._id)" class="btn btn-comment-vote" style="float: right;">&#8593;</button>
+                    <button disabled v-if="comment.downvotes.includes(user._id)" class="btn btn-comment-disabled" style="float: right;">&#8593;</button>
                   </li>
-                  <small style="color: lightgray">{{ comment.username }}</small>
+                  <span
+                    @click="checkifUserLoggedIn('commentEdit', comment._id, comment.body)"
+                    class="badge badge-light"
+                    style="cursor: pointer; float:right;"
+                  >edit</span>
+                  <span
+                    @click="checkifUserLoggedIn('commentDelete', comment._id)"
+                    class="badge badge-light"
+                    style="cursor: pointer; float:right;"
+                  >delete</span>
+                  <small style="color: gray; margin-right: 10px;">{{ comment.username }}</small>
+                  <!-- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString -->
+                  <small style="color: lightgray">({{ new Date(comment.updatedAt).toLocaleDateString('en-GB', {weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' }) }} 
+                    {{ new Date(comment.updatedAt).toLocaleTimeString('en-GB') }} )</small>
                 </div>
                 <br />
               </div>
@@ -79,13 +94,13 @@
       </div>
     </div>
 
-    <modal v-show="isModalVisible" @close="closeReviewModal('review')" />
-    <modal-comment v-show="isModalCommentVisible" @close="closeReviewModal('comment')" />
+    <modal-review v-show="isModalVisible" @close="closeModal('review')" />
+    <modal-comment :toBeEdited="toBeEdited" :commentId="commentId" :commentBody="commentBody" v-show="isModalCommentVisible" @close="closeModal('comment')" />
   </div>
 </template>
 
 <script>
-import Modal from "../components/partials/ModalReview";
+import ModalReview from "../components/partials/ModalReview";
 import ModalComment from "../components/partials/ModalComment";
 import UserService from "../services/user_service.js";
 import ChartItem from '../components/partials/Chart';
@@ -93,7 +108,7 @@ import ChartItem from '../components/partials/Chart';
 export default {
   name: "Film",
   components: {
-    Modal,
+    ModalReview,
     ModalComment,
     ChartItem
   },
@@ -103,8 +118,12 @@ export default {
       film: {},
       filmId: this.$route.params.id,
       comments: [],
+      commentId: '',
+      commentBody: '',
       isModalVisible: false,
       isModalCommentVisible: false,
+      toBeEdited: false,
+      user: {}
     };
   },
 
@@ -114,38 +133,69 @@ export default {
     }
   },
 
-  created() {
-    this.getFilmData();
+  async created() {
+    await this.getFilmData();
+    this.getUserInformation();
   },
 
   methods: {
-    checkifUserLoggedIn(modal) {
+    checkifUserLoggedIn(modal, commentId, commentBody) {
       if (this.currentUser && modal == "review") {
-        this.showReviewModal("review");
+        this.showModal("review");
       } else if (this.currentUser && modal == "comment") {
-        this.showReviewModal("comment");
-      } else alert("You need to be signed in to review a film!");
+        this.showModal("comment");
+      } else if (this.currentUser && modal == "commentEdit") {
+        this.showModal("commentEdit", commentId, commentBody);
+      } 
+      else if (this.currentUser && modal == "commentDelete") {
+        this.deleteComment(commentId);
+      }
+      else alert("You need to be signed in to review a film!");
     },
 
-    async getFilmData() {
-      await this.$http.get("/film/" + this.$route.params.id).then(res => {
+    async getUserInformation() {
+      await UserService.getUserProfile().then(
+        response => {
+          this.user = response.data;
+        },
+        error => {
+          this.user =
+            (error.response && error.response.data) ||
+            error.message ||
+            error.toString();
+        }
+      );
+    },
+
+    getFilmData() {
+      this.$http.get("/film/" + this.$route.params.id).then(res => {
         this.film = res.data[0];
         this.comments = res.data[1].comments;
       });
     },
 
-    showReviewModal(modal) {
+    showModal(modal, commentId, commentBody) {
       if (modal == "review") this.isModalVisible = true;
       else if (modal == "comment") this.isModalCommentVisible = true;
+      else if (modal == "commentEdit") {
+        this.isModalCommentVisible = true;
+        this.toBeEdited = true;
+        this.commentId = commentId;
+        this.commentBody = commentBody;
+      }
     },
 
-    closeReviewModal(modal) {
+    closeModal(modal) {
       if (modal == "review") this.isModalVisible = false;
-      else if (modal == "comment") this.isModalCommentVisible = false;
+      else if (modal == "comment" || modal == "commentEdit") {
+        this.isModalCommentVisible = false;
+        this.toBeEdited = false;
+      }
     },
 
     voteForComment(type, comment_id) {
       const id = this.$route.params.id;
+
       const payload = {
         comment_id: comment_id,
         vote: type
@@ -154,6 +204,17 @@ export default {
       console.log(type);
       console.log(comment_id);
       UserService.postCommentVote(payload, id).then(
+        response => {
+          console.log(response);
+        },
+        error => {
+          console.log(error.response);
+        }
+      );
+    },
+
+    deleteComment(id) {
+      UserService.deleteComment(id).then(
         response => {
           console.log(response);
         },
@@ -220,5 +281,13 @@ export default {
 .btn-comment-vote:hover {
   background-color: purple;
   color: whitesmoke;
+}
+
+.btn-comment-disabled {
+  color: gray;
+  border-radius: 50px;
+  border-color: gray;
+  padding: 1px 8px 1px 8px;
+  font-size: 13px;
 }
 </style>

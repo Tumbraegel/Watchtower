@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://localhost:8000/film';
 
 class ScoreChartService {
 
@@ -10,7 +10,6 @@ class ScoreChartService {
         await axios.get(API_URL + '/reviews/' + filmId).then(res => {
           films = res.data;
         });
-        console.log(films);
       } 
     return films;
   }

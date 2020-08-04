@@ -27,6 +27,7 @@ class CommentRepository {
             const id = comment.author;
             const user = await User.findById(id);
             comment.username = user.username;
+            comment.email = user.email;
         }
 
         return commentList;
@@ -43,10 +44,17 @@ class CommentRepository {
         };
 
         const ObjectId = require('mongoose').Types.ObjectId;
-        const oldComment = await this.model.findOne({film: ObjectId(film._id), author: ObjectId(user._id)});
+        let oldComment = '';
+        if(data.commentId != '') oldComment = await this.model.findOne({_id: ObjectId(data.commentId)});
 
-        if (!oldComment)
-        {
+        if(data.editStatus == true) {
+            let newComment = oldComment.overwrite(comment);
+            await newComment.save().then(function() {
+                console.log("Comment was successfully overwritten in database.");       
+            }).catch(error => console.log(error));
+        }
+
+        else {
             let newComment = new this.model(comment);
             await newComment.save().then(function() {
                 console.log("Comment was successfully stored in database.");
@@ -54,26 +62,27 @@ class CommentRepository {
                 user.save();
             }).catch((error) => console.log(error));
         }
-        else {
-            let newComment = oldComment.overwrite(comment);
-            await newComment.save().then(function() {
-                console.log("Comment was successfully overwritten in database.");       
-            }).catch(error => console.log(error));
-        }
     }
 
     async addVote(data, userData) {
         const user = await User.findById(userData.id);
         const comment = await this.findById(data.comment_id);
         // CHECK IF USER ALREADY VOTED
-        if(data.type = 'downvote') {
+        console.log(data);
+        if(data.vote == 'downvote') {
             comment.downvotes.push(user._id)
             comment.save()
         }
-        else {
+        else if (data.vote == 'upvote') {
             comment.upvotes.push(user._id)
             comment.save()
         }
+    }
+
+    deleteComment(id) {
+        return this.model.findByIdAndDelete(id).then(() => {
+            console.log("Comment successfully removed!")
+        }).catch(error => console.log(error));
     }
 }
 

@@ -7,6 +7,10 @@ class ReviewRepository {
         this.model = model;
     }
 
+    findById(id) {
+        return this.model.findById(id);
+    }
+
     // Retrieve all films that have been reviewed at least once
     findAllReviewedFilms() {
         return this.model.find({
@@ -15,13 +19,14 @@ class ReviewRepository {
     }
 
     async getReviewDataOfOneFilm(id) {
-        console.log(id);
         return await this.model.find({film: id});
     }
     
-    async create(id, data, userData) {
+    async createReview(film, data, userData) {
+        console.log("HERE");
         const user = await User.findById(userData.id);
-        const film = await filmRepo.findByImdbID(id);
+        const filmRepo = require("../repositories/FilmRepository");
+        
         const review = {
             rating: data.rating,
             reviewCriteria: data.reviewCriteria,
@@ -39,7 +44,7 @@ class ReviewRepository {
                 console.log("Review was successfully stored in database.");
                 user.reviews.push(newReview._id);
                 user.save();
-                filmRepo.addReview(id, newReview._id);
+                filmRepo.addReview(film.imdbID, newReview._id);
             }).catch((error) => console.log(error));
         }
         else {
@@ -48,12 +53,13 @@ class ReviewRepository {
                 console.log("Review was successfully overwritten in database.");       
             }).catch(error => console.log(error));
         }
-        this.calculateScore(id);
-    };
+        this.calculateScore(film.imdbID);
+    }
 
     // calculate general score for one film based on median value
     async calculateScore(id) {
         const scoreArray = [];
+        const filmRepo = require("../repositories/FilmRepository");
         let film = await filmRepo.findByImdbID(id);
 
         await filmRepo.findByImdbID(id).populate("reviews").then(res => {

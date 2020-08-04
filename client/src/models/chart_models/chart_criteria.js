@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://localhost:8000/film';
 
 class ReviewCriteriaChartService {
 
   async getReviewDataOfSelectedFilm(filmId) {
-    console.log(filmId);
     let reviews = [];
     if(filmId != '') {
       await axios.get(API_URL + '/reviews/' + filmId).then(res => {

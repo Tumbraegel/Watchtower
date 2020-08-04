@@ -38,12 +38,11 @@ router.get('/genre/:genre', (req, res) => {
     }).catch((error) => console.log(error));
 });
 
-// GET search result
-router.get('/reviews/:id', async (req, res) => {
+// GET all review data for a selected film
+router.get('/film/reviews/:id', async (req, res) => {
     const id = req.params.id;
-    const film = await filmRepo.findByImdbID(id);
-    await reviewRepo.getReviewDataOfOneFilm(film._id).then(reviews => {
-        console.log(reviews);
+    const film = filmRepo.findByImdbID(id);
+    reviewRepo.getReviewDataOfOneFilm(film._id).then(reviews => {
         res.json(reviews);
     }).catch((error) => console.log(error));
 });
@@ -64,9 +63,10 @@ router.post('/advanced-search', async (req, res) => {
 });
 
 // POST film review
-router.post('/film/:id', auth, async (req, res) => {
+router.post('/film/:id/review', auth, async (req, res) => {
     const id = req.params.id;
-    reviewRepo.create(id, req.body, req.user).then(review => {
+    const film = filmRepo.findByImdbID(id);
+    reviewRepo.createReview(film, req.body, req.user).then(review => {
         res.json(review);
     }).catch((error) => console.log(error));
 });
@@ -83,6 +83,13 @@ router.post('/film/:id/comment', auth, async (req, res) => {
 router.post('/film/:id/comment/vote', auth, async (req, res) => {
     commentRepo.addVote(req.body, req.user).then(vote => {
         res.json(vote);
+    }).catch((error) => console.log(error));
+});
+
+router.delete('/film/comment/delete/:id', auth, async (req, res) => {
+    const id = req.params.id;
+    commentRepo.deleteComment(id).then(deletedComment => {
+        res.json(deletedComment);
     }).catch((error) => console.log(error));
 });
 

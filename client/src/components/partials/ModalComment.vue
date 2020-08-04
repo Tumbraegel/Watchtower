@@ -18,7 +18,7 @@
               </div>
               <div class="modal-body">
                 <div class="form-group">
-                <textarea v-model="comment" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <textarea v-model="this.comment" class="form-control" id="commentTextarea" rows="3"></textarea>
                 </div>
                 <button class="btn btn-outline-info" style="float:right;" @click="submitComment">Submit</button>
               </div>
@@ -35,26 +35,37 @@ import UserService from "../../services/user_service.js";
 
 export default {
   name: "ModalComment",
+  props:['toBeEdited', 'commentId', 'commentBody'],
 
   data() {
     return {
-      comment: ""
+      comment: '',
     };
   },
 
+  async created() {
+    this.getExistingCommentText();
+  },
 
   methods: {
+    getExistingCommentText() {
+      this.comment = this.commentBody;
+    },
+
     close() {
       this.$emit("close");
+      this.comment = '';
     },
 
     submitComment() {
       const id = this.$route.params.id;
       const payload = {
         body: this.comment,
+        editStatus: this.toBeEdited,
+        commentId: this.commentId
       };
 
-      console.log("Payload " + payload.toString());
+      console.log(payload);
 
       UserService.postComment(payload, id).then(
         response => {

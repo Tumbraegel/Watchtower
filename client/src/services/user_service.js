@@ -15,16 +15,20 @@ class UserService {
     return axios.get(API_URL + '/api/auth/me', { headers: authHeader() });
   }
 
-  getUserBoard() {
-    return axios.get(API_URL + '/api/auth/user', { headers: authHeader() });
-  }
+  // getUserBoard() {
+  //   return axios.get(API_URL + '/api/auth/user', { headers: authHeader() });
+  // }
 
-  getAdminBoard() {
-    return axios.get(API_URL + '/api/auth/admin', { headers: authHeader() });
-  }
+  // getAdminBoard() {
+  //   return axios.get(API_URL + '/api/auth/admin', { headers: authHeader() });
+  // }
   
   postReview(payload, id) {
-    return axios.post(API_URL + '/film/' + id, payload, { headers: authHeader() });
+    return axios.post(API_URL + '/film/' + id + '/review', payload, { headers: authHeader() });
+  }
+
+  deleteComment(id) {
+    return axios.delete(API_URL + '/film/comment/delete/' + id, { headers: authHeader() });
   }
 
   postComment(payload, id) {
@@ -35,4 +39,5 @@ class UserService {
     return axios.post(API_URL + '/film/' + id + '/comment/vote', payload, { headers: authHeader() });
   }
 }
+
 export default new UserService();

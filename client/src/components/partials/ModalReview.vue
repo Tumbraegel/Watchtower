@@ -110,7 +110,7 @@ import UserService from "../../services/user_service.js";
 import ReviewCriteria from "./ModalReviewCriteria";
 
 export default {
-  name: "Modal",
+  name: "ModalReview",
   components: {
     ReviewCriteria
   },
@@ -182,7 +182,7 @@ export default {
         reviewCriteria: this.allReviewResults
       };
 
-      console.log("Payload " + payload.toString());
+      console.log(payload);
 
       UserService.postReview(payload, id).then(
         response => {

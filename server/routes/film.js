@@ -17,8 +17,11 @@ router.get('/', (req, res) => {
 router.get('/film/:id', async (req, res) => {
     const id = Object(req.params.id);
     const commentList = await commentRepo.getAllCommentsPer(id);
+    const film = await filmRepo.findByImdbID(id);
+    const reviewList = await reviewRepo.getReviewDataOfOneFilm(film._id);
     filmRepo.findFilmByImdbID(id).then(film => {
         film.push({comments: commentList});
+        film.push({reviews: reviewList});
         res.json(film);
     }).catch((error) => console.log("Errors " + error));
 });
@@ -38,15 +41,6 @@ router.get('/genre/:genre', (req, res) => {
     }).catch((error) => console.log(error));
 });
 
-// GET all review data for a selected film
-router.get('/film/reviews/:id', async (req, res) => {
-    const id = req.params.id;
-    const film = filmRepo.findByImdbID(id);
-    reviewRepo.getReviewDataOfOneFilm(film._id).then(reviews => {
-        res.json(reviews);
-    }).catch((error) => console.log(error));
-});
-
 // GET search result
 router.get('/search/:query', async (req, res) => {
     const query = Object(req.params.query);
@@ -63,7 +57,7 @@ router.post('/advanced-search', async (req, res) => {
 });
 
 // POST film review
-router.post('/film/:id/review', auth, async (req, res) => {
+router.post('/film/review/:id', auth, async (req, res) => {
     const id = req.params.id;
     const film = filmRepo.findByImdbID(id);
     reviewRepo.createReview(film, req.body, req.user).then(review => {

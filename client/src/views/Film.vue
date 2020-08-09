@@ -87,7 +87,7 @@
               <img :src="film.poster" :alt="film.title" />
             </div>
             <div style="margin: auto; width: 80%;">
-              <chart-item :filmId="filmId" />
+              <chart-item :filmId="filmId"/>
             </div>
           </div>
         </div>
@@ -120,6 +120,7 @@ export default {
       comments: [],
       commentId: '',
       commentBody: '',
+      reviews: [],
       isModalVisible: false,
       isModalCommentVisible: false,
       toBeEdited: false,
@@ -167,11 +168,15 @@ export default {
       );
     },
 
-    getFilmData() {
-      this.$http.get("/film/" + this.$route.params.id).then(res => {
+    async getFilmData() {
+      await this.$http.get("/film/" + this.$route.params.id).then(res => {
         this.film = res.data[0];
         this.comments = res.data[1].comments;
+        this.reviews = res.data[2].reviews;
       });
+
+      await this.$store.dispatch('film/fetchReviews', this.reviews);
+      this.$store.dispatch('film/fetchFilmContext', this.film);
     },
 
     showModal(modal, commentId, commentBody) {

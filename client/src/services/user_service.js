@@ -24,7 +24,7 @@ class UserService {
   // }
   
   postReview(payload, id) {
-    return axios.post(API_URL + '/film/' + id + '/review', payload, { headers: authHeader() });
+    return axios.post(API_URL + '/film/review/' + id, payload, { headers: authHeader() });
   }
 
   deleteComment(id) {

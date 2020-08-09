@@ -42,32 +42,35 @@ export default {
       ScoreChartService,
       isModalVisible: false,
       id: this.filmId,
+      reviewCriteria: {}
     };
   },
 
-  async mounted() {
-    const reviews = await this.ReviewCriteriaChartService.getReviewDataOfSelectedFilm(
-      this.id
-    );
-    const reviewCriteria = await this.ReviewCriteriaChartService.fetchReviewCriteria(
-      reviews
-    );
-    this.createChart(
-      "criteria-chart",
-      this.ReviewCriteriaChartService.getReviewCriteriaData(reviewCriteria)
-    );
-
-    const films = await this.ScoreChartService.getReviewDataOfSelectedFilm(
-      this.id
-    );
-    const scores = await this.ScoreChartService.fetchScores(films);
-    this.createChart(
-      "score-chart",
-      this.ScoreChartService.getScoreData(scores)
-    );
+  created() {
+    this.getChartData();
   },
 
   methods: {
+    async getChartData() {
+      const reviews = await this.$store.state.film.reviews
+      
+      // get chart data for review criteria of selected film
+      const reviewCriteria = await this.ReviewCriteriaChartService.fetchReviewCriteria(
+        reviews
+      )
+      this.createChart(
+        "criteria-chart",
+        this.ReviewCriteriaChartService.getReviewCriteriaData(reviewCriteria)
+      )
+
+      // get chart data for all scores of selected film
+      const scores = await this.ScoreChartService.fetchScores(reviews);
+      this.createChart(
+        "score-chart",
+        this.ScoreChartService.getScoreData(scores)
+      );
+    },
+
     createChart(chartId, chartData) {
       const ctx = document.getElementById(chartId);
       new Chart(ctx, {

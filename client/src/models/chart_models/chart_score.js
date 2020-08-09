@@ -1,25 +1,11 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/film';
-
 class ScoreChartService {
 
-  async getReviewDataOfSelectedFilm(filmId) {
-    let films = [];
-      if(filmId != '') {
-        await axios.get(API_URL + '/reviews/' + filmId).then(res => {
-          films = res.data;
-        });
-      } 
-    return films;
-  }
-
-  fetchScores(films) {
+  fetchScores(reviews) {
     const scoreData = [];
     const scores = [0,0,0,0];
     
-    for(const film of films) {
-      scoreData.push(film.rating);
+    for(const review of reviews) {
+      scoreData.push(review.rating);
     }
 
     // count number of times this rating exists
@@ -48,8 +34,6 @@ class ScoreChartService {
   }
 
   getScoreData(scores) {
-    console.log(scores);
-
     const scoreChartData = {
       // https://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/#6-doughnut-chart
         type: 'doughnut',
@@ -72,6 +56,10 @@ class ScoreChartService {
         }
     }
     return scoreChartData;
+  }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 

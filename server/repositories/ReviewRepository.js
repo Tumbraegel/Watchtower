@@ -19,7 +19,9 @@ class ReviewRepository {
     }
 
     async getReviewDataOfOneFilm(id) {
-        return await this.model.find({film: id});
+        console.log(id);
+        const ObjectId = require('mongoose').Types.ObjectId;
+        return await this.model.find({film: ObjectId(id)});
     }
     
     async createReview(film, data, userData) {

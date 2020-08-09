@@ -59,7 +59,7 @@ router.post('/advanced-search', async (req, res) => {
 // POST film review
 router.post('/film/review/:id', auth, async (req, res) => {
     const id = req.params.id;
-    const film = filmRepo.findByImdbID(id);
+    const film = await filmRepo.findByImdbID(id);
     reviewRepo.createReview(film, req.body, req.user).then(review => {
         res.json(review);
     }).catch((error) => console.log(error));

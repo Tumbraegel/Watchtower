@@ -47,7 +47,6 @@ class FilmRepository {
   }
 
   async findByUserSearch(query) {
-    console.log(query);
     if ("advancedSearch" in query) return await this.advancedSearch(query);
     else return await this.simpleSearch(query);
   }

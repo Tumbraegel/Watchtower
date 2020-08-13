@@ -1,36 +1,37 @@
 class ScoreChartService {
 
   fetchScores(reviews) {
-    const scoreData = [];
-    const scores = [0,0,0,0];
+    const scoreData = []
+    const scores = [0,0,0,0]
     
     for(const review of reviews) {
-      scoreData.push(review.rating);
+      scoreData.push(review.rating)
+      console.log(review.rating)
     }
 
     // count number of times this rating exists
-    const counts = {};
-    scoreData.forEach(function(x) { counts[x] = (counts[x] || 0) + 1; });
+    const counts = {}
+    scoreData.forEach(function(x) { counts[x] = (counts[x] || 0) + 1 })
 
-    let range1 = 0; // 1.0 - 2.5
-    let range2 = 0; // 3.0 - 5.0
-    let range3 = 0; // 5.5 - 7.5
-    let range4 = 0; // 8.0 - 10.0
+    let range1 = 0 // 1.0 - 2.5
+    let range2 = 0 // 3.0 - 5.0
+    let range3 = 0 // 5.5 - 7.5
+    let range4 = 0 // 8.0 - 10.0
 
     // increment respective array element if rating in range
     for (const [key, value] of Object.entries(counts)) {
-      if (key == '1' || key == '1.5' || key == '2' || key == '2.5') range1 += value;
-      else if (key == '3' || key == '3.5' || key == '4' || key == '4.5' || key == '5') range2 += value;
-      else if (key == '5.5' || key == '6' || key == '6.5' || key == '7' || key == '7.5') range3 += value;
-      else range4 += value;
+      if (key == '1' || key == '1.5' || key == '2' || key == '2.5') range1 += value
+      else if (key == '3' || key == '3.5' || key == '4' || key == '4.5' || key == '5') range2 += value
+      else if (key == '5.5' || key == '6' || key == '6.5' || key == '7' || key == '7.5') range3 += value
+      else range4 += value
     }
 
-    scores[0] = Number(range1);
-    scores[1] = Number(range2);
-    scores[2] = Number(range3);
-    scores[3] = Number(range4);
+    scores[0] = Number(range1)
+    scores[1] = Number(range2)
+    scores[2] = Number(range3)
+    scores[3] = Number(range4)
 
-    return scores;
+    return scores
   }
 
   getScoreData(scores) {
@@ -55,12 +56,8 @@ class ScoreChartService {
             responsive: true
         }
     }
-    return scoreChartData;
-  }
-
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return scoreChartData
   }
 }
 
-export default new ScoreChartService();
+export default new ScoreChartService()

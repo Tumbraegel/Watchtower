@@ -87,7 +87,12 @@
               <img :src="film.poster" :alt="film.title" />
             </div>
             <div style="margin: auto; width: 80%;">
-              <chart-item :filmId="filmId"/>
+              <chart-item />
+              <span
+                @click="showModal('chart')"
+                class="badge badge-info"
+                style="cursor: pointer; float:right;"
+              >Expand</span>
             </div>
           </div>
         </div>
@@ -96,140 +101,145 @@
 
     <modal-review v-show="isModalVisible" @close="closeModal('review')" />
     <modal-comment :toBeEdited="toBeEdited" :commentId="commentId" :commentBody="commentBody" v-show="isModalCommentVisible" @close="closeModal('comment')" />
+    <modal-chart v-show="isChartModalVisible" @close="closeModal('chart')" />
   </div>
 </template>
 
 <script>
-import ModalReview from "../components/partials/ModalReview";
-import ModalComment from "../components/partials/ModalComment";
-import UserService from "../services/user_service.js";
-import ChartItem from '../components/partials/Chart';
+import ModalReview from '../components/partials/ModalReview'
+import ModalComment from '../components/partials/ModalComment'
+import ModalChart from '../components/partials/ModalChart'
+import UserService from '../services/user_service.js'
+import ChartItem from '../components/partials/Chart'
 
 export default {
-  name: "Film",
+  name: 'Film',
   components: {
     ModalReview,
     ModalComment,
+    ModalChart,
     ChartItem
   },
 
   data() {
     return {
       film: {},
-      filmId: this.$route.params.id,
       comments: [],
       commentId: '',
       commentBody: '',
       reviews: [],
       isModalVisible: false,
       isModalCommentVisible: false,
+      isChartModalVisible: false,
       toBeEdited: false,
       user: {}
-    };
+    }
   },
 
   computed: {
     currentUser() {
-      return this.$store.state.auth.user;
+      return this.$store.state.auth.user
     }
   },
 
   async created() {
-    await this.getFilmData();
-    this.getUserInformation();
+    await this.getFilmData()
+    this.getUserInformation()
   },
 
   methods: {
     checkifUserLoggedIn(modal, commentId, commentBody) {
-      if (this.currentUser && modal == "review") {
-        this.showModal("review");
-      } else if (this.currentUser && modal == "comment") {
-        this.showModal("comment");
-      } else if (this.currentUser && modal == "commentEdit") {
-        this.showModal("commentEdit", commentId, commentBody);
+      if (this.currentUser && modal == 'review') {
+        this.showModal('review')
+      } else if (this.currentUser && modal == 'comment') {
+        this.showModal('comment')
+      } else if (this.currentUser && modal == 'commentEdit') {
+        this.showModal('commentEdit', commentId, commentBody)
       } 
-      else if (this.currentUser && modal == "commentDelete") {
-        this.deleteComment(commentId);
+      else if (this.currentUser && modal == 'commentDelete') {
+        this.deleteComment(commentId)
       }
-      else alert("You need to be signed in to review a film!");
+      else alert('You need to be signed in to review a film!')
     },
 
     async getUserInformation() {
       await UserService.getUserProfile().then(
         response => {
-          this.user = response.data;
+          this.user = response.data
         },
         error => {
           this.user =
             (error.response && error.response.data) ||
             error.message ||
-            error.toString();
+            error.toString()
         }
-      );
+      )
     },
 
     async getFilmData() {
-      await this.$http.get("/film/" + this.$route.params.id).then(res => {
-        this.film = res.data[0];
-        this.comments = res.data[1].comments;
-        this.reviews = res.data[2].reviews;
-      });
+      await this.$http.get('/film/' + this.$route.params.id).then(res => {
+        this.film = res.data[0]
+        this.comments = res.data[1].comments
+        this.reviews = res.data[2].reviews
+      })
 
-      await this.$store.dispatch('film/fetchReviews', this.reviews);
-      this.$store.dispatch('film/fetchFilmContext', this.film);
+      await this.$store.dispatch('film/fetchReviews', this.reviews)
+      this.$store.dispatch('film/fetchFilmContext', this.film)
     },
 
     showModal(modal, commentId, commentBody) {
-      if (modal == "review") this.isModalVisible = true;
-      else if (modal == "comment") this.isModalCommentVisible = true;
-      else if (modal == "commentEdit") {
-        this.isModalCommentVisible = true;
-        this.toBeEdited = true;
-        this.commentId = commentId;
-        this.commentBody = commentBody;
+      if (modal == 'review') this.isModalVisible = true
+      else if (modal == 'comment') this.isModalCommentVisible = true
+      else if (modal == 'commentEdit') {
+        this.isModalCommentVisible = true
+        this.toBeEdited = true
+        this.commentId = commentId
+        this.commentBody = commentBody
       }
+      else if (modal == 'chart') this.isChartModalVisible = true
     },
 
     closeModal(modal) {
-      if (modal == "review") this.isModalVisible = false;
-      else if (modal == "comment" || modal == "commentEdit") {
-        this.isModalCommentVisible = false;
-        this.toBeEdited = false;
+      if (modal == 'review') this.isModalVisible = false
+      else if (modal == 'comment' || modal == 'commentEdit') {
+        this.isModalCommentVisible = false
+        this.toBeEdited = false
       }
+      else if (modal == 'chart') this.isChartModalVisible = false
     },
 
     voteForComment(type, comment_id) {
-      const id = this.$route.params.id;
+      const id = this.$route.params.id
 
       const payload = {
         comment_id: comment_id,
         vote: type
-      };
+      }
 
-      console.log(type);
-      console.log(comment_id);
+      console.log(type)
+      console.log(comment_id)
       UserService.postCommentVote(payload, id).then(
         response => {
-          console.log(response);
+          console.log(response)
         },
         error => {
-          console.log(error.response);
+          console.log(error.response)
         }
-      );
+      )
     },
 
     deleteComment(id) {
       UserService.deleteComment(id).then(
         response => {
-          console.log(response);
+          console.log(response)
         },
         error => {
-          console.log(error.response);
+          console.log(error.response)
         }
-      );
+      )
     }
   }
-};
+}
 </script>
 
 <style scoped>

@@ -6,7 +6,6 @@ class ScoreChartService {
     
     for(const review of reviews) {
       scoreData.push(review.rating)
-      console.log(review.rating)
     }
 
     // count number of times this rating exists

@@ -20,7 +20,6 @@ class ReviewRepository {
     }
 
     async getReviewDataOfOneFilm(id) {
-        console.log(id)
         const ObjectId = require('mongoose').Types.ObjectId
         return await this.model.find({film: ObjectId(id)})
     }

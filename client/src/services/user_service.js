@@ -1,42 +1,46 @@
 // https://bezkoder.com/jwt-vue-vuex-authentication/
 // LAST ACCESSED: 14/06
-import axios from 'axios';
-import authHeader from './auth_header';
+import axios from 'axios'
+import authHeader from './auth_header'
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://localhost:8000'
 
 class UserService {
   getPublicContent() {
     // no auth header needed because resource is not protected
-    return axios.get(API_URL + '/api/auth/all');
+    return axios.get(API_URL + '/api/auth/all')
   }
 
   getUserProfile() {
-    return axios.get(API_URL + '/api/auth/me', { headers: authHeader() });
+    return axios.get(API_URL + '/api/auth/me', { headers: authHeader() })
   }
 
   // getUserBoard() {
-  //   return axios.get(API_URL + '/api/auth/user', { headers: authHeader() });
+  //   return axios.get(API_URL + '/api/auth/user', { headers: authHeader() })
   // }
 
   // getAdminBoard() {
-  //   return axios.get(API_URL + '/api/auth/admin', { headers: authHeader() });
+  //   return axios.get(API_URL + '/api/auth/admin', { headers: authHeader() })
   // }
   
   postReview(payload, id) {
-    return axios.post(API_URL + '/film/review/' + id, payload, { headers: authHeader() });
+    return axios.post(API_URL + '/film/review/' + id, payload, { headers: authHeader() })
   }
 
   deleteComment(id) {
-    return axios.delete(API_URL + '/film/comment/delete/' + id, { headers: authHeader() });
+    return axios.delete(API_URL + '/film/comment/delete/' + id, { headers: authHeader() })
   }
 
   postComment(payload, id) {
-    return axios.post(API_URL + '/film/' + id + '/comment', payload, { headers: authHeader() });
+    return axios.post(API_URL + '/film/' + id + '/comment', payload, { headers: authHeader() })
   }
 
   postCommentVote(payload, id) {
-    return axios.post(API_URL + '/film/' + id + '/comment/vote', payload, { headers: authHeader() });
+    return axios.post(API_URL + '/film/' + id + '/comment/vote', payload, { headers: authHeader() })
+  }
+
+  postNewCriterion(payload) {
+    return axios.post(API_URL + '/api/auth/add-criterion', payload, { headers: authHeader() })
   }
 }
 

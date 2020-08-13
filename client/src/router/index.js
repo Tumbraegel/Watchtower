@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
 
 Vue.use(VueRouter)
 
@@ -9,12 +7,17 @@ Vue.use(VueRouter)
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: () => import('../views/Home.vue')
   },
   {
     path: '/about',
     name: 'about',
     component: () => import('../views/About.vue')
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('../views/Admin.vue')
   },
   {
     path: '/film/:id',
@@ -29,7 +32,7 @@ Vue.use(VueRouter)
   {
     path: '/login',
     name: 'login',
-    component: Login
+    component: () => import('../views/Login.vue'),
   },
   {
     path: '/register',

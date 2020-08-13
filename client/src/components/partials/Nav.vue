@@ -26,6 +26,9 @@
         <li class='nav-item active'>
           <router-link :to="{ name: 'genre' }" class='nav-link'>Genres</router-link>
         </li>
+        <li class='nav-item active'>
+          <router-link :to="{ name: 'admin' }" class='nav-link'>Admin</router-link>
+        </li>
       </ul>
       <form class='form-inline my-2 my-lg-0'>
         <div>

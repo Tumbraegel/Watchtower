@@ -7,7 +7,11 @@ export const film = {
 
     getters: {
         reviews: state => {
-            return state.film.reviews;
+            return state.film.reviews
+        },
+
+        filmInfo: state => {
+            return state.film
         }
     },
   
@@ -23,12 +27,12 @@ export const film = {
     
     mutations: {
         fetchFilm(state, payload) {
-            state.film = payload;
+            state.film = payload
         },
 
         fetchReviews(state, payload) {
             for(const review of payload.reviewList) {
-                state.reviews.push(review);
+                state.reviews.push(review)
             }
         }
     },

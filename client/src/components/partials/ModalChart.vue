@@ -19,7 +19,7 @@
               <div class="modal-body">
                 <div class="form-group">
                   <div>
-                    <!-- <chart-item /> -->
+                    <chart-item />
                   </div>
                 </div>
               </div>
@@ -32,14 +32,14 @@
 </template>
 
 <script>
-//import ChartItem from '../partials/Chart';
+import ChartItem from '../partials/Chart';
 
 export default {
-  name: "ModalStatistics",
+  name: "ModalChart",
 
-  // components: {
-  //   ChartItem
-  // },
+  components: {
+    ChartItem
+  },
 
   methods: {
     close() {

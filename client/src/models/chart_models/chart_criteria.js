@@ -33,10 +33,9 @@ class ReviewCriteriaChartService {
     reviewCriteria.queerFriendliness.forEach(function(x) {countQueerFriendliness[x] = (countQueerFriendliness[x] || 0) + 1})
 
     Object.values(countDiversity).forEach(function (value) { if(!(labels.includes(value + "x"))) labels.push(value + "x") })
-
     Object.values(countGenderEquality).forEach(function (value) { if(!(labels.includes(value + "x"))) labels.push(value + "x") })
-
     Object.values(countQueerFriendliness).forEach(function (value) { if(!(labels.includes(value + "x"))) labels.push(value + "x") })
+    
     return labels
   }
 

@@ -144,6 +144,17 @@ router.post('/add-criterion', auth, async (req, res) => {
     })}
 })
 
+router.post('/add-admin', auth, async (req, res) => {
+  const user = await User.findOne({username: req.body.username})
+  if(user != null) {
+    user.role = 'admin'
+    user.save().then(function() {
+      console.log("User role changed successfully.")
+      console.log(user)  
+  }).catch(error => console.log(error))
+  }
+})
+
 router.get("/admin", auth, async (req, res) => {
   const user = await User.findById(req.user.id)
     try {

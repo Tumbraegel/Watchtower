@@ -6,7 +6,7 @@
       <p v-show="!isAuthorized" >You are not authorized to view this content.</p>
     </div>
 
-    <modal v-show="isModalVisible" @close="closeModal('review')" />
+    <modal v-show="isModalVisible" @close="closeModal" />
   </div>
 </template>
 

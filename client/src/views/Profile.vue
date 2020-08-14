@@ -13,8 +13,9 @@
       <strong>Email:</strong>
       {{ user.email }}
     </p>
-    <div v-if="user.role == 'admin'">
+    <div v-if="user.role == 'admin'" style="margin-bottom: 20px;">
       <p>You are classified as <strong>{{user.role}}</strong></p>
+      <a href="" @click="openModal">Assign admin rights to other user</a>
     </div>
     <strong>Reviews:</strong>
     <div class="row">
@@ -37,17 +38,26 @@
       </div>
     </div>
     </div>
+    <modal v-show="isModalVisible" @close="closeModal" />
   </div>
 </template>
 
 <script>
+import Modal from '../components/partials/ModalAddAdmin'
 import UserService from "../services/user_service";
 
 export default {
   name: "profile",
+
+  components: {
+    Modal
+  },
+
   data() {
     return {
-      user: {}
+      user: {},
+      username: '',
+      isModalVisible: false
     };
   },
   computed: {
@@ -71,6 +81,17 @@ export default {
         }
       );
     }
+  },
+
+  methods: {
+    openModal(e) {
+      e.preventDefault()
+      this.isModalVisible = true;
+    },
+
+    closeModal() {
+      this.isModalVisible = false;
+    },
   }
 };
 </script>

@@ -18,7 +18,7 @@
               </div>
               <div class="modal-body">
                 <div class="form-group">
-                <textarea v-model="this.comment" class="form-control" id="commentTextarea" rows="3"></textarea>
+                <textarea v-model="comment" class="form-control" id="commentTextarea" rows="3"></textarea>
                 </div>
                 <button class="btn btn-outline-info" style="float:right;" @click="submitComment">Submit</button>
               </div>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import UserService from "../../services/user_service.js";
+import UserService from "../../services/user_service.js"
 
 export default {
   name: "ModalComment",
@@ -44,41 +44,49 @@ export default {
   },
 
   async created() {
-    this.getExistingCommentText();
+    this.getExistingCommentText()
   },
 
   methods: {
     getExistingCommentText() {
-      this.comment = this.commentBody;
+      this.comment = this.commentBody
     },
 
     close() {
-      this.$emit("close");
-      this.comment = '';
+      this.$emit("close")
+      this.comment = ''
     },
 
     submitComment() {
-      const id = this.$route.params.id;
+      const id = this.$route.params.id
       const payload = {
         body: this.comment,
         editStatus: this.toBeEdited,
         commentId: this.commentId
-      };
+      }
 
-      console.log(payload);
+      // this.$store.dispatch('film/addComment', payload, id).then(
+      //       (response) => {
+      //         console.log(response)
+      //       },
+      //       error => {
+      //         console.log(error.response)
+      //       }
+      //     );
 
       UserService.postComment(payload, id).then(
         response => {
-          console.log(response);
+          console.log(response)
         },
         error => {
-          console.log(error.response);
+          console.log(error.response)
         }
-      );
-      this.close();
+      )
+      this.$emit("addComment")
+      this.close()
     }
   }
-};
+}
 </script>
 
 <style>

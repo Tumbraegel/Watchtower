@@ -13,6 +13,10 @@ class UserService {
   getAdminSection() {
     return axios.get(API_URL + '/api/auth/admin', { headers: authHeader() })
   }
+
+  postNewAdminUser(payload) {
+    return axios.post(API_URL + '/api/auth/add-admin', payload, { headers: authHeader() })
+  }
   
   postReview(payload, id) {
     return axios.post(API_URL + '/film/review/' + id, payload, { headers: authHeader() })

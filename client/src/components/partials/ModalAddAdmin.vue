@@ -1,0 +1,83 @@
+<template>
+  <div class="modal-backdrop">
+    <transition name="modal">
+      <div class="modal-mask">
+        <div class="modal-wrapper">
+          <div
+            class="modal-dialog modal-dialog-scrollable"
+            role="dialog"
+            aria-labelledby="modalTitle"
+            aria-describedby="modalDescription"
+          >
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Give someone admin rights:</h5>
+                <button type="button" class="close" @click="close" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div>
+                    <div>
+                      <div class="form-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="username"
+                          v-model="username"
+                          placeholder="Enter username"
+                        />
+                      </div>
+  
+                    </div>
+                    <button @click="submitResult" class="btn btn-primary" style="float: right;">Submit</button>
+                    <button
+                      @click="close"
+                      class="btn btn-outline-secondary"
+                      style="float: right; margin-right: 5px;"
+                    >Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </div>
+</template>
+
+<script>
+import UserService from "../../services/user_service.js";
+
+export default {
+  name: "ModalAddAdmin",
+
+  data() {
+    return {
+        username: '',
+    }
+  },
+
+  methods: {
+    close() {
+      this.$emit("close")
+    },
+
+    submitResult() {
+      const payload = {
+          username: this.username,
+      }
+      
+      UserService.postNewAdminUser(payload).then(
+        response => {
+          console.log(response)
+        },
+        error => {
+          console.log(error.response)
+        }
+      )
+      this.close()
+    },
+  },
+}
+</script>

@@ -1,7 +1,7 @@
 // https://bezkoder.com/jwt-vue-vuex-authentication/
 // LAST ACCESSED: 14/06
-import axios from 'axios';
-const API_URL = 'http://localhost:8000/api/auth';
+import axios from 'axios'
+const API_URL = 'http://localhost:8000/api/auth'
 
 class AuthService {
   async login(user) {
@@ -9,15 +9,16 @@ class AuthService {
       .post(API_URL + '/login', {
         email: user.email,
         password: user.password
-      });
+      })
     if (response.data.token) {
-      localStorage.setItem('user', JSON.stringify(response.data));
+      localStorage.setItem('user', JSON.stringify(response.data))
+      // localStorage.setItem('role', JSON.stringify(response.data))
     }
-    return response.data;
+    return response.data
   }
 
   logout() {
-    localStorage.removeItem('user');
+    localStorage.removeItem('user')
   }
 
   register(user) {
@@ -26,8 +27,8 @@ class AuthService {
       username: user.username,
       email: user.email,
       password: user.password
-    });
+    })
   }
 }
 
-export default new AuthService();
+export default new AuthService()

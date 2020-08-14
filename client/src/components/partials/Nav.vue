@@ -26,7 +26,7 @@
         <li class='nav-item active'>
           <router-link :to="{ name: 'genre' }" class='nav-link'>Genres</router-link>
         </li>
-        <li class='nav-item active'>
+        <li v-if="showAdminArea" class='nav-item active'>
           <router-link :to="{ name: 'admin' }" class='nav-link'>Admin</router-link>
         </li>
       </ul>
@@ -79,19 +79,18 @@ export default {
   data() {
     return {
       query: '',
-      searchedForFilms: []
+      searchedForFilms: [],
     };
   },
 
   computed: {
     currentUser() {
-      return this.$store.state.auth.user;
+      return this.$store.state.auth.user
     },
-    showAdminBoard() {
-      if (this.currentUser && this.currentUser.roles) {
-        return this.currentUser.roles.includes('ROLE_ADMIN');
+    showAdminArea() {
+      if (this.currentUser && this.currentUser.role) {
+        return this.currentUser.role == 'admin'
       }
-
       return false;
     }
   },

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" style="margin-bottom: 40px;">
     <header class="jumbotron">
       <h3>
         <strong>{{ user.username }}</strong> Profile
@@ -13,6 +13,9 @@
       <strong>Email:</strong>
       {{ user.email }}
     </p>
+    <div v-if="user.role == 'admin'">
+      <p>You are classified as <strong>{{user.role}}</strong></p>
+    </div>
     <strong>Reviews:</strong>
     <div class="row">
     <div v-for="item in user.reviews" :item="item" :key="item._id">
@@ -33,12 +36,6 @@
       </div>
       </div>
     </div>
-    </div>
-    <div>
-      <strong>Role:</strong>
-      <ul>
-        <!--<li v-for="(role,index) in currentUser.roles" :key="index">{{role}}</li>-->
-      </ul>
     </div>
   </div>
 </template>

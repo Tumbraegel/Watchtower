@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
 const User = require('../models/User')
-const filmRepo = require('../repositories/FilmRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
 const auth = require('../config/auth_config')
 
@@ -40,6 +39,7 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
 
             const salt = await bcrypt.genSalt(10)
             user.password = await bcrypt.hash(password, salt)
+            user.role = 'user'
 
             await user.save()
 
@@ -88,18 +88,18 @@ router.post(
   
         const payload = {
           user: {
-            id: user.id
+            id: user.id,
           }
         }
   
         jwt.sign(
           payload,
           'randomString',
-          { expiresIn: '4h' },
+          { expiresIn: '6h' },
           (err, token) => {
             if (err) throw err
             res.status(200).json({
-              token
+              token: token, role: user.role
             })
           }
         )
@@ -132,17 +132,25 @@ router.get('/me', auth, async (req, res) => {
 })
 
 router.post('/add-criterion', auth, async (req, res) => {
-  criterionRepo.addCriterion(req.body).then(criterion => {
-      res.json(criterion)
-  }).catch((error) => console.log(error))
+  const user = await User.findById(req.user.id)
+  if(user.role == "admin") {
+      criterionRepo.addCriterion(req.body).then(criterion => {
+        res.json(criterion)
+    }).catch((error) => console.log(error))
+  }
+  else { 
+    res.status(401).json({
+      message: 'Action not allowed, missing authentication!'
+    })}
 })
 
-router.get('/admin', auth, async (req, res) => {
-  try {
-    res.json(user)
-  } catch (e) {
-    res.send({ message: 'Error in fetching user' })
-  }
+router.get("/admin", auth, async (req, res) => {
+  const user = await User.findById(req.user.id)
+    try {
+      res.json(user)
+    } catch (e) {
+      res.send({ message: "Error in fetching user" })
+    }
 })
 
 module.exports = router

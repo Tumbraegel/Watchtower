@@ -18,7 +18,6 @@ class ReviewCriteriaChartService {
           queerFriendliness.push(value.result)
       }
     }
-    console.log(reviewCriteria)
     return reviewCriteria
   }
 
@@ -41,7 +40,6 @@ class ReviewCriteriaChartService {
 
   getReviewCriteriaData(reviewCriteria) {
     const labels = this.calculateLabels(reviewCriteria)
-    console.log(labels)
 
     const reviewCriteriaChartData = {
       // https://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/#8-grouped-bar-chart

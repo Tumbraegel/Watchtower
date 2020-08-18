@@ -4,10 +4,11 @@
       <div class="container">
         <div class="row">
         <h1 class="title col-md-9" style="padding: 0px">{{ film.title }} ({{ film.year }})</h1>
-        <p class="col-md-3">Your score: </p>
+        <p class="col-md-3" v-if="userScoreForThisFilm != ''">Your score: {{ userScoreForThisFilm }}</p>
       </div>
       <div class="row">
-        <button style="float: right;" class="btn btn-custom col-md-2" @click="checkifUserLoggedIn('review')">Review</button>
+        <button v-if="userScoreForThisFilm != ''" style="float: right;" class="btn btn-custom col-md-3" @click="checkifUserLoggedIn('review')">Review again</button>
+        <button v-else style="float: right;" class="btn btn-custom col-md-2" @click="checkifUserLoggedIn('review')">Review</button>
       </div>
       </div>
     </div>
@@ -57,34 +58,36 @@
                     class="btn btn-outline-warning"
                     @click="checkifUserLoggedIn('comment')"
                   >Write</button>
-                  <p>{{ comments.body }}</p>
-                  <div v-for="comment in comments" :comment="comment" :key="comment._id">
+                  <div v-for="comment in commentList" :comment="comment" :key="comment._id">
                     <li class="list-group-item list-group-item-outline-primary">
-                      {{comment.body}} | {{ comment.upvotes.length }} | {{ comment.downvotes.length }}
-                      <button
-                        @click="voteForComment('upvote', comment._id)"
-                        v-if="!comment.upvotes.includes(user._id)"
-                        class="btn btn-comment-vote"
-                        style="float: right; margin-right: 5px;"
-                      >&#8595;</button>
-                      <button
-                        disabled
-                        v-if="comment.upvotes.includes(user._id)"
-                        class="btn btn-comment-disabled"
-                        style="float: right; margin-right: 5px;"
-                      >&#8595;</button>
+                      {{comment.body}}
+                       <span style="float:right;">{{ comment.upvotes.length }} | {{ comment.downvotes.length }}</span>
+                      <div style="float:right;">
                       <button
                         @click="voteForComment('downvote', comment._id)"
                         v-if="!comment.downvotes.includes(user._id)"
                         class="btn btn-comment-vote"
-                        style="float: right;"
-                      >&#8593;</button>
+                        style="float: right; margin-right: 5px;"
+                      >&#8595;</button>
                       <button
                         disabled
                         v-if="comment.downvotes.includes(user._id)"
                         class="btn btn-comment-disabled"
+                        style="float: right; margin-right: 5px;"
+                      >&#8595;</button>
+                      <button
+                        @click="voteForComment('upvote', comment._id)"
+                        v-if="!comment.upvotes.includes(user._id)"
+                        class="btn btn-comment-vote"
                         style="float: right;"
                       >&#8593;</button>
+                      <button
+                        disabled
+                        v-if="comment.upvotes.includes(user._id)"
+                        class="btn btn-comment-disabled"
+                        style="float: right;"
+                      >&#8593;</button>
+                      </div>
                     </li>
                     <div>
                     <span
@@ -117,7 +120,7 @@
               <img :src="film.poster" :alt="film.title" />
             </div>
             <div style="margin: auto; width: 80%;">
-              <chart-item />
+              <chart-item v-if="dataLoaded" />
               <span
                 @click="showModal('chart')"
                 class="badge badge-info"
@@ -134,8 +137,8 @@
       :toBeEdited="toBeEdited"
       :commentId="commentId"
       :commentBody="commentBody"
+      :user="user"
       v-show="isModalCommentVisible"
-      @addComment="updateView"
       @close="closeModal('comment')"
     />
     <modal-chart v-show="isChartModalVisible" @close="closeModal('chart')" />
@@ -143,12 +146,13 @@
 </template>
 
 <script>
-import ModalReview from "../components/partials/ModalReview";
-import ModalComment from "../components/partials/ModalComment";
-import ModalChart from "../components/partials/ModalChart";
-import UserService from "../services/user_service.js";
-import ChartItem from "../components/partials/Chart";
-import swal from "sweetalert";
+import ModalReview from '../components/partials/ModalReview'
+import ModalComment from '../components/partials/ModalComment'
+import ModalChart from '../components/partials/ModalChart'
+import UserService from '../services/user_service.js'
+import ChartItem from '../components/partials/Chart'
+import swal from 'sweetalert'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: "Film",
@@ -162,33 +166,48 @@ export default {
   data() {
     return {
       film: {},
-      comments: [],
       commentId: "",
       commentBody: "",
       reviews: [],
+      comments: [],
       isModalVisible: false,
       isModalCommentVisible: false,
       isChartModalVisible: false,
       toBeEdited: false,
       user: {},
+      userScoreForThisFilm: '',
+      dataLoaded: false
     };
   },
 
   computed: {
+    ...mapState('film', ['filmContext', 'reviewList', 'commentList']),
+
     currentUser() {
       return this.$store.state.auth.user
     },
-    // currentComments() {
-    //   return this.$store.state.film.comments
-    // }
   },
 
   async created() {
-    await this.getFilmData()
-    this.getUserInformation()
+    await this.getFilmData().then(() => {
+      if(this.reviewList.length) this.dataLoaded = true
+      if(this.$store.state.auth.status.loggedIn == true) this.getUserInformation()
+    }) 
   },
 
   methods: {
+    ...mapActions('film', ['fetchFilmContext', 'deleteComment']),
+
+    getFilmData() {
+      const filmInformation = this.fetchFilmContext(this.$route.params.id).then(async () => {
+        this.film = this.filmContext
+        this.reviews = this.reviewList
+        this.comments = this.commentList
+      })
+      if(this.reviews.length) this.reviewsPopulated = true
+      return filmInformation
+    },
+
     checkifUserLoggedIn(modal, commentId, commentBody) {
       if (this.currentUser && modal == "review") this.showModal("review")
       else if (this.currentUser && modal == "comment")
@@ -202,7 +221,6 @@ export default {
         this.showModal("commentEdit", commentId, commentBody)
       else if (this.currentUser && modal == "commentDelete") {
         this.deleteComment(commentId)
-        this.updateView()
       }
       else
         swal("", "You need to be signed in to review a film!", "warning", {
@@ -211,15 +229,10 @@ export default {
         })
     },
 
-    async updateView() {
-      console.log("triggered")
-      await this.getFilmData()
-    },
-
     async getUserInformation() {
       await UserService.getUserProfile().then(
         (response) => {
-          this.user = response.data;
+          this.user = response.data
         },
         (error) => {
           this.user =
@@ -227,20 +240,12 @@ export default {
             error.message ||
             error.toString();
         }
-      );
+      ).then(() => { this.getExistingUserRating(this.user) })
     },
 
-    async getFilmData() {
-      await this.$http.get("/film/" + this.$route.params.id).then((res) => {
-        this.film = res.data[0];
-        // this.$store.dispatch("film/fetchComments", res.data[1].comments)
-        this.comments = res.data[1].comments;
-        this.reviews = res.data[2].reviews;
-      });
-
-      await this.$store.dispatch("film/fetchReviews", this.reviews)
-      await this.$store.dispatch("film/fetchFilmContext", this.film)
-      await this.$store.dispatch("film/fetchComments", this.comments)
+    getExistingUserRating(user) {
+      const userReviewForThisFilm = (user.reviews).filter(review => review.film._id == this.film._id)
+      if(userReviewForThisFilm.length) this.userScoreForThisFilm = userReviewForThisFilm[0].rating
     },
 
     showModal(modal, commentId, commentBody) {
@@ -290,6 +295,7 @@ export default {
     },
 
     deleteComment(id) {
+
       swal({
         title: 'Delete this comment?',
         text: 'Are you sure? You won\'t be able to revert this!',
@@ -297,14 +303,7 @@ export default {
         buttons: true,
       }).then((confirmed) => {
           if (confirmed) {
-          UserService.deleteComment(id).then(
-          (response) => {
-            console.log(response)
-          },
-          (error) => {
-            console.log(error.response)
-          }
-        )
+            this.$store.dispatch('film/deleteComment', id)
       }})
     },
   },

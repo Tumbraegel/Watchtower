@@ -15,7 +15,8 @@
           <h5 class="card-title text-warning">{{ film.title }}</h5>
           </router-link>
           <p class="card-text">{{ film.year }}</p>
-          <p>Rating:</p>
+          <p v-if="film.overallRating != null">Rating: {{ film.overallRating }}</p>
+          <p v-else>Rating: TBD</p>
           <p class="card-text">
             <small class="text-muted">{{ film.genres }}</small>
           </p>

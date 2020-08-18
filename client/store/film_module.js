@@ -1,67 +1,88 @@
-//import FilmService from '../src/services/film_service'
+import FilmService from '../src/services/film_service'
 
 export const film = {
     namespaced: true,
     state: {
-        film: {},
-        reviews: [],
-        comments: []
+        filmContext: {},
+        reviewList: [],
+        commentList: []
     },
 
     getters: {
-        filmInfo: state => {
-            return state.film
-        },
-        reviews: state => {
-            return state.film.reviews
-        },
-        comments: state => {
-            return state.film.comments
+        getReviewData(state) {
+            const reviewData = []
+            for(const review of state.reviewList) {
+                const data = {}
+                data['rating'] = review.rating
+                data['reviewCriteria'] = review.reviewCriteria
+                data['filmId'] = review.film
+                reviewData.push(data)
+            }
+            return reviewData
         }
+        // sortedComments(state) {
+        //     return state.comments.filter(comment => comment.upvotes)
+        // }
     },
   
     actions: {
-        fetchFilmContext: ({ commit }, film) => {
-            commit('fetchFilm', {film: film})
+        async fetchFilmContext({ commit }, id) {
+            try {
+                await FilmService.getCollectedFilmInfo(id).then(response => {
+                    commit('SET_FILM_CONTEXT', response.data)
+                    return Promise.resolve(response.data)
+                })
+            }
+            catch (error) {
+                console.log("Error in setting film context.")
+                return Promise.reject(error)
+            }
         },
 
-        fetchReviews: ({ commit }, reviews) => {
-            commit('fetchReviews', {reviewList: reviews})
+        async addComment({ commit }, payload) {
+            try {
+                await FilmService.postComment(payload.filmId, payload).then(response => {
+                    commit('ADD_COMMENT', response.data)
+                    return Promise.resolve(response.data)
+                })
+            }
+              catch (error) {
+                console.log("Error in adding comment.")
+                return Promise.reject(error)
+              }
         },
 
-        fetchComments: ({ commit }, comments) => {
-            commit('fetchComments', {commentList: comments})
-        },
-        // async addComment({ commit }, comment, id) {
-        //     try {
-        //         await FilmService.addComment(comment, id)
-        //         commit('addCommentSuccess', comment)
-        //         return Promise.resolve(comment)
-        //       }
-        //       catch (error) {
-        //         commit('addCommentFailure')
-        //         return Promise.reject(error)
-        //       }
-        // }
+        async deleteComment({ commit }, id) {
+            try {
+                await FilmService.deleteComment(id).then(response => {
+                    commit('DELETE_COMMENT', response.data)
+                    return Promise.resolve(response.data)
+                })
+            }
+              catch (error) {
+                console.log("Error in deleting comment.")
+                return Promise.reject(error)
+              }
+        }
+
+        // async updateComment() {},
     },
-    
+
     mutations: {
-        fetchFilm(state, payload) {
-            state.film = payload
+        SET_FILM_CONTEXT(state, response) {
+            state.filmContext = response[0]
+            state.commentList = response[1].comments
+            state.reviewList = response[2].reviews 
         },
-        fetchReviews(state, payload) {
-            for(const review of payload.reviewList) {
-                state.reviews.push(review)
-            }
-        },
-        fetchComments(state, payload) {
-            for(const commment of payload.commentList) {
-                state.comments.push(commment)
-            }
-        },
-        // addCommentSuccess(state, comment) {
 
-        // }
+        ADD_COMMENT(state, response) {
+            state.commentList.push(response)
+        },
+
+        DELETE_COMMENT(state, response) {
+            state.commentList = state.commentList.filter(comment => response._id != comment._id)
+            console.log(state.commentList)
+        }
     },
-  };
+  }
   

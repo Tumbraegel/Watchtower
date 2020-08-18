@@ -16,6 +16,7 @@
 import Chart from 'chart.js'
 import ReviewCriteriaChartService from '../../models/chart_models/chart_criteria.js'
 import ScoreChartService from '../../models/chart_models/chart_score.js'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ChartItem',
@@ -24,19 +25,27 @@ export default {
     return {
       ReviewCriteriaChartService,
       ScoreChartService,
-      isModalVisible: false,
-      reviewCriteria: {}
+      isModalVisible: false
     }
   },
 
+  computed: {
+    ...mapState('film', ['reviewList']),
+  }, 
+
   created() {
-    this.getChartData()
+    this.getChartData(this.reviewList)
   },
 
   methods: {
-    async getChartData() {
-      const reviews = await this.$store.state.film.reviews
-      
+    async getChartData(reviews) {
+      // get chart data for all scores of selected film
+      const scores = await this.ScoreChartService.fetchScores(reviews)
+      this.createChart(
+        'score-chart',
+        this.ScoreChartService.getScoreData(scores)
+      )
+
       // get chart data for review criteria of selected film
       const reviewCriteria = await this.ReviewCriteriaChartService.fetchReviewCriteria(
         reviews
@@ -44,13 +53,6 @@ export default {
       this.createChart(
         'criteria-chart',
         this.ReviewCriteriaChartService.getReviewCriteriaData(reviewCriteria)
-      )
-
-      // get chart data for all scores of selected film
-      const scores = await this.ScoreChartService.fetchScores(reviews)
-      this.createChart(
-        'score-chart',
-        this.ScoreChartService.getScoreData(scores)
       )
     },
 

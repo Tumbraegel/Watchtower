@@ -26,6 +26,13 @@ router.get('/film/:id', async (req, res) => {
     }).catch((error) => console.log("Errors " + error));
 });
 
+router.get('/film/:id/comments', (req, res) => {
+    const id = req.params.id
+    commentRepo.getAllCommentsPer(id).then(comments => {
+        res.json(comments)
+    }).catch((error) => console.log("Errors " + error))
+})
+
 // GET all existing genres
 router.get('/genre', (req, res) => {
     filmRepo.getAllGenres().then(genres => {
@@ -67,24 +74,25 @@ router.post('/film/review/:id', auth, async (req, res) => {
 
 // POST film comment
 router.post('/film/:id/comment', auth, async (req, res) => {
-    const id = req.params.id;
-    commentRepo.addComment(id, req.body, req.user).then(comment => {
-        res.json(comment);
-    }).catch((error) => console.log(error));
-});
+    const id = req.params.id
+    const film = await filmRepo.findByImdbID(id)
+    commentRepo.addComment(film, req.body, req.user).then(() => {
+        res.json(req.body)
+    }).catch((error) => console.log(error))
+})
 
 // POST vote for specific comment
 router.post('/film/:id/comment/vote', auth, async (req, res) => {
-    commentRepo.addVote(req.body, req.user).then(vote => {
-        res.json(vote);
-    }).catch((error) => console.log(error));
-});
+    commentRepo.addVote(req.body, req.user).then(() => {
+        res.json(req.body)
+    }).catch((error) => console.log(error))
+})
 
 router.delete('/film/comment/delete/:id', auth, async (req, res) => {
-    const id = req.params.id;
-    commentRepo.deleteComment(id).then(deletedComment => {
-        res.json(deletedComment);
-    }).catch((error) => console.log(error));
-});
+    const id = req.params.id
+    commentRepo.deleteComment(id).then(() => {
+        res.json(req.body)
+    }).catch((error) => console.log(error))
+})
 
-module.exports = router;
+module.exports = router

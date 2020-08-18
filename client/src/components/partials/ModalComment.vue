@@ -31,15 +31,15 @@
 </template>
 
 <script>
-import UserService from "../../services/user_service.js"
+// import UserService from "../../services/user_service.js"
 
 export default {
   name: "ModalComment",
-  props:['toBeEdited', 'commentId', 'commentBody'],
+  props:['toBeEdited', 'commentId', 'commentBody', 'user'],
 
   data() {
     return {
-      comment: '',
+      comment: ''
     };
   },
 
@@ -58,31 +58,18 @@ export default {
     },
 
     submitComment() {
-      const id = this.$route.params.id
       const payload = {
         body: this.comment,
         editStatus: this.toBeEdited,
-        commentId: this.commentId
+        commentId: this.commentId,
+        filmId: this.$route.params.id,
+        updatedAt: Date.now(),
+        author: this.user._id,
+        upvotes: [],
+        downvotes: []
       }
 
-      // this.$store.dispatch('film/addComment', payload, id).then(
-      //       (response) => {
-      //         console.log(response)
-      //       },
-      //       error => {
-      //         console.log(error.response)
-      //       }
-      //     );
-
-      UserService.postComment(payload, id).then(
-        response => {
-          console.log(response)
-        },
-        error => {
-          console.log(error.response)
-        }
-      )
-      this.$emit("addComment")
+      this.$store.dispatch('film/addComment', payload)
       this.close()
     }
   }

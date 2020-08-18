@@ -33,41 +33,40 @@ class CommentRepository {
         return commentList;
     }
 
-    async addComment(id, data, userData) {
-        const user = await User.findById(userData.id);
-        const film = await filmRepo.findByImdbID(id);
+    async addComment(film, data, userData) {
+        const user = await User.findById(userData.id)
+        //const film = await filmRepo.findByImdbID(id)
 
         const comment = {
             body: data.body,
             author: user,
             film: film
-        };
+        }
 
-        const ObjectId = require('mongoose').Types.ObjectId;
-        let oldComment = '';
-        if(data.commentId != '') oldComment = await this.model.findOne({_id: ObjectId(data.commentId)});
+        const ObjectId = require('mongoose').Types.ObjectId
+        let oldComment = ''
+        if(data.commentId != '') oldComment = await this.model.findOne({_id: ObjectId(data.commentId)})
 
         if(data.editStatus == true) {
-            let newComment = oldComment.overwrite(comment);
+            let newComment = oldComment.overwrite(comment)
             await newComment.save().then(function() {
-                console.log("Comment was successfully overwritten in database.");       
-            }).catch(error => console.log(error));
+                console.log("Comment was successfully overwritten in database.")   
+            }).catch(error => console.log(error))
         }
 
         else {
-            let newComment = new this.model(comment);
+            let newComment = new this.model(comment)
             await newComment.save().then(function() {
-                console.log("Comment was successfully stored in database.");
-                user.reviews.push(newComment._id);
-                user.save();
-            }).catch((error) => console.log(error));
+                console.log("Comment was successfully stored in database.")
+                user.reviews.push(newComment._id)
+                user.save()
+            }).catch((error) => console.log(error))
         }
     }
 
     async addVote(data, userData) {
         const user = await User.findById(userData.id);
         const comment = await this.findById(data.comment_id);
-        // CHECK IF USER ALREADY VOTED
         console.log(data);
         if(data.vote == 'downvote') {
             comment.downvotes.push(user._id)

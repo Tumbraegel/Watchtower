@@ -69,13 +69,14 @@ class ReviewRepository {
             }
         }).catch((error) => console.log(error))
         
-        console.log("Score Array: " + scoreArray)
+        if(scoreArray.length) {
             const median = this.calculateMedian(scoreArray)
             film.overallRating = median
             film.save().then(res => {
-                console.log("Film rating was successfully updated.")
+                console.log("Overall film rating was successfully updated.")
             }).catch(error => console.log(error))
             console.log("MEDIAN " + median)
+        }
     }
 
     calculateMedian(numbers) {

@@ -68,6 +68,7 @@
 </template>
 
 <script>
+import swal from 'sweetalert'
 import UserService from "../../services/user_service.js";
 
 export default {
@@ -112,6 +113,7 @@ export default {
       
       UserService.postNewCriterion(payload).then(
         response => {
+          swal('Criterion added!', 'You just added "' + payload.criterion + '" to the criteria collection =)', 'success', { buttons: false, timer: 3000 });
           console.log(response)
         },
         error => {

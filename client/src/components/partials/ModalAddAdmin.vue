@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import swal from 'sweetalert'
 import UserService from "../../services/user_service.js";
 
 export default {
@@ -70,6 +71,7 @@ export default {
       
       UserService.postNewAdminUser(payload).then(
         response => {
+          swal('Admin added!', 'You just added ' + payload.username + ' as an admin.', 'success', { buttons: false, timer: 2500 });
           console.log(response)
         },
         error => {

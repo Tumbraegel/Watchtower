@@ -4,11 +4,23 @@ const auth = require('../config/auth_config');
 const filmRepo = require('../repositories/FilmRepository');
 const reviewRepo = require('../repositories/ReviewRepository');
 const commentRepo = require('../repositories/CommentRepository');
-const User = require('../models/User');
 
 // GET all films
 router.get('/', (req, res) => {
     filmRepo.findAll().then((films) => {
+        res.json(films);
+    }).catch((error) => console.log(error));
+});
+
+router.get('/statistics', async (req, res) => {
+    filmRepo.getInitialStatistics().then((films) => {
+        res.json(films);
+    }).catch((error) => console.log(error));
+});
+
+// GET all films and filter by query
+router.get('/statistics/:query', (req, res) => {
+    filmRepo.filterByQuery().then((films) => {
         res.json(films);
     }).catch((error) => console.log(error));
 });
@@ -49,28 +61,28 @@ router.get('/genre/:genre', (req, res) => {
 });
 
 // GET search result
-router.get('/search/:query', async (req, res) => {
-    const query = Object(req.params.query);
+router.get('/search/:query', (req, res) => {
+    const query = Object(req.params.query)
     filmRepo.findByUserSearch(query).then(films => {
-        res.json(films);
-    }).catch((error) => console.log(error));
-});
+        res.json(films)
+    }).catch((error) => console.log(error))
+})
 
 // POST query for advanced search
-router.post('/advanced-search', async (req, res) => {
+router.post('/advanced-search', (req, res) => {
     filmRepo.findByUserSearch(req.body).then(films => {
-        res.json(films);
-    }).catch((error) => console.log(error));
-});
+        res.json(films)
+    }).catch((error) => console.log(error))
+})
 
 // POST film review
 router.post('/film/review/:id', auth, async (req, res) => {
-    const id = req.params.id;
-    const film = await filmRepo.findByImdbID(id);
+    const id = req.params.id
+    const film = await filmRepo.findByImdbID(id)
     reviewRepo.createReview(film, req.body, req.user).then(review => {
-        res.json(review);
-    }).catch((error) => console.log(error));
-});
+        res.json(review)
+    }).catch((error) => console.log(error))
+})
 
 // POST film comment
 router.post('/film/:id/comment', auth, async (req, res) => {

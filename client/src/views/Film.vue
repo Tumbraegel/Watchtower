@@ -17,35 +17,39 @@
       <div class="container">
         <div class="row">
           <div class="col-md-8">
-            <p class>
+            <p v-if="film.overallRating != null">
               <strong>Rating:</strong>
               {{ film.overallRating }}
             </p>
-            <p class>
+            <p v-else>
+              <strong>Rating:</strong>
+              TBD
+            </p>
+            <p>
               <strong>Plot:</strong>
               {{ film.plot }}
             </p>
-            <p class>
+            <p>
               <strong>Genre:</strong>
               {{ film.genres }}
             </p>
-            <p class>
+            <p>
               <strong>Directors:</strong>
               {{ film.directors }}
             </p>
-            <p class>
+            <p>
               <strong>Cast:</strong>
               {{ film.actors }}
             </p>
-            <p class>
+            <p>
               <strong>Language:</strong>
               {{ film.language }}
             </p>
-            <p class>
+            <p>
               <strong>Rated:</strong>
               {{ film.rated }}
             </p>
-            <p class>
+            <p>
               <strong>Awards:</strong>
               {{ film.awards }}
             </p>
@@ -199,7 +203,7 @@ export default {
     ...mapActions('film', ['fetchFilmContext', 'deleteComment']),
 
     getFilmData() {
-      const filmInformation = this.fetchFilmContext(this.$route.params.id).then(async () => {
+      const filmInformation = this.fetchFilmContext(this.$route.params.id).then(() => {
         this.film = this.filmContext
         this.reviews = this.reviewList
         this.comments = this.commentList

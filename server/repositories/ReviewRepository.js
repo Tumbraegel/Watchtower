@@ -45,7 +45,8 @@ class ReviewRepository {
                 console.log("Review was successfully stored in database.")
                 user.reviews.push(newReview._id)
                 user.save()
-                filmRepo.addReview(film.imdbID, newReview._id)
+                film.reviews.push(newReview._id)
+                film.save()
             }).catch((error) => console.log(error))
         }
         else {

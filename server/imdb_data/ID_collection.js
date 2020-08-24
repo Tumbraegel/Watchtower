@@ -28,17 +28,16 @@ class IMDbData {
                 listOfIDs.push(firstValue);
             }
         }
-        /*
-        >> Count actual length of list to splice accordingly
-        var count1 = 0;
-        for (var i = 0; i < listOfIDs.length; ++i) {
-            count1++;
-        }
-        */
-
-        console.log(listOfIDs);
+        
+        // >> Count actual length of list to splice accordingly
+        // var count1 = 0;
+        // for (var i = 0; i < listOfIDs.length; ++i) {
+        //     count1++;
+        // }
+        
+        // console.log(listOfIDs)
         // DONT RUN THIS BEFORE CHECKING IF SPLICE ACTUALLY ONLY REQUESTS UNDER 1000 ITEMS!!!!
-        finalListOfIDs = listOfIDs.splice(0, 3);
+        // finalListOfIDs = listOfIDs.splice(0, 800);
 
         return finalListOfIDs;
     }

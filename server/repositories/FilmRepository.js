@@ -31,19 +31,86 @@ class FilmRepository {
     return this.model.find({ genres: genre });
   }
 
+  async getInitialStatistics() {
+    const listOfHighestScores = []
+    let listOfAllFilms = []
+    await this.findAll().then(response => {
+      listOfAllFilms = response
+    })
+    const criteriaList = ['Diversity', 'Queer Friendliness', 'Gender Equality']
+
+    const results = []
+    this.model.find().populate({
+      path  : 'reviews',
+      match : { reviewCriteria : { $elemMatch: {name: 'Queer Friendliness' }}}
+    }).exec(function (err, films) {
+      films = films.filter(function(film) {
+        if(film.reviews.length) {
+          console.log("Ye")
+        }
+      })
+    })
+
+      console.log(results)   
+
+
+    // const listOfCriteriaValues = {'Diversity': true, 'Queer Friendliness': true, 'Gender Equality': true}
+    // const listOfHighestScores = []
+    // // films with highest diversity score
+    // // films with highest normal score
+    // const filterObject = {}
+    // const listOfFilterObjects = []
+
+    // const preparedCriteria = await this.querySelectedReviewCriteria(
+    //   listOfCriteriaValues
+    // );
+
+    //   const test = await this.model
+    //   .find(
+    //     this.model.find({reviews: { $in: preparedCriteria }})
+    //   )
+    //   .then((res) => {
+    //     let count = 0
+    //     for (const entry of res) {
+    //       count+=1
+    //       console.log(entry)
+    //       //filterObject.criterion =
+    //       //listOfFilterObjects.push(filterObject)
+    //     }
+    //     console.log(count)
+    //   })
+    //   .catch((error) => console.log(error))
+      
+    //   console.log(test)
+
+    // console.log(listOfFilterObjects)
+
+    //this.filterByQuery()
+
+    // for each value I need object
+    // object always holds value result + filmId
+    return listOfHighestScores
+  }
+
+  filterByQuery(query) {
+    return this.model
+  }
+
   async getAllGenres() {
-    const genreList = [];
-    const allFilms = await this.findAll();
+    const genreList = []
+    const allFilms = await this.findAll()
 
     for (let entry of allFilms) {
-      const genres = entry.genres.split(", ");
-      for (const genre of genres) {
-        if (!genreList.includes(genre)) {
-          genreList.push(genre);
+      if(entry.genres) {
+        const genres = entry.genres.split(", ")
+        for (const genre of genres) {
+          if (!genreList.includes(genre)) {
+            genreList.push(genre)
+          }
         }
       }
     }
-    return genreList;
+    return genreList
   }
 
   async findByUserSearch(query) {
@@ -51,60 +118,33 @@ class FilmRepository {
     else return await this.simpleSearch(query);
   }
 
-  async advancedSearch(query) {
-    console.log("advancedSearch");
-    const selectedGenres = query.selectedGenre;
-    const selectedReviewCriteria = query.selectedReviewCriteria;
-    const selectedReleaseDate = query.selectedReleaseDate;
-
-    // when all query parameters are filled
-    if (
-      (Object.keys(selectedGenres).length != 0 ||
-        selectedGenres.constructor != Object) &&
-      (Object.keys(selectedReviewCriteria).length != 0 ||
-        selectedReviewCriteria.constructor != Object) &&
-      selectedReleaseDate != ""
-    ) {
-      console.log("ReviewCriteria & Genre & Year selected");
-
-      const preparedCriteria = await this.querySelectedReviewCriteria(
-        selectedReviewCriteria
-      );
-      const preparedGenres = this.querySelectedGenres(selectedGenres);
-
-      this.model
-        .find(
-          this.model.find({
-            $and: [
-              { genres: { $regex: preparedGenres, $options: "i" } },
-              { year: selectedReleaseDate },
-              { reviews: { $in: preparedCriteria } },
-            ],
-          })
-        )
-        .then((res) => {
-          for (const entry of res) {
-            console.log(entry.title);
-          }
-        })
-        .catch((error) => console.log(error));
-    } 
+  async filterEntriesBasedOnUserSelection(selectedReviewCriteria, selectedGenres, selectedReleaseDate, operator) {
+    const results = []
+    const preparedCriteria = await this.querySelectedReviewCriteria(selectedReviewCriteria)
+    const preparedGenres = this.querySelectedGenres(selectedGenres)
     
-    else if (
-      Object.keys(selectedGenres).length != 0 ||
-      selectedGenres.constructor != Object ||
-      Object.keys(selectedReviewCriteria).length != 0 ||
-      selectedReviewCriteria.constructor != Object ||
-      selectedReleaseDate != ""
-    ) {
-      console.log("ReviewCriteria OR Genre OR Year selected");
-
-      const preparedCriteria = await this.querySelectedReviewCriteria(
-        selectedReviewCriteria
-      );
-      const preparedGenres = this.querySelectedGenres(selectedGenres);
-
-      this.model
+    if(operator == 'and') {
+      await this.model
+      .find(
+        this.model.find({
+          $and: [
+            { genres: { $regex: preparedGenres, $options: "i" } },
+            { year: selectedReleaseDate },
+            { reviews: { $in: preparedCriteria } },
+          ],
+        })
+      )
+      .then((res) => {
+        for (const entry of res) {
+          results.push(entry)
+        }
+      })
+      .catch((error) => console.log(error))
+      return results
+    }
+    
+    else if (operator == 'or') {
+      await this.model
         .find(
           this.model.find({
             $or: [
@@ -115,12 +155,59 @@ class FilmRepository {
           })
         )
         .then((res) => {
+          const results = []
           for (const entry of res) {
-            console.log(entry.title);
+            results.push(entry)
           }
+          return results
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error))
+        return results
+      }      
+  }
+
+  async advancedSearch(query) {
+    console.log("advancedSearch")
+    const selectedGenres = query.selectedGenre
+    const selectedReviewCriteria = query.selectedReviewCriteria
+    const selectedReleaseDate = query.selectedReleaseDate
+    let results = []
+
+    // when all query parameters are filled
+    if (
+      (Object.keys(selectedGenres).length != 0 ||
+        selectedGenres.constructor != Object) &&
+      (Object.keys(selectedReviewCriteria).length != 0 ||
+        selectedReviewCriteria.constructor != Object) &&
+      selectedReleaseDate != ""
+    ) {
+      console.log("ReviewCriteria & Genre & Year selected");
+      await this.filterEntriesBasedOnUserSelection(
+        selectedReviewCriteria, 
+        selectedGenres, 
+        selectedReleaseDate, 
+        'and').then((response) => {
+          return results = response
+        })
+      }
+        
+    else if (
+      Object.keys(selectedGenres).length != 0 ||
+      selectedGenres.constructor != Object ||
+      Object.keys(selectedReviewCriteria).length != 0 ||
+      selectedReviewCriteria.constructor != Object ||
+      selectedReleaseDate != ""
+    ) {
+      console.log("ReviewCriteria OR Genre OR Year selected")
+      await this.filterEntriesBasedOnUserSelection(
+        selectedReviewCriteria, 
+        selectedGenres, 
+        selectedReleaseDate, 
+        'or').then((response) => {
+          return results = response
+        })
     }
+    return results
   }
 
   async querySelectedReviewCriteria(selectedReviewCriteria) {
@@ -179,20 +266,20 @@ class FilmRepository {
   }
 
   simpleSearch(query) {
-    console.log("simpleTitleSearch");
-    return this.titleSearch(query);
+    console.log("simpleTitleSearch")
+    return this.titleSearch(query)
   }
 
   async titleSearch(query) {
-    const matches = [];
-    const listOfFilms = [];
+    const matches = []
+    const listOfFilms = []
     await this.findAll()
       .then((result) => {
-        listOfFilms.push(result);
+        listOfFilms.push(result)
       })
       .catch((error) => {
-        console.log(error);
-      });
+        console.log(error)
+      })
 
     let result = 100;
     for (const entry of listOfFilms[0]) {
@@ -200,13 +287,12 @@ class FilmRepository {
         const cost = await this.calculateLevenstheinDistance(
           entry.title,
           query
-        );
-        if (cost < result) result = cost;
-        if (cost < 7) matches.push(entry);
+        )
+        if (cost < result) result = cost
+        if (cost < 7) matches.push(entry)
       }
     }
-    console.log(matches);
-    return matches;
+    return matches
   }
 
   // Reference: https://www.geeksforgeeks.org/edit-distance-dp-5/

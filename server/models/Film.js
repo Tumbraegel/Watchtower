@@ -18,6 +18,6 @@ const FilmSchema = new mongoose.Schema({
     imdbID: {type: String, unique: true},
     overallRating: Number,
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
-});
+})
 
 module.exports = mongoose.model('Film', FilmSchema);

@@ -26,6 +26,9 @@
         <li class='nav-item active'>
           <router-link :to="{ name: 'genre' }" class='nav-link'>Genres</router-link>
         </li>
+        <li class='nav-item active'>
+          <router-link :to="{ name: 'statistics' }" class='nav-link'>Statistics</router-link>
+        </li>
         <li v-if="showAdminArea" class='nav-item active'>
           <router-link :to="{ name: 'admin' }" class='nav-link'>Admin</router-link>
         </li>
@@ -101,27 +104,31 @@ export default {
     },
 
     async searchFilm() {
-      const payload = [];
-      await this.$http.get('/search/' + this.query).then(
-        response => {
-          console.log(response);
-          if(response.data) {
-            for(let entry of response.data) {
-              payload.push({searchKeyword: this.query, film: entry})
-            }
-            this.$store.commit('search/searchFor', payload)
-            this.$router.push({name: 'searchResults'});
-          } 
-          else {
-            //this.sendErrorMessage('This film does not seem to exist in our database');
-            this.$router.push('/error');
-          }
-          this.query = '';
-        },
-        error => {
-          console.log(error.response);
-        }
-      );
+      const keyword = this.query
+      this.$store.dispatch("search/performSimpleSearch", keyword).then(() => {
+        this.query = '';
+        this.$router.push({name: 'searchResults'})
+      })
+      // await this.$http.get('/search/' + this.query).then(
+      //   response => {
+      //     console.log(response);
+      //     if(response.data) {
+      //       for(let entry of response.data) {
+      //         payload.push({searchKeyword: this.query, film: entry})
+      //       }
+      //       this.$store.commit('search/searchFor', payload)
+      //       this.$router.push({name: 'searchResults'});
+      //     } 
+      //     else {
+      //       //this.sendErrorMessage('This film does not seem to exist in our database');
+      //       this.$router.push('/error');
+      //     }
+      //     this.query = '';
+      //   },
+      //   error => {
+      //     console.log(error.response);
+      //   }
+      // );
     },
   }
 };

@@ -106,8 +106,9 @@
 </template>
 
 <script>
-import UserService from "../../services/user_service.js";
-import ReviewCriteria from "./ModalReviewCriteria";
+import UserService from "../../services/user_service.js"
+import ReviewCriteria from "./ModalReviewCriteria"
+import swal from 'sweetalert'
 
 export default {
   name: "ModalReview",
@@ -186,7 +187,8 @@ export default {
 
       UserService.postReview(payload, id).then(
         response => {
-          console.log(response);
+          console.log(response)
+          swal('Done!', 'You rated this film with a score of ' + payload.rating, 'success', { buttons: false, timer: 2500 });
         },
         error => {
           console.log(error.response);

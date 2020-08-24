@@ -30,6 +30,11 @@ Vue.use(VueRouter)
     component: () => import('../views/Genre.vue')
   },
   {
+    path: '/statistics',
+    name: 'statistics',
+    component: () => import('../views/Statistics.vue')
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import('../views/Login.vue'),

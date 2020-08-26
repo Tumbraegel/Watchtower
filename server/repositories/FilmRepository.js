@@ -32,64 +32,33 @@ class FilmRepository {
   }
 
   async getInitialStatistics() {
-    const listOfHighestScores = []
-    let listOfAllFilms = []
-    await this.findAll().then(response => {
-      listOfAllFilms = response
-    })
-    const criteriaList = ['Diversity', 'Queer Friendliness', 'Gender Equality']
+    let results = []
+    const criteriaList = 'Diversity|Queer Friendliness|Gender Equality'
 
-    const results = []
-    this.model.find().populate({
+    await this.filterForFilmsWithReviewCriteria(criteriaList).then(response => {
+      results = response
+    })
+    console.log(results)
+    return results
+  }
+
+  async filterForFilmsWithReviewCriteria(criteriaList) {
+    let matches = []
+    await this.model.find().populate({
       path  : 'reviews',
-      match : { reviewCriteria : { $elemMatch: {name: 'Queer Friendliness' }}}
-    }).exec(function (err, films) {
-      films = films.filter(function(film) {
+      match : { reviewCriteria : { $elemMatch: {name: {$regex: criteriaList} }}}
+    }).then(films => {
+      for(const film of films) {
         if(film.reviews.length) {
-          console.log(film.title)
+          const reviewData = []
+          for(const review of film.reviews) {
+            reviewData.push(review.reviewCriteria)
+          }
+          matches.push({title: film.title, score: film.overallRating, criteria: reviewData })
         }
-      })
+      }
     })
-
-      console.log(results)   
-
-
-    // const listOfCriteriaValues = {'Diversity': true, 'Queer Friendliness': true, 'Gender Equality': true}
-    // const listOfHighestScores = []
-    // // films with highest diversity score
-    // // films with highest normal score
-    // const filterObject = {}
-    // const listOfFilterObjects = []
-
-    // const preparedCriteria = await this.querySelectedReviewCriteria(
-    //   listOfCriteriaValues
-    // );
-
-    //   const test = await this.model
-    //   .find(
-    //     this.model.find({reviews: { $in: preparedCriteria }})
-    //   )
-    //   .then((res) => {
-    //     let count = 0
-    //     for (const entry of res) {
-    //       count+=1
-    //       console.log(entry)
-    //       //filterObject.criterion =
-    //       //listOfFilterObjects.push(filterObject)
-    //     }
-    //     console.log(count)
-    //   })
-    //   .catch((error) => console.log(error))
-      
-    //   console.log(test)
-
-    // console.log(listOfFilterObjects)
-
-    //this.filterByQuery()
-
-    // for each value I need object
-    // object always holds value result + filmId
-    return listOfHighestScores
+    return matches
   }
 
   filterByQuery(query) {
@@ -228,7 +197,6 @@ class FilmRepository {
         criteriaList.push(key);
       }
     }
-
     return filmsWithSelectedCriteria;
   }
 

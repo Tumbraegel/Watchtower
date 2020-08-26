@@ -294,7 +294,6 @@ export default {
     },
 
     deleteComment(id) {
-
       swal({
         title: 'Delete this comment?',
         text: 'Are you sure? You won\'t be able to revert this!',

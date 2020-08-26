@@ -4,7 +4,6 @@
 class ReviewCriteriaChartService {
 
   async fetchReviewCriteria(reviews) {
-    //await this.sleep(1000)
     const diversity = []
     const genderEquality = []
     const queerFriendliness = []
@@ -134,10 +133,6 @@ class ReviewCriteriaChartService {
     result.data = data
     result.layout = layout
     return result
-  }
-
-  sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
 

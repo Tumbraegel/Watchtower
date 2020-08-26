@@ -1,21 +1,14 @@
 <template>
   <div>
-    <div style="height: 100%; width: 360px;">
-      <canvas id="criteria-chart"></canvas>
-    </div>
-    <div style="height: 100%; width: 360px;">
-      <canvas id="score-chart"></canvas>
-    </div>
+      <div id="reviewCriteriaChart"></div>
+      <div id="scoresChart"></div>
   </div>
 </template>
 
 <script>
-// https://www.digitalocean.com/community/tutorials/vuejs-vue-chart-js
-// https://vue-chartjs.org/guide/#chart-with-api-data
-// LAST ACCESSED 27/07/2020
-import Chart from 'chart.js'
-import ReviewCriteriaChartService from '../../models/chart_models/chart_criteria.js'
-import ScoreChartService from '../../models/chart_models/chart_score.js'
+import Plotly from 'plotly.js-dist'
+import ReviewCriteriaChartService from '../../models/chart_models/chart_criteria'
+import ScoreChartService from '../../models/chart_models/chart_score'
 import { mapState } from 'vuex'
 
 export default {
@@ -41,28 +34,14 @@ export default {
     async getChartData(reviews) {
       // get chart data for all scores of selected film
       const scores = await this.ScoreChartService.fetchScores(reviews)
-      this.createChart(
-        'score-chart',
-        this.ScoreChartService.getScoreData(scores)
-      )
+      const scoresChart = this.ScoreChartService.getScoreData(scores)
+      
+      // get chart data for all review criteria of selected film
+      const reviewCriteria = await this.ReviewCriteriaChartService.fetchReviewCriteria(reviews)
+      const reviewCriteriaChart = this.ReviewCriteriaChartService.getReviewCriteriaData(reviewCriteria)
 
-      // get chart data for review criteria of selected film
-      const reviewCriteria = await this.ReviewCriteriaChartService.fetchReviewCriteria(
-        reviews
-      )
-      this.createChart(
-        'criteria-chart',
-        this.ReviewCriteriaChartService.getReviewCriteriaData(reviewCriteria)
-      )
-    },
-
-    createChart(chartId, chartData) {
-      const ctx = document.getElementById(chartId)
-      new Chart(ctx, {
-        type: chartData.type,
-        data: chartData.data,
-        options: chartData.options,
-      })
+      Plotly.newPlot('reviewCriteriaChart', reviewCriteriaChart.data, reviewCriteriaChart.layout)
+      Plotly.newPlot('scoresChart', scoresChart.data, scoresChart.layout)
     },
 
     showCanvasInModal() {

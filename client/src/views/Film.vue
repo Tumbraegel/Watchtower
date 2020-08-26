@@ -119,17 +119,12 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-4">
             <div style="margin: auto; width: 50%;">
               <img :src="film.poster" :alt="film.title" />
             </div>
-            <div style="margin: auto; width: 80%;">
+            <div style="margin: auto; width: 50%">
               <chart-item v-if="dataLoaded" />
-              <span
-                @click="showModal('chart')"
-                class="badge badge-info"
-                style="cursor: pointer; float:right;"
-              >Expand</span>
             </div>
           </div>
         </div>

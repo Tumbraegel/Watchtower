@@ -46,7 +46,7 @@ class FilmRepository {
     }).exec(function (err, films) {
       films = films.filter(function(film) {
         if(film.reviews.length) {
-          console.log("Ye")
+          console.log(film.title)
         }
       })
     })
@@ -119,47 +119,38 @@ class FilmRepository {
   }
 
   async filterEntriesBasedOnUserSelection(selectedReviewCriteria, selectedGenres, selectedReleaseDate, operator) {
-    const results = []
+    let results = []
     const preparedCriteria = await this.querySelectedReviewCriteria(selectedReviewCriteria)
     const preparedGenres = this.querySelectedGenres(selectedGenres)
     
     if(operator == 'and') {
-      await this.model
-      .find(
-        this.model.find({
+      await this.model.find({
           $and: [
             { genres: { $regex: preparedGenres, $options: "i" } },
             { year: selectedReleaseDate },
             { reviews: { $in: preparedCriteria } },
           ],
-        })
-      )
-      .then((res) => {
-        for (const entry of res) {
-          results.push(entry)
         }
+      )
+      .then((response) => {
+        return results = response
       })
       .catch((error) => console.log(error))
       return results
     }
     
     else if (operator == 'or') {
-      await this.model
-        .find(
-          this.model.find({
+      console.log(preparedGenres)
+      await this.model.find({
             $or: [
               { genres: { $regex: preparedGenres, $options: "i" } },
               { year: selectedReleaseDate },
               { reviews: { $in: preparedCriteria } },
             ],
-          })
-        )
-        .then((res) => {
-          const results = []
-          for (const entry of res) {
-            results.push(entry)
           }
-          return results
+        )
+        .then((response) => {
+          return results = response
         })
         .catch((error) => console.log(error))
         return results
@@ -251,7 +242,7 @@ class FilmRepository {
         genreList.push(key);
       }
     }
-    // create regex expression of (possibly multiple) selected genres
+    // create regex expression with logical OR of (possibly multiple) selected genres
     let iterator = 0;
     for (const entry of genreList) {
       if (genreList.length === 1) genreRegexExp += entry;
@@ -261,7 +252,6 @@ class FilmRepository {
         else genreRegexExp += entry;
       }
     }
-
     return genreRegexExp;
   }
 

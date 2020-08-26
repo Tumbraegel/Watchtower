@@ -109,26 +109,6 @@ export default {
         this.query = '';
         this.$router.push({name: 'searchResults'})
       })
-      // await this.$http.get('/search/' + this.query).then(
-      //   response => {
-      //     console.log(response);
-      //     if(response.data) {
-      //       for(let entry of response.data) {
-      //         payload.push({searchKeyword: this.query, film: entry})
-      //       }
-      //       this.$store.commit('search/searchFor', payload)
-      //       this.$router.push({name: 'searchResults'});
-      //     } 
-      //     else {
-      //       //this.sendErrorMessage('This film does not seem to exist in our database');
-      //       this.$router.push('/error');
-      //     }
-      //     this.query = '';
-      //   },
-      //   error => {
-      //     console.log(error.response);
-      //   }
-      // );
     },
   }
 };

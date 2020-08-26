@@ -1,3 +1,6 @@
+// https://plotly.com/javascript/pie-charts/#donut-chart
+// LAST ACCESSED: 26/08/2020
+
 class ScoreChartService {
 
   fetchScores(reviews) {
@@ -34,28 +37,48 @@ class ScoreChartService {
   }
 
   getScoreData(scores) {
-    const scoreChartData = {
-      // https://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/#6-doughnut-chart
-        type: 'doughnut',
-        data: {
-            labels: ['1.0 - 2.5', '3.0 - 5.0', '5.5 - 7.5', '8.0 - 10.0'],
-            datasets: [
-              {
-                label: "General Score",
-                backgroundColor: ["#e83e8c", "#3cba9f","#4d79ff", "#b30059"],
-                data: scores
-              }
-            ]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'General Score'
-            },
-            responsive: true
+    const result = {}
+    var data = [
+      {
+        values: scores,
+        labels: ['1.0 - 2.5', '3.0 - 5.0', '5.5 - 7.5', '8.0 - 10.0'],
+        name: 'Score',
+        hoverinfo: 'label+percent',
+        hole: .6,
+        type: 'pie',
+        marker: {
+          colors: ["#e83e8c", "#3cba9f","#4d79ff", "#b30059"]
         }
+      }
+    ]
+
+    var layout = {
+      annotations: [
+        {
+          font: {
+            size: 16
+          },
+          showarrow: false,
+          text: 'Score',
+        },
+      ],
+      margin: {
+        l: 40,
+        r: 40,
+        b: 40,
+        t: 60
+      },
+      legend: {
+        orientation:'h',
+      },
+      height: 250,
+      width: 300,
+      showlegend: true
     }
-    return scoreChartData
+
+    result.data = data
+    result.layout = layout
+    return result
   }
 }
 

@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const auth = require('../config/auth_config');
-const filmRepo = require('../repositories/FilmRepository');
-const reviewRepo = require('../repositories/ReviewRepository');
-const commentRepo = require('../repositories/CommentRepository');
+const express = require('express')
+const router = express.Router()
+const auth = require('../config/auth_config')
+const filmRepo = require('../repositories/FilmRepository')
+const reviewRepo = require('../repositories/ReviewRepository')
+const commentRepo = require('../repositories/CommentRepository')
+const criterionRepo = require('../repositories/CriterionRepository')
 
 // GET all films
 router.get('/', (req, res) => {
@@ -67,6 +68,12 @@ router.get('/search/:query', (req, res) => {
         res.json(films)
     }).catch((error) => console.log(error))
 })
+
+router.get('/review-criteria', (req, res) => {
+    criterionRepo.findAll().then((criteria) => {
+        res.json(criteria);
+    }).catch((error) => console.log(error));
+});
 
 // POST query for advanced search
 router.post('/advanced-search', (req, res) => {

@@ -10,6 +10,10 @@ class CriterionRepository {
         return this.model.findById(id)
     }
 
+    findAll() {
+        return this.model.find()
+    }
+
     async addCriterion(data) {
         const criterion = {
             criterion: data.criterion,

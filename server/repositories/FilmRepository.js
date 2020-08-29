@@ -54,7 +54,7 @@ class FilmRepository {
           for(const review of film.reviews) {
             reviewData.push(review.reviewCriteria)
           }
-          matches.push({title: film.title, score: film.overallRating, criteria: reviewData })
+          matches.push({title: film.title, year: film.year, genre: film.genres, score: film.overallRating, criteria: reviewData })
         }
       }
     })

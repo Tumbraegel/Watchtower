@@ -42,25 +42,21 @@ class ScatterPlot {
           collectedGenres: collectedGenresPerCriterion,
         })
        }
-       // PREPARE GENRE LIST IN ADVANCE
-       // maybe third axis for how many times reviewed
-       // e.g Diversity
-       // ['14', '15', .....]
-       // ['Action', 'Thriller' ....]
+
        return result
     }
 
-    createPlot(preparedData) {
+    createPlot(preparedData, genres) {
+        console.log(genres)
         const result = {}
         const data = []
 
-        // SHOW ONE GRAPH THAT SHOWS diversity value for all genres
-        // then show one genre and its diversity values in specific
         for(const entry of preparedData) {
             console.log(entry.collectedScores)
             this[entry.name] = {
                 x: entry.collectedScores,
-                y: entry.collectedGenres,
+                y: genres,
+                z: [1,2,3,4,5],
                 mode: 'markers',
                 type: 'scatter',
                 name: entry.name,

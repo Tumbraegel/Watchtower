@@ -14,6 +14,14 @@ class CriterionRepository {
         return this.model.find()
     }
 
+    async getAllReviewCriteria() {
+        const listOfReviewCriteria = []
+        await this.findAll().then(response => {
+            for(const entry of response) listOfReviewCriteria.push(entry.criterion)
+        })
+        return listOfReviewCriteria
+    }
+
     async addCriterion(data) {
         const criterion = {
             criterion: data.criterion,

@@ -14,10 +14,14 @@ router.get('/', (req, res) => {
 });
 
 router.get('/statistics', async (req, res) => {
+    const listOfReviewCriteria = await criterionRepo.getAllReviewCriteria()
+    const listOfGenres = await filmRepo.getAllGenres()
     filmRepo.getInitialStatistics().then((films) => {
-        res.json(films);
-    }).catch((error) => console.log(error));
-});
+        films.reviewCriteria = listOfReviewCriteria
+        films.genreList = listOfGenres
+        res.json(films)
+    }).catch((error) => console.log(error))
+})
 
 // GET all films and filter by query
 router.get('/statistics/:query', (req, res) => {
@@ -68,12 +72,6 @@ router.get('/search/:query', (req, res) => {
         res.json(films)
     }).catch((error) => console.log(error))
 })
-
-router.get('/review-criteria', (req, res) => {
-    criterionRepo.findAll().then((criteria) => {
-        res.json(criteria);
-    }).catch((error) => console.log(error));
-});
 
 // POST query for advanced search
 router.post('/advanced-search', (req, res) => {

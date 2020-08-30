@@ -5,8 +5,7 @@ export const statistics = {
     state: {
         initialData: [],
         listOfReviewCriteria: [],
-        userFilteredFilms: [],
-        genres: []
+        listOfGenres: []
     },
   
     actions: {
@@ -22,30 +21,13 @@ export const statistics = {
                 return Promise.reject(error)
             }
         },
-
-        async fetchReviewCriteria({commit}) {
-            try {
-                await FilmService.getExistingReviewCriteria().then(response => {
-                    commit('SET_REVIEW_CRITERIA', response.data)
-                    return Promise.resolve(response.data)
-                })
-            }
-            catch (error) {
-                console.log("Error in fetching review criteria.")
-                return Promise.reject(error)
-            }
-        }
     },
 
     mutations: {
         SET_INITIAL_STATE(state, response) {
-            state.initialData = response
-        },
-
-        SET_REVIEW_CRITERIA(state, response) {
-            for(const entry of response) {
-                state.listOfReviewCriteria.push(entry.criterion)
-            }
+            state.initialData = response.films
+            state.listOfReviewCriteria = response.reviewCriteria
+            state.listOfGenres = response.genreList
         }
     },
   }

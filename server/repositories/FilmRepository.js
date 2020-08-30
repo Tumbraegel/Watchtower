@@ -31,14 +31,17 @@ class FilmRepository {
     return this.model.find({ genres: genre });
   }
 
+  // TODO: dynamic data for criterialist missing
   async getInitialStatistics() {
-    let results = []
+    const results = {}
+    let listOfFilms = []
     const criteriaList = 'Diversity|Queer Friendliness|Gender Equality'
 
     await this.filterForFilmsWithReviewCriteria(criteriaList).then(response => {
-      results = response
+      listOfFilms = response
+      results.films = listOfFilms
     })
-    console.log(results)
+    console.log(listOfFilms)
     return results
   }
 

@@ -38,10 +38,6 @@ class FilmService {
   executeSimpleSearch(keyword) {
     return axios.get(API_URL + '/search/' + keyword)
   }
-
-  getExistingReviewCriteria() {
-    return axios.get(API_URL + '/review-criteria')
-  }
 }
 
 export default new FilmService()

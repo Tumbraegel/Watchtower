@@ -92,8 +92,8 @@ class ReviewCriteriaChartService {
         b: 40,
         t: 150
       },
-      height: 250,
-      width: 300,
+      height: 400,
+      width: 550,
       xaxis: {
         title: 'Score',
           titlefont: {

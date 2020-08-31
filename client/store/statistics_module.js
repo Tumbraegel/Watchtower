@@ -7,7 +7,7 @@ export const statistics = {
         listOfReviewCriteria: [],
         listOfGenres: []
     },
-  
+
     actions: {
         async fetchInitialState({ commit }) {
             try {

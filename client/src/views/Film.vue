@@ -53,8 +53,17 @@
               <strong>Awards:</strong>
               {{ film.awards }}
             </p>
-
-            <div class="comment-section" style="margin-top:100px;">
+            <div>
+            <chart-item v-if="dataLoaded" />
+          </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div style="margin: auto; width: 50%;">
+              <img :src="film.poster" :alt="film.title" />
+            </div>
+            <div style="margin: auto; width: 50%">
+                          <div class="comment-section" style="margin-top:100px;">
               <h5>Comments</h5>
               <div class="row">
                 <div class="col-11">
@@ -118,13 +127,6 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-4">
-            <div style="margin: auto; width: 50%;">
-              <img :src="film.poster" :alt="film.title" />
-            </div>
-            <div style="margin: auto; width: 50%">
-              <chart-item v-if="dataLoaded" />
             </div>
           </div>
         </div>

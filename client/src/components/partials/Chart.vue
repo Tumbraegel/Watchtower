@@ -1,14 +1,19 @@
 <template>
   <div>
-      <div id="reviewCriteriaChart"></div>
-      <div id="scoresChart"></div>
+    <div class="row">
+        <div id="reviewCriteriaChart" class=col-md-8></div>
+    </div>
+    <div class="row">
+        <div id="pieChartReviewCriteria" class=col-md-4></div>
+        <div id="pieChartRating" class=col-md-4></div>
+    </div>
   </div>
 </template>
 
 <script>
 import Plotly from 'plotly.js-dist'
 import ReviewCriteriaChartService from '../../models/chart_models/chart_criteria'
-import ScoreChartService from '../../models/chart_models/chart_score'
+import ScoreChartService from '../../models/chart_models/chart_pie'
 import { mapState } from 'vuex'
 
 export default {
@@ -23,11 +28,12 @@ export default {
   },
 
   computed: {
-    ...mapState('film', ['reviewList']),
+    ...mapState('film', ['reviewList', 'filmContext', 'reviewCriteriaList']),
   }, 
 
   created() {
     this.getChartData(this.reviewList)
+    this.ScoreChartService.fetchCriteriaScores(this.reviewList, this.reviewCriteriaList)
   },
 
   methods: {
@@ -40,8 +46,13 @@ export default {
       const reviewCriteria = await this.ReviewCriteriaChartService.fetchReviewCriteria(reviews)
       const reviewCriteriaChart = this.ReviewCriteriaChartService.getReviewCriteriaData(reviewCriteria)
 
+      // get chart data for percentage of reviewed criteria of selected film
+      const reviewCriteriaScores = await this.ScoreChartService.fetchCriteriaScores(reviews, this.reviewCriteriaList)
+      const criteriaScoresChart = this.ScoreChartService.getScoreData(reviewCriteriaScores)
+
       Plotly.newPlot('reviewCriteriaChart', reviewCriteriaChart.data, reviewCriteriaChart.layout)
-      Plotly.newPlot('scoresChart', scoresChart.data, scoresChart.layout)
+      Plotly.newPlot('pieChartRating', scoresChart.data, scoresChart.layout)
+      Plotly.newPlot('pieChartReviewCriteria', criteriaScoresChart.data, criteriaScoresChart.layout)
     },
 
     showCanvasInModal() {

@@ -9,8 +9,8 @@ const criterionRepo = require('../repositories/CriterionRepository')
 // GET all films
 router.get('/', (req, res) => {
     filmRepo.findAll().then((films) => {
-        res.json(films);
-    }).catch((error) => console.log(error));
+        res.json(films)
+    }).catch((error) => console.log(error))
 });
 
 router.get('/statistics', async (req, res) => {
@@ -26,21 +26,23 @@ router.get('/statistics', async (req, res) => {
 // GET all films and filter by query
 router.get('/statistics/:query', (req, res) => {
     filmRepo.filterByQuery().then((films) => {
-        res.json(films);
-    }).catch((error) => console.log(error));
+        res.json(films)
+    }).catch((error) => console.log(error))
 });
 
 // GET one film
 router.get('/film/:id', async (req, res) => {
-    const id = Object(req.params.id);
-    const commentList = await commentRepo.getAllCommentsPer(id);
-    const film = await filmRepo.findByImdbID(id);
-    const reviewList = await reviewRepo.getReviewDataOfOneFilm(film._id);
+    const id = Object(req.params.id)
+    const commentList = await commentRepo.getAllCommentsPer(id)
+    const film = await filmRepo.findByImdbID(id)
+    const reviewList = await reviewRepo.getReviewDataOfOneFilm(film._id)
+    const listOfReviewCriteria = await criterionRepo.getAllReviewCriteria()
     filmRepo.findFilmByImdbID(id).then(film => {
-        film.push({comments: commentList});
-        film.push({reviews: reviewList});
-        res.json(film);
-    }).catch((error) => console.log("Errors " + error));
+        film.push({comments: commentList})
+        film.push({reviews: reviewList})
+        film.push({listOfReviewCriteria: listOfReviewCriteria})
+        res.json(film)
+    }).catch((error) => console.log("Errors " + error))
 });
 
 router.get('/film/:id/comments', (req, res) => {

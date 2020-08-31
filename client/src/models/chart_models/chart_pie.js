@@ -4,6 +4,7 @@
 class ScoreChartService {
 
   fetchScores(reviews) {
+    const result = {type: 'rating', values: [], labels: ['1.0 - 2.5', '3.0 - 5.0', '5.5 - 7.5', '8.0 - 10.0']}
     const scoreData = []
     const scores = [0,0,0,0]
     
@@ -33,15 +34,44 @@ class ScoreChartService {
     scores[2] = Number(range3)
     scores[3] = Number(range4)
 
-    return scores
+    result.values = scores
+
+    return result
   }
 
-  getScoreData(scores) {
+  fetchCriteriaScores(reviews, currentReviewCriteria) {
+    const result = {type: 'reviewCriteria', values: [], labels: []}
+    const data = []
+
+    for(const criterion of currentReviewCriteria) {
+      data.push({name: criterion, amount: 0})
+    }
+
+    for(const review of reviews) {
+      for(const value of review.reviewCriteria) {
+        for(const entry of data) {
+          if(entry.name == value.name) {
+            entry.amount += 1
+          }
+        }
+      }
+    }
+    for(const entry of data) {
+      result.labels.push(entry.name)
+      result.values.push(entry.amount)
+    }
+    console.log(result)
+    return result
+  }
+
+  getScoreData(data) {
+    console.log(data.labels)
     const result = {}
-    var data = [
+    
+    var chartData = [
       {
-        values: scores,
-        labels: ['1.0 - 2.5', '3.0 - 5.0', '5.5 - 7.5', '8.0 - 10.0'],
+        values: data.values,
+        labels: data.labels,
         name: 'Score',
         hoverinfo: 'label+percent',
         hole: .6,
@@ -66,7 +96,7 @@ class ScoreChartService {
         l: 40,
         r: 40,
         b: 40,
-        t: 60
+        t: 40
       },
       legend: {
         orientation:'h',
@@ -76,7 +106,7 @@ class ScoreChartService {
       showlegend: true
     }
 
-    result.data = data
+    result.data = chartData
     result.layout = layout
     return result
   }

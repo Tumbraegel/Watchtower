@@ -5,7 +5,8 @@ export const film = {
     state: {
         filmContext: {},
         reviewList: [],
-        commentList: []
+        commentList: [],
+        reviewCriteriaList: []
     },
 
     getters: {
@@ -72,7 +73,8 @@ export const film = {
         SET_FILM_CONTEXT(state, response) {
             state.filmContext = response[0]
             state.commentList = response[1].comments
-            state.reviewList = response[2].reviews 
+            state.reviewList = response[2].reviews
+            state.reviewCriteriaList = response[3].listOfReviewCriteria
         },
 
         ADD_COMMENT(state, response) {

@@ -3,24 +3,21 @@
 
 class ReviewCriteriaChartService {
 
-  async fetchReviewCriteria(reviews) {
-    const diversity = []
-    const genderEquality = []
-    const queerFriendliness = []
-
-    const reviewCriteria = { diversity, genderEquality, queerFriendliness }
+  async fetchReviewCriteria(reviews, currentReviewCriteria) {
+    const data = []
+    
+    for(const criterion of currentReviewCriteria) {
+      data.push({name: criterion, results: []})
+    }
 
     for (const review of reviews) {
       for (const value of review.reviewCriteria) {
-        if (value.name == "Diversity") {
-          diversity.push(value.result)
-        } else if (value.name == "Gender Equality")
-          genderEquality.push(value.result)
-        else if (value.name == "Queer Friendliness")
-          queerFriendliness.push(value.result)
+        for(const entry of data) {
+          if(entry.name == value.name) entry.results.push(value.result)
+        }
       }
     }
-    return reviewCriteria
+    return data
   }
 
   calculateCollectedCriteriaResults(reviewCriteria) {
@@ -46,14 +43,15 @@ class ReviewCriteriaChartService {
       17: 9.5,
       18: 10,
     }
-    for(const [criterionKey, criterionValues] of Object.entries(reviewCriteria)) {
+    console.log(reviewCriteria)
+    for(const criterion of reviewCriteria) {
       let results = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
       for(const [key, value] of Object.entries(scores)) {
-        for(const entry of criterionValues) {
+        for(const entry of criterion.results) {
           if(entry == value) {
             results[key] += 1
           }
-          lists[criterionKey] = results
+          lists[criterion.name] = results
         }
       }
     }
@@ -66,7 +64,7 @@ class ReviewCriteriaChartService {
 
     // fixed values
     const xAxisValues = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10] 
-    const colorArray = ['#3cba9f', '#b30059', '#4775d1']
+    const colorArray = ['#b30059','#3cba9f','#4d79ff','#e83e8c']
     let count = -1
 
     if(Object.keys(result).length != 0) {
@@ -92,8 +90,8 @@ class ReviewCriteriaChartService {
         b: 40,
         t: 150
       },
-      height: 400,
-      width: 550,
+      height: 450,
+      width: 500,
       xaxis: {
         title: 'Score',
           titlefont: {

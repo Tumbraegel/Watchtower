@@ -12,7 +12,7 @@
 
 <script>
 import Plotly from 'plotly.js-dist'
-import ReviewCriteriaChartService from '../../models/chart_models/chart_criteria'
+import ReviewCriteriaChartService from '../../models/chart_models/chart_bar_criteria'
 import ScoreChartService from '../../models/chart_models/chart_pie'
 import { mapState } from 'vuex'
 
@@ -43,7 +43,7 @@ export default {
       const scoresChart = this.ScoreChartService.getScoreData(scores)
       
       // get chart data for all review criteria of selected film
-      const reviewCriteria = await this.ReviewCriteriaChartService.fetchReviewCriteria(reviews)
+      const reviewCriteria = await this.ReviewCriteriaChartService.fetchReviewCriteria(reviews, this.reviewCriteriaList)
       const reviewCriteriaChart = this.ReviewCriteriaChartService.getReviewCriteriaData(reviewCriteria)
 
       // get chart data for percentage of reviewed criteria of selected film

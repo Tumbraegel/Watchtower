@@ -3,7 +3,6 @@
     <div class="container">
       <br />
       <p>Statistics Area</p>
-      <button @click="createPlot()">Click me!</button>
       <div class="dropdown col-md-1">
         <button class="btn btn-outline-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Select
@@ -17,7 +16,6 @@
       <!-- <div id="scatterPlot"></div> -->
       <div id="boxPlot"></div> 
     </div>
-
   </div>
 </template>
 
@@ -64,10 +62,6 @@ export default {
       const result = await this.BoxPlot.createPlot(data, this.listOfGenres, criterion)
       Plotly.newPlot('boxPlot', result.data, result.layout)
     },
-
-    createPlot() {
-
-    }
   },
 }
 </script>

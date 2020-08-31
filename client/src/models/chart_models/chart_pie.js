@@ -74,7 +74,7 @@ class ScoreChartService {
         hole: .6,
         type: 'pie',
         marker: {
-          colors: ["#e83e8c", "#3cba9f","#4d79ff", "#b30059"]
+          colors: ['#b30059','#3cba9f','#4d79ff','#e83e8c']
         }
       }
     ]

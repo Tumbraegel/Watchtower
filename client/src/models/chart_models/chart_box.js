@@ -47,7 +47,6 @@ class ScatterPlot {
 
         for(const entry of preparedData) {    
             if(entry.criterion == criterion) {
-                console.log(entry)
                 for(const genre of genres) {
                     yAxisData.push([]) // push empty array for each existing genre
                     for(const item of entry.results) {   

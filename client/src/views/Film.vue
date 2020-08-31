@@ -7,8 +7,8 @@
         <p class="col-md-3" v-if="userScoreForThisFilm != ''">Your score: {{ userScoreForThisFilm }}</p>
       </div>
       <div class="row">
-        <button v-if="userScoreForThisFilm != ''" style="float: right;" class="btn btn-custom col-md-3" @click="checkifUserLoggedIn('review')">Review again</button>
-        <button v-else style="float: right;" class="btn btn-custom col-md-2" @click="checkifUserLoggedIn('review')">Review</button>
+        <button v-if="userScoreForThisFilm != ''" style="float: right;" class="btn btn-custom col-md-3" @click="checkifUserLoggedIn()">Review again</button>
+        <button v-else style="float: right;" class="btn btn-custom col-md-2" @click="checkifUserLoggedIn()">Review</button>
       </div>
       </div>
     </div>
@@ -59,97 +59,25 @@
           </div>
           
           <div class="col-md-4">
-            <div style="margin: auto; width: 50%;">
+            <div style="margin: auto">
               <img :src="film.poster" :alt="film.title" />
             </div>
-            <div style="margin: auto; width: 50%">
-                          <div class="comment-section" style="margin-top:100px;">
-              <h5>Comments</h5>
-              <div class="row">
-                <div class="col-11">
-                  <button
-                    class="btn btn-outline-warning"
-                    @click="checkifUserLoggedIn('comment')"
-                  >Write</button>
-                  <div v-for="comment in commentList" :comment="comment" :key="comment._id">
-                    <li class="list-group-item list-group-item-outline-primary">
-                      {{comment.body}}
-                       <span style="float:right;">{{ comment.upvotes.length }} | {{ comment.downvotes.length }}</span>
-                      <div style="float:right;">
-                      <button
-                        @click="voteForComment('downvote', comment._id)"
-                        v-if="!comment.downvotes.includes(user._id)"
-                        class="btn btn-comment-vote"
-                        style="float: right; margin-right: 5px;"
-                      >&#8595;</button>
-                      <button
-                        disabled
-                        v-if="comment.downvotes.includes(user._id)"
-                        class="btn btn-comment-disabled"
-                        style="float: right; margin-right: 5px;"
-                      >&#8595;</button>
-                      <button
-                        @click="voteForComment('upvote', comment._id)"
-                        v-if="!comment.upvotes.includes(user._id)"
-                        class="btn btn-comment-vote"
-                        style="float: right;"
-                      >&#8593;</button>
-                      <button
-                        disabled
-                        v-if="comment.upvotes.includes(user._id)"
-                        class="btn btn-comment-disabled"
-                        style="float: right;"
-                      >&#8593;</button>
-                      </div>
-                    </li>
-                    <div>
-                    <span
-                      v-if="comment.author == user._id"
-                      @click="checkifUserLoggedIn('commentEdit', comment._id, comment.body)"
-                      class="badge badge-light"
-                      style="cursor: pointer; float:right;"
-                    >edit</span>
-                    <span
-                      v-if="comment.author == user._id"
-                      @click="checkifUserLoggedIn('commentDelete', comment._id)"
-                      class="badge badge-light"
-                      style="cursor: pointer; float:right;"
-                    >delete</span>
-                    </div>
-                    <small style="color: gray; margin-right: 10px;">{{ comment.username }}</small>
-                    <!-- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString -->
-                    <small style="color: lightgray">
-                      ({{ new Date(comment.updatedAt).toLocaleDateString('en-GB', {weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' }) }}
-                      {{ new Date(comment.updatedAt).toLocaleTimeString('en-GB') }} )
-                    </small>
-                  </div>
-                  <br />
-                </div>
-              </div>
-            </div>
+            <div style="margin: auto; padding-top: 20px">
+                <comment-list :commentList="commentList"></comment-list>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <modal-review v-show="isModalVisible" @close="closeModal('review')" />
-    <modal-comment
-      :toBeEdited="toBeEdited"
-      :commentId="commentId"
-      :commentBody="commentBody"
-      :user="user"
-      v-show="isModalCommentVisible"
-      @close="closeModal('comment')"
-    />
-    <modal-chart v-show="isChartModalVisible" @close="closeModal('chart')" />
+    <modal-review v-show="isModalVisible" @close="closeModal()" />
+
   </div>
 </template>
 
 <script>
+import CommentList from '../components/CommentList'
 import ModalReview from '../components/partials/ModalReview'
-import ModalComment from '../components/partials/ModalComment'
-import ModalChart from '../components/partials/ModalChart'
 import UserService from '../services/user_service.js'
 import ChartItem from '../components/partials/Chart'
 import swal from 'sweetalert'
@@ -158,27 +86,21 @@ import { mapState, mapActions } from 'vuex'
 export default {
   name: "Film",
   components: {
+    CommentList,
     ModalReview,
-    ModalComment,
-    ModalChart,
     ChartItem,
   },
 
   data() {
     return {
       film: {},
-      commentId: "",
-      commentBody: "",
       reviews: [],
-      comments: [],
       isModalVisible: false,
-      isModalCommentVisible: false,
-      isChartModalVisible: false,
       toBeEdited: false,
-      user: {},
       userScoreForThisFilm: '',
-      dataLoaded: false
-    };
+      dataLoaded: false,
+      user: {}
+    }
   },
 
   computed: {
@@ -186,7 +108,7 @@ export default {
 
     currentUser() {
       return this.$store.state.auth.user
-    },
+    }
   },
 
   async created() {
@@ -203,26 +125,13 @@ export default {
       const filmInformation = this.fetchFilmContext(this.$route.params.id).then(() => {
         this.film = this.filmContext
         this.reviews = this.reviewList
-        this.comments = this.commentList
       })
       if(this.reviews.length) this.reviewsPopulated = true
       return filmInformation
     },
 
-    checkifUserLoggedIn(modal, commentId, commentBody) {
-      if (this.currentUser && modal == "review") this.showModal("review")
-      else if (this.currentUser && modal == "comment")
-        this.showModal("comment")
-      else if (!this.currentUser && modal == "comment")
-        swal("", "You need to be signed in to leave a comment!", "warning", {
-          buttons: false,
-          timer: 2000,
-        })
-      else if (this.currentUser && modal == "commentEdit")
-        this.showModal("commentEdit", commentId, commentBody)
-      else if (this.currentUser && modal == "commentDelete") {
-        this.deleteComment(commentId)
-      }
+    checkifUserLoggedIn() {
+      if (this.currentUser) this.showModal()
       else
         swal("", "You need to be signed in to review a film!", "warning", {
           buttons: false,
@@ -249,64 +158,14 @@ export default {
       if(userReviewForThisFilm.length) this.userScoreForThisFilm = userReviewForThisFilm[0].rating
     },
 
-    showModal(modal, commentId, commentBody) {
-      if (modal == "review") this.isModalVisible = true;
-      else if (modal == "comment") this.isModalCommentVisible = true;
-      else if (modal == "commentEdit") {
-        this.isModalCommentVisible = true;
-        this.toBeEdited = true;
-        this.commentId = commentId;
-        this.commentBody = commentBody;
-      } else if (modal == "chart") this.isChartModalVisible = true;
+    showModal() {
+      this.isModalVisible = true
     },
 
-    closeModal(modal) {
-      if (modal == "review") this.isModalVisible = false;
-      else if (modal == "comment" || modal == "commentEdit") {
-        this.isModalCommentVisible = false;
-        this.toBeEdited = false;
-      } else if (modal == "chart") this.isChartModalVisible = false;
-    },
-
-    voteForComment(type, comment_id) {
-      if(this.currentUser) {
-        const id = this.$route.params.id
-        const payload = {
-          comment_id: comment_id,
-          vote: type,
-        };
-
-        console.log(type);
-        console.log(comment_id);
-        UserService.postCommentVote(payload, id).then(
-          (response) => {
-            console.log(response)
-          },
-          (error) => {
-            console.log(error.response)
-          }
-        )
-      } else {
-        swal("", "You need to be signed in to vote on a comment!", "warning", {
-          buttons: false,
-          timer: 2000,
-        })
-      }
-
-    },
-
-    deleteComment(id) {
-      swal({
-        title: 'Delete this comment?',
-        text: 'Are you sure? You won\'t be able to revert this!',
-        icon: 'warning',
-        buttons: true,
-      }).then((confirmed) => {
-          if (confirmed) {
-            this.$store.dispatch('film/deleteComment', id)
-      }})
-    },
-  },
+    closeModal() {
+      this.isModalVisible = false
+    }
+  }
 }
 </script>
 
@@ -351,26 +210,5 @@ export default {
 .modal-wrapper {
   display: table-cell;
   vertical-align: middle;
-}
-
-.btn-comment-vote {
-  color: purple;
-  border-radius: 50px;
-  border-color: purple;
-  padding: 1px 8px 1px 8px;
-  font-size: 13px;
-}
-
-.btn-comment-vote:hover {
-  background-color: purple;
-  color: whitesmoke;
-}
-
-.btn-comment-disabled {
-  color: gray;
-  border-radius: 50px;
-  border-color: gray;
-  padding: 1px 8px 1px 8px;
-  font-size: 13px;
 }
 </style>

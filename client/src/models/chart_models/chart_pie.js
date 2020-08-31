@@ -4,7 +4,7 @@
 class ScoreChartService {
 
   fetchScores(reviews) {
-    const result = {type: 'rating', values: [], labels: ['1.0 - 2.5', '3.0 - 5.0', '5.5 - 7.5', '8.0 - 10.0']}
+    const result = {values: [], labels: ['1.0 - 2.5', '3.0 - 5.0', '5.5 - 7.5', '8.0 - 10.0']}
     const scoreData = []
     const scores = [0,0,0,0]
     
@@ -35,12 +35,11 @@ class ScoreChartService {
     scores[3] = Number(range4)
 
     result.values = scores
-
     return result
   }
 
   fetchCriteriaScores(reviews, currentReviewCriteria) {
-    const result = {type: 'reviewCriteria', values: [], labels: []}
+    const result = {values: [], labels: []}
     const data = []
 
     for(const criterion of currentReviewCriteria) {
@@ -60,12 +59,10 @@ class ScoreChartService {
       result.labels.push(entry.name)
       result.values.push(entry.amount)
     }
-    console.log(result)
     return result
   }
 
   getScoreData(data) {
-    console.log(data.labels)
     const result = {}
     
     var chartData = [

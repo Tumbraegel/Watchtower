@@ -12,9 +12,14 @@ class CommentRepository {
         return this.model.findById(id);
     }
 
+    async getFilmById(id) {
+        const film = await filmRepo.findByImdbID(id)
+        return film
+    }
+
     async getAllCommentsPer(id) {
         const commentList = [];
-        const film = await filmRepo.findByImdbID(id);
+        const film = await this.getFilmById(id)
         const ObjectId = require('mongoose').Types.ObjectId; 
         const comments = await this.model.find({film: ObjectId(film._id)});
         

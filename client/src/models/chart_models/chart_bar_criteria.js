@@ -43,7 +43,6 @@ class ReviewCriteriaChartService {
       17: 9.5,
       18: 10,
     }
-    console.log(reviewCriteria)
     for(const criterion of reviewCriteria) {
       let results = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
       for(const [key, value] of Object.entries(scores)) {

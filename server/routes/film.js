@@ -6,6 +6,43 @@ const reviewRepo = require('../repositories/ReviewRepository')
 const commentRepo = require('../repositories/CommentRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
 
+// Helper methods
+async function getFilmById(id) {
+    return await filmRepo.findByImdbID(id)
+}
+
+async function getAllReviewCriteria() {
+    return await criterionRepo.getAllReviewCriteria()
+}
+
+async function getAllGenres() {
+    return await filmRepo.getAllGenres()
+}
+
+async function getAllCommentsPer(id) {
+    return await commentRepo.getAllCommentsPer(id)
+}
+
+async function getReviewDataOfOneFilm(id) {
+    let reviews = []
+    try {
+        const film = await getFilmById(id)
+        reviews = await reviewRepo.getReviewDataOfOneFilm(film._id)
+    } catch (error) {return next(error)}
+    return reviews
+}
+
+async function getAvailableDataForFilmPage(id) {
+    const data = {comments: [], reviews: [], reviewCriteria: []}
+    try {
+        data.comments = await getAllCommentsPer(id)
+        data.reviews = await getReviewDataOfOneFilm(id)
+        data.reviewCriteria = await getAllReviewCriteria()
+        return data
+    } catch (error) {return next(error)}
+}
+
+
 // GET all films
 router.get('/', (req, res) => {
     filmRepo.findAll().then((films) => {
@@ -13,9 +50,10 @@ router.get('/', (req, res) => {
     }).catch((error) => console.log(error))
 });
 
+// GET statistical data for films
 router.get('/statistics', async (req, res) => {
-    const listOfReviewCriteria = await criterionRepo.getAllReviewCriteria()
-    const listOfGenres = await filmRepo.getAllGenres()
+    const listOfReviewCriteria = await getAllReviewCriteria()
+    const listOfGenres = await getAllGenres()
     filmRepo.getInitialStatistics().then((films) => {
         films.reviewCriteria = listOfReviewCriteria
         films.genreList = listOfGenres
@@ -30,21 +68,21 @@ router.get('/statistics/:query', (req, res) => {
     }).catch((error) => console.log(error))
 });
 
+
 // GET one film
 router.get('/film/:id', async (req, res) => {
     const id = Object(req.params.id)
-    const commentList = await commentRepo.getAllCommentsPer(id)
-    const film = await filmRepo.findByImdbID(id)
-    const reviewList = await reviewRepo.getReviewDataOfOneFilm(film._id)
-    const listOfReviewCriteria = await criterionRepo.getAllReviewCriteria()
+    const data = await getAvailableDataForFilmPage(id)
+    console.log(data)
     filmRepo.findFilmByImdbID(id).then(film => {
-        film.push({comments: commentList})
-        film.push({reviews: reviewList})
-        film.push({listOfReviewCriteria: listOfReviewCriteria})
+        film.push({comments: data.comments})
+        film.push({reviews: data.reviews})
+        film.push({listOfReviewCriteria: data.reviewCriteria})
         res.json(film)
     }).catch((error) => console.log("Errors " + error))
 });
 
+// GET comments for one film
 router.get('/film/:id/comments', (req, res) => {
     const id = req.params.id
     commentRepo.getAllCommentsPer(id).then(comments => {
@@ -85,7 +123,7 @@ router.post('/advanced-search', (req, res) => {
 // POST film review
 router.post('/film/review/:id', auth, async (req, res) => {
     const id = req.params.id
-    const film = await filmRepo.findByImdbID(id)
+    const film = getFilmById(id)
     reviewRepo.createReview(film, req.body, req.user).then(review => {
         res.json(review)
     }).catch((error) => console.log(error))
@@ -94,7 +132,7 @@ router.post('/film/review/:id', auth, async (req, res) => {
 // POST film comment
 router.post('/film/:id/comment', auth, async (req, res) => {
     const id = req.params.id
-    const film = await filmRepo.findByImdbID(id)
+    const film = getFilmById(id)
     commentRepo.addComment(film, req.body, req.user).then(() => {
         res.json(req.body)
     }).catch((error) => console.log(error))
@@ -107,6 +145,7 @@ router.post('/film/:id/comment/vote', auth, async (req, res) => {
     }).catch((error) => console.log(error))
 })
 
+// DELETE a comment
 router.delete('/film/comment/delete/:id', auth, async (req, res) => {
     const id = req.params.id
     commentRepo.deleteComment(id).then(() => {

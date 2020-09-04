@@ -41,7 +41,7 @@ class FilmRepository {
       listOfFilms = response
       results.films = listOfFilms
     })
-    console.log(listOfFilms)
+    // console.log(listOfFilms)
     return results
   }
 

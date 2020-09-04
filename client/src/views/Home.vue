@@ -1,10 +1,8 @@
 <template>
   <div class='home'>
     <div class='container'>
-      <div class='bgimg'>
-        <h1>Welcome to this review website</h1>
+      <h1>Welcome to this review website</h1>
         <h4>Make sure to check out the Top Picks below</h4>
-      </div>
       <hr>
       <div>
         <h2>Featured Films</h2>
@@ -60,12 +58,4 @@ export default {
 </script>
 
 <style scoped>
-/*.bgimg {
-  background-image:  url('../assets/film-negative.jpg');
-  height: 50%;
-  opacity: 0.65;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}*/
 </style>

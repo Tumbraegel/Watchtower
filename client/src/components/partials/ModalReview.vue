@@ -43,13 +43,13 @@
                 <div v-if="nextSlide">
                   <div>
                     <p>Choose at least one criterion:</p>
-                    <div v-for="criterion in reviewCriteria" :key="criterion">
-                        <a
+                    <div v-for="entry in reviewCriteriaData" :key="entry">
+                      <a
                         href="#"
                         class="badge badge-warning"
                         style="margin-right: 6px;"
-                        @click="reviewSelected(criterion)"
-                      >{{ criterion }}</a>
+                        @click="reviewSelected(entry.criterion)"
+                      >{{ entry.criterion }}</a>
                     </div>
                   </div>
                   <hr />
@@ -95,7 +95,7 @@
 import UserService from "../../services/user_service.js"
 import ReviewCriteria from "./ModalReviewCriteria"
 import swal from 'sweetalert'
-import { mapActions, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: "ModalReview",
@@ -110,83 +110,70 @@ export default {
       reviewCriterion: "",
       reviewResult: 0,
       rating: 0,
-      allReviewResults: [],
-      initialState: []
-    };
+      allReviewResults: []
+    }
   },
 
   computed: {
-    ...mapState('statistics', ['listOfReviewCriteria']),
+    ...mapState('film', ['allReviewCriteriaData']),
     isEmpty: function () {
       return Object.keys(this.allReviewResults).length === 0
       },
-      reviewCriteria() {return this.listOfReviewCriteria}
-  },
-
-  created() {
-    this.getInitialData()
+      reviewCriteriaData() {return this.allReviewCriteriaData}
   },
 
   methods: {
-    ...mapActions('statistics', ['fetchInitialState']),
-
-    getInitialData() {
-      const initialData = this.fetchInitialState().then((response) => {
-        this.initialState = response
-      })
-      return initialData
-    },
-
     close() {
-      this.$emit("close");
+      this.$emit("close")
     },
 
     addCriterion(criterion) {
-      console.log(criterion);
-      const results = this.allReviewResults;
+      console.log(criterion)
+      const results = this.allReviewResults
       const entry = {
         name: criterion[0].name,
-        result: criterion[0].result
-      };
+        result: criterion[0].result,
+        questions: criterion[0].questions
+      }
 
       const criterionToOverwrite = results.findIndex(
         criterion => criterion.name === entry.name
-      );
+      )
 
       if (criterionToOverwrite > -1) {
         results.splice(criterionToOverwrite, 1);
       }
 
-      results.push(entry);
-      this.criterionSelected = false;
+      results.push(entry)
+      this.criterionSelected = false
     },
 
     clearSelection(entry) {
-      const results = this.allReviewResults;
+      const results = this.allReviewResults
       const index = results.findIndex(
         criterion => criterion.name === entry
-      );
+      )
       if (index > -1) results.splice(index, 1)
     },
 
     changeSlide() {
       if (!this.nextSlide) this.nextSlide = true;
-      else this.nextSlide = false;
+      else this.nextSlide = false
     },
 
     reviewSelected(value) {
-      this.criterionSelected = true;
-      this.reviewCriterion = value;
+      this.criterionSelected = true
+      this.reviewCriterion = value
     },
 
     submitReview() {
-      const id = this.$route.params.id;
+      const id = this.$route.params.id
       const payload = {
         rating: this.rating,
         reviewCriteria: this.allReviewResults
       }
 
-      console.log(payload);
+      console.log(payload)
       if(!payload.reviewCriteria.length) {
         swal({
           title: 'You\'re not quite done :)',
@@ -202,7 +189,7 @@ export default {
           error => {
             console.log(error.response)
           }
-        );
+        )
         this.close()
       }
     }

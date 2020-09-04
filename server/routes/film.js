@@ -15,6 +15,10 @@ async function getAllReviewCriteria() {
     return await criterionRepo.getAllReviewCriteria()
 }
 
+async function getAllReviewCriteriaData() {
+    return await criterionRepo.findAll()
+}
+
 async function getAllGenres() {
     return await filmRepo.getAllGenres()
 }
@@ -33,11 +37,12 @@ async function getReviewDataOfOneFilm(id) {
 }
 
 async function getAvailableDataForFilmPage(id) {
-    const data = {comments: [], reviews: [], reviewCriteria: []}
+    const data = {comments: [], reviews: [], reviewCriteria: [], reviewCriteriaAndTest: []}
     try {
         data.comments = await getAllCommentsPer(id)
         data.reviews = await getReviewDataOfOneFilm(id)
         data.reviewCriteria = await getAllReviewCriteria()
+        data.allReviewCriteriaData = await getAllReviewCriteriaData()
         return data
     } catch (error) {return next(error)}
 }
@@ -77,6 +82,7 @@ router.get('/film/:id', async (req, res) => {
         film.push({comments: data.comments})
         film.push({reviews: data.reviews})
         film.push({listOfReviewCriteria: data.reviewCriteria})
+        film.push({allReviewCriteriaData: data.allReviewCriteriaData})
         res.json(film)
     }).catch((error) => console.log("Errors " + error))
 });

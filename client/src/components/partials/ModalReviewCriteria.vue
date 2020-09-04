@@ -25,51 +25,86 @@
         <span class="slider-color">{{ reviewResult }}</span>
       </p>
     </div>
-    <small>Take optional {{ reviewTest }}</small>
+    <div @click="openTestQuestionsSection">
+      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-list-task" fill="currentColor" xmlns="http://www.w3.org/2000/svg" >
+        <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H2zM3 3H2v1h1V3z"/>
+        <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9z"/>
+        <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V7zM2 7h1v1H2V7zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5H2zm1 .5H2v1h1v-1z"/>
+      </svg>
+      <p>Take optional {{ reviewTest }}</p>
+    </div>
+    <div v-if="clickedOnTest">
+      <div v-for="question in testQuestions" :question="question" :key="question">
+        <div class="row">
+        <div class="col-md-10">{{ question }}</div>
+        <div class="col-md-2">
+          <input v-model="questions[question]" type="checkbox" class="form-check-input" >
+        </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
 name: "ModalReviewCriteria",
 props: ['reviewCriterion'],
+
 data() {
     return {
       reviewResult: 0,
-      reviewTest: "",
       value: "",
       result: [],
+      questions: {},
+      clickedOnTest: false,
       showConfirmButton: false,
-    };
+    }
   },
 
-  created() {
-    this.setReviewTest(this.reviewCriterion);
+  computed: {
+    ...mapState('film', ['allReviewCriteriaData']),
+    reviewCriteriaData() {return this.allReviewCriteriaData},
+    reviewTest() {
+      for(const entry of this.reviewCriteriaData) {
+        if(entry.criterion == this.reviewCriterion)
+          return entry.test
+      }
+      return null
+    },
+    testQuestions() {
+      for(const entry of this.reviewCriteriaData) {
+        if(entry.test == this.reviewTest)
+          return entry.questions
+      }
+      return null
+    }
   },
 
   methods: {
     setConfirmButton() {
-        this.showConfirmButton = true;
+      this.showConfirmButton = true
+    },
+
+    openTestQuestionsSection() {
+      this.clickedOnTest = true
     },
 
     confirmSelection() {
-      const selectedCriterion = [];
+      const selectedCriterion = []
       const criterion = {
         name: this.reviewCriterion,
         result: this.reviewResult,
-      };
+        questions: this.questions
+      }
 
-      this.result.push(this.reviewCriterion, this.reviewResult);
-      this.showConfirmButton = false;
+      this.result.push(this.reviewCriterion, this.reviewResult, this.questions)
+      this.showConfirmButton = false
 
       selectedCriterion.push(criterion);
-      this.$emit("addCriterion", selectedCriterion);
-    },
-
-    setReviewTest(value) {
-      if (value == "Diversity") this.reviewTest = "Duvernay Test";
-      if (value == "Queer Friendliness") this.reviewTest = "Russo Test";
-      if (value == "Gender Equality") this.reviewTest = "Bechdel Test";
+      this.$emit("addCriterion", selectedCriterion)
     },
   }
 }

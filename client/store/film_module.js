@@ -6,7 +6,8 @@ export const film = {
         filmContext: {},
         reviewList: [],
         commentList: [],
-        reviewCriteriaList: []
+        reviewCriteriaList: [],
+        allReviewCriteriaData: []
     },
 
     getters: {
@@ -65,8 +66,6 @@ export const film = {
                 return Promise.reject(error)
               }
         }
-
-        // async updateComment() {},
     },
 
     mutations: {
@@ -75,6 +74,7 @@ export const film = {
             state.commentList = response[1].comments
             state.reviewList = response[2].reviews
             state.reviewCriteriaList = response[3].listOfReviewCriteria
+            state.allReviewCriteriaData = response[4].allReviewCriteriaData
         },
 
         ADD_COMMENT(state, response) {

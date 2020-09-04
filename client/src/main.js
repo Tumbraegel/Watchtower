@@ -10,10 +10,10 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 const http = axios.create({
   baseURL: process.env.BACKEND_URL ? process.env.BACKEND_URL : 'http://localhost:8000',
-});
+})
 
-Vue.prototype.$http = http;
-Vue.config.productionTip = false;
+Vue.prototype.$http = http
+Vue.config.productionTip = false
 
 new Vue({
   router,

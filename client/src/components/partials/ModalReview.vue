@@ -40,31 +40,17 @@
                   </div>
                 </div>
 
-                <!--<small small
-                  class="form-text text-muted"
-                  style="margin-bottom:15px;"
-                >Just go with your gut feeling!</small>-->
                 <div v-if="nextSlide">
                   <div>
-                    <p>Choose at least one indicator:</p>
-                    <a
-                      href="#"
-                      class="badge badge-warning"
-                      style="margin-right: 6px;"
-                      @click="reviewSelected('Diversity')"
-                    >Diversity</a>
-                    <a
-                      href="#"
-                      class="badge badge-info"
-                      style="margin-right: 6px;"
-                      @click="reviewSelected('Queer Friendliness')"
-                    >Queer Friendliness</a>
-                    <a
-                      href="#"
-                      class="badge badge-primary"
-                      style="margin-right: 6px;"
-                      @click="reviewSelected('Gender Equality')"
-                    >Gender Equality</a>
+                    <p>Choose at least one criterion:</p>
+                    <div v-for="criterion in reviewCriteria" :key="criterion">
+                        <a
+                        href="#"
+                        class="badge badge-warning"
+                        style="margin-right: 6px;"
+                        @click="reviewSelected(criterion)"
+                      >{{ criterion }}</a>
+                    </div>
                   </div>
                   <hr />
 
@@ -109,6 +95,7 @@
 import UserService from "../../services/user_service.js"
 import ReviewCriteria from "./ModalReviewCriteria"
 import swal from 'sweetalert'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: "ModalReview",
@@ -124,16 +111,32 @@ export default {
       reviewResult: 0,
       rating: 0,
       allReviewResults: [],
+      initialState: []
     };
   },
 
   computed: {
+    ...mapState('statistics', ['listOfReviewCriteria']),
     isEmpty: function () {
       return Object.keys(this.allReviewResults).length === 0
-      }
+      },
+      reviewCriteria() {return this.listOfReviewCriteria}
+  },
+
+  created() {
+    this.getInitialData()
   },
 
   methods: {
+    ...mapActions('statistics', ['fetchInitialState']),
+
+    getInitialData() {
+      const initialData = this.fetchInitialState().then((response) => {
+        this.initialState = response
+      })
+      return initialData
+    },
+
     close() {
       this.$emit("close");
     },
@@ -181,23 +184,30 @@ export default {
       const payload = {
         rating: this.rating,
         reviewCriteria: this.allReviewResults
-      };
+      }
 
       console.log(payload);
-
-      UserService.postReview(payload, id).then(
-        response => {
-          console.log(response)
-          swal('Done!', 'You rated this film with a score of ' + payload.rating, 'success', { buttons: false, timer: 2500 });
-        },
-        error => {
-          console.log(error.response);
-        }
-      );
-      this.close();
+      if(!payload.reviewCriteria.length) {
+        swal({
+          title: 'You\'re not quite done :)',
+          text: 'You need to review at least one extra criterion.',
+          icon: 'warning',
+        })
+      } else {
+        UserService.postReview(payload, id).then(
+          response => {
+            console.log(response)
+            swal('Done!', 'You rated this film with a score of ' + payload.rating, 'success', { buttons: false, timer: 2500 });
+          },
+          error => {
+            console.log(error.response)
+          }
+        );
+        this.close()
+      }
     }
   }
-};
+}
 </script>
 
 <style>

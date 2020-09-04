@@ -73,7 +73,6 @@ router.get('/statistics/:query', (req, res) => {
 router.get('/film/:id', async (req, res) => {
     const id = Object(req.params.id)
     const data = await getAvailableDataForFilmPage(id)
-    console.log(data)
     filmRepo.findFilmByImdbID(id).then(film => {
         film.push({comments: data.comments})
         film.push({reviews: data.reviews})
@@ -123,7 +122,7 @@ router.post('/advanced-search', (req, res) => {
 // POST film review
 router.post('/film/review/:id', auth, async (req, res) => {
     const id = req.params.id
-    const film = getFilmById(id)
+    const film = await getFilmById(id)
     reviewRepo.createReview(film, req.body, req.user).then(review => {
         res.json(review)
     }).catch((error) => console.log(error))
@@ -132,7 +131,7 @@ router.post('/film/review/:id', auth, async (req, res) => {
 // POST film comment
 router.post('/film/:id/comment', auth, async (req, res) => {
     const id = req.params.id
-    const film = getFilmById(id)
+    const film = await getFilmById(id)
     commentRepo.addComment(film, req.body, req.user).then(() => {
         res.json(req.body)
     }).catch((error) => console.log(error))

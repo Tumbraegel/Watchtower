@@ -59,6 +59,9 @@ class ScatterPlot {
         // count how often a film was reviewed with specific value (e.g 8.5) AND has the genre 'Bla'
         // SHOW ONE GRAPH THAT SHOWS diversity value for all genres
         // then show one genre and its diversity values in specific
+
+        
+        // #3f60fa
         for(const entry of preparedData) {
             console.log(entry.collectedScores)
             this[entry.name] = {

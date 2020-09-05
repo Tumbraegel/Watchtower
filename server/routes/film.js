@@ -58,10 +58,12 @@ router.get('/', (req, res) => {
 // GET statistical data for films
 router.get('/statistics', async (req, res) => {
     const listOfReviewCriteria = await getAllReviewCriteria()
+    const allReviewCriteriaData = await getAllReviewCriteriaData()
     const listOfGenres = await getAllGenres()
     filmRepo.getInitialStatistics().then((films) => {
         films.reviewCriteria = listOfReviewCriteria
         films.genreList = listOfGenres
+        films.reviewCriteriaData = allReviewCriteriaData
         res.json(films)
     }).catch((error) => console.log(error))
 })

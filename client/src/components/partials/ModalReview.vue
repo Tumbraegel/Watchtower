@@ -128,12 +128,11 @@ export default {
     },
 
     addCriterion(criterion) {
-      console.log(criterion)
       const results = this.allReviewResults
       const entry = {
-        name: criterion[0].name,
-        result: criterion[0].result,
-        questions: criterion[0].questions
+        name: criterion.name,
+        result: criterion.result,
+        testResult: criterion.testResult
       }
 
       const criterionToOverwrite = results.findIndex(

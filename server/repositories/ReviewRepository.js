@@ -26,8 +26,6 @@ class ReviewRepository {
     
     async createReview(film, data, userData) {
         const user = await User.findById(userData.id)
-        //const film = await filmRepo.findFilmByImdbID(id)
-        
         const review = {
             rating: data.rating,
             reviewCriteria: data.reviewCriteria,

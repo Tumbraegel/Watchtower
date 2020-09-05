@@ -5,6 +5,7 @@ export const statistics = {
     state: {
         initialData: [],
         listOfReviewCriteria: [],
+        allReviewCriteriaData: [],
         listOfGenres: []
     },
 
@@ -27,6 +28,7 @@ export const statistics = {
         SET_INITIAL_STATE(state, response) {
             state.initialData = response.films
             state.listOfReviewCriteria = response.reviewCriteria
+            state.allReviewCriteriaData = response.reviewCriteriaData
             state.listOfGenres = response.genreList
         }
     },

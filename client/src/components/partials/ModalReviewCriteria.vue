@@ -34,11 +34,11 @@
       <p>Take optional {{ reviewTest }}</p>
     </div>
     <div v-if="clickedOnTest">
-      <div v-for="question in testQuestions" :question="question" :key="question">
+      <div v-for="(value, key) in testQuestions" :key="key">
         <div class="row">
-        <div class="col-md-10">{{ question }}</div>
+        <div class="col-md-10">{{ value }}</div>
         <div class="col-md-2">
-          <input v-model="questions[question]" type="checkbox" class="form-check-input" >
+          <input v-model="questions[key]" type="checkbox" class="form-check-input" >
         </div>
         </div>
       </div>
@@ -56,11 +56,9 @@ props: ['reviewCriterion'],
 data() {
     return {
       reviewResult: 0,
-      value: "",
-      result: [],
       questions: {},
       clickedOnTest: false,
-      showConfirmButton: false,
+      showConfirmButton: false
     }
   },
 
@@ -77,7 +75,7 @@ data() {
     testQuestions() {
       for(const entry of this.reviewCriteriaData) {
         if(entry.test == this.reviewTest)
-          return entry.questions
+          return entry.questions[0]
       }
       return null
     }
@@ -92,19 +90,28 @@ data() {
       this.clickedOnTest = true
     },
 
-    confirmSelection() {
-      const selectedCriterion = []
-      const criterion = {
-        name: this.reviewCriterion,
-        result: this.reviewResult,
-        questions: this.questions
-      }
+    checkIfTestPassed() {
+      if(Object.keys(this.questions).length == Object.keys(this.testQuestions).length) {
+        if (Object.values(this.questions).every(question => question == true)) {
+          this.questions.testPassed = true
+        }
+        else this.questions.testPassed = false
+       }
+      else this.questions.testPassed = false
+    },
 
-      this.result.push(this.reviewCriterion, this.reviewResult, this.questions)
+    async confirmSelection() {
+      if(Object.keys(this.questions).length != 0) await this.checkIfTestPassed()
+
+      const criterion = {
+          name: this.reviewCriterion,
+          result: this.reviewResult,
+          testResult: this.questions,
+        } 
+
       this.showConfirmButton = false
 
-      selectedCriterion.push(criterion);
-      this.$emit("addCriterion", selectedCriterion)
+      this.$emit("addCriterion", criterion)
     },
   }
 }

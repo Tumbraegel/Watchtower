@@ -74,7 +74,7 @@ export default {
       return this.$store.state.auth.status.loggedIn;
     }
   },
-  mounted() {
+  created() {
     if (this.loggedIn) {
       router.push({name: 'home'});
     }

@@ -22,14 +22,6 @@ class UserService {
     return axios.post(API_URL + '/film/review/' + id, payload, { headers: authHeader() })
   }
 
-  // deleteComment(id) {
-  //   return axios.delete(API_URL + '/film/comment/delete/' + id, { headers: authHeader() })
-  // }
-
-  // postComment(payload, id) {
-  //   return axios.post(API_URL + '/film/' + id + '/comment', payload, { headers: authHeader() })
-  // }
-
   postCommentVote(payload, id) {
     return axios.post(API_URL + '/film/' + id + '/comment/vote', payload, { headers: authHeader() })
   }

@@ -87,6 +87,33 @@ class ReviewRepository {
         }
         return sorted[middle]
     }
+
+    quickSort() {
+        const list = [{name: 'xyz', score: 5}, {name: 'abc', score: 10}]
+        console.log(list)
+        if (list.length <= 1) { 
+            return list
+        } else {
+            const left = []
+            const right = []
+            const sorted = []
+            // last item of list is used as pivot value
+            const lastItem = list.pop()
+            const pivot = lastItem.score
+            console.log(pivot)
+            const length = list.length
+    
+            for (let i = 0; i < length; i++) {
+                if (list[i] <= pivot) {
+                    left.push(list[i])
+                } else {
+                    right.push(list[i])
+                }
+            }
+    
+            return sorted.concat(quickSort(left), pivot, quickSort(right))
+        }
+    }
 }
 
 module.exports = new ReviewRepository(Review)

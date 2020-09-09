@@ -107,6 +107,13 @@ export default {
         }
         return sorted[middle]
     },
+
+    testMethod() {
+      //https://dev.to/wangonya/sorting-algorithms-with-javascript-part-2-3g51
+      this.$http.get("/film/sorted-list").then((res) => {
+        console.log(res)
+      })
+    }
   },
 }
 </script>

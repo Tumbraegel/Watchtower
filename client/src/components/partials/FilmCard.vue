@@ -30,18 +30,8 @@
 
 <script>
 export default {
-  props: ['film'],
-  data() {
-    return {
-      modalOpen: false,
-    };
-  },
-  methods: {
-    openModal() {
-      this.modalOpen = !this.modalOpen;
-    },
-  },
-};
+  props: ['film']
+}
 </script>
 
 <style scoped>

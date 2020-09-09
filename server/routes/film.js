@@ -153,11 +153,17 @@ router.post('/film/:id/comment/vote', auth, async (req, res) => {
 })
 
 // DELETE a comment
-router.delete('/film/comment/delete/:id', auth, async (req, res) => {
+router.delete('/film/comment/:id', auth, async (req, res) => {
     const id = req.params.id
     commentRepo.deleteComment(id).then(() => {
         res.json(req.body)
     }).catch((error) => console.log(error))
+})
+
+router.get('/film/sorted-list', async (req, res) => {
+    reviewRepo.quickSort().then(response => {
+        res.json(response)
+    }).catch(error => console.log(error))
 })
 
 module.exports = router

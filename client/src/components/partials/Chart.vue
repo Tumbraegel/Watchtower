@@ -12,8 +12,8 @@
 
 <script>
 import Plotly from 'plotly.js-dist'
-import ReviewCriteriaChartService from '../../models/chart_models/chart_bar_criteria'
-import ScoreChartService from '../../models/chart_models/chart_pie'
+import ReviewCriteriaChartModel from '../../models/chart_models/chart_bar_criteria'
+import ScoreChartModel from '../../models/chart_models/chart_pie'
 import { mapState } from 'vuex'
 
 export default {
@@ -21,8 +21,8 @@ export default {
 
   data() {
     return {
-      ReviewCriteriaChartService,
-      ScoreChartService,
+      ReviewCriteriaChartModel,
+      ScoreChartModel,
       isModalVisible: false
     }
   },
@@ -33,22 +33,22 @@ export default {
 
   created() {
     this.getChartData(this.reviewList)
-    this.ScoreChartService.fetchCriteriaScores(this.reviewList, this.reviewCriteriaList)
+    this.ScoreChartModel.fetchCriteriaScores(this.reviewList, this.reviewCriteriaList)
   },
 
   methods: {
     async getChartData(reviews) {
       // get chart data for all scores of selected film
-      const scores = await this.ScoreChartService.fetchScores(reviews)
-      const scoresChart = this.ScoreChartService.getScoreData(scores)
+      const scores = await this.ScoreChartModel.fetchScores(reviews)
+      const scoresChart = this.ScoreChartModel.getScoreData(scores)
       
       // get chart data for all review criteria of selected film
-      const reviewCriteria = await this.ReviewCriteriaChartService.fetchReviewCriteria(reviews, this.reviewCriteriaList)
-      const reviewCriteriaChart = this.ReviewCriteriaChartService.getReviewCriteriaData(reviewCriteria)
+      const reviewCriteria = await this.ReviewCriteriaChartModel.fetchReviewCriteria(reviews, this.reviewCriteriaList)
+      const reviewCriteriaChart = this.ReviewCriteriaChartModel.getReviewCriteriaData(reviewCriteria)
 
       // get chart data for percentage of reviewed criteria of selected film
-      const reviewCriteriaScores = await this.ScoreChartService.fetchCriteriaScores(reviews, this.reviewCriteriaList)
-      const criteriaScoresChart = this.ScoreChartService.getScoreData(reviewCriteriaScores)
+      const reviewCriteriaScores = await this.ScoreChartModel.fetchCriteriaScores(reviews, this.reviewCriteriaList)
+      const criteriaScoresChart = this.ScoreChartModel.getScoreData(reviewCriteriaScores)
 
       Plotly.newPlot('reviewCriteriaChart', reviewCriteriaChart.data, reviewCriteriaChart.layout)
       Plotly.newPlot('pieChartRating', scoresChart.data, scoresChart.layout)

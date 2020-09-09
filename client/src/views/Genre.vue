@@ -42,7 +42,7 @@ export default {
   },
 
   created() {
-    this.getGenreList();
+    this.getGenreList()
   },
 
   methods: {

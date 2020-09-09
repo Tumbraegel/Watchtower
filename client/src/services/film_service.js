@@ -28,7 +28,7 @@ class FilmService {
   }
 
   deleteComment(id) {
-    return axios.delete(API_URL + '/film/comment/delete/' + id, { headers: authHeader() })
+    return axios.delete(API_URL + '/film/comment/' + id, { headers: authHeader() })
   }
 
   executeAdvancedSearch(payload) {

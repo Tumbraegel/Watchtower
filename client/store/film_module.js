@@ -9,23 +9,6 @@ export const film = {
         reviewCriteriaList: [],
         allReviewCriteriaData: []
     },
-
-    getters: {
-        getReviewData(state) {
-            const reviewData = []
-            for(const review of state.reviewList) {
-                const data = {}
-                data['rating'] = review.rating
-                data['reviewCriteria'] = review.reviewCriteria
-                data['filmId'] = review.film
-                reviewData.push(data)
-            }
-            return reviewData
-        }
-        // sortedComments(state) {
-        //     return state.comments.filter(comment => comment.upvotes)
-        // }
-    },
   
     actions: {
         async fetchFilmContext({ commit }, id) {

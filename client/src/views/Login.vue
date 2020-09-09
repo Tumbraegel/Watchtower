@@ -54,7 +54,6 @@ export default {
   data() {
     return {
       user: new User('', ''),
-      loading: false,
       message: ''
     }
   },
@@ -72,14 +71,12 @@ export default {
 
    methods: {
     loginUser() {
-      //this.loading = true;
         if (this.user.email && this.user.password) {
           this.$store.dispatch('auth/login', this.user).then(
             () => {
               router.push({name: 'home'});
             },
             error => {
-              //this.loading = false;
               this.message =
                 (error.response && error.response.data) ||
                 error.message ||

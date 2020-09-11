@@ -9,6 +9,7 @@ const router = express.Router()
 const User = require('../models/User')
 const criterionRepo = require('../repositories/CriterionRepository')
 const auth = require('../config/auth_config')
+const userRepo = require('../repositories/UserRepository')
 
 // POST new user
 router.post('/register', [check('username', 'enter valid username').not().isEmpty(), 
@@ -99,7 +100,10 @@ router.post(
           (err, token) => {
             if (err) throw err
             res.status(200).json({
-              token: token, role: user.role, username: user.username
+              token: token,
+              role: user.role,
+              username: user.username,
+              email: user.email
             })
           }
         )
@@ -153,6 +157,17 @@ router.post('/add-admin', auth, async (req, res) => {
       console.log(user)  
   }).catch(error => console.log(error))
   }
+})
+
+router.delete("/delete-user/:email", auth, async (req, res) => {
+  const email = req.params.email;
+  userRepo.deleteUser(email).then(() => {
+      console.log('User was deleted successfully.')
+      res.json(req.body)
+    }).catch((error) => {
+      console.log(error.message)
+      res.status(500).send("Error in deleting user.")
+    })
 })
 
 module.exports = router

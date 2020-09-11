@@ -2,6 +2,7 @@
 // LAST ACCESSED: 14/06
 // Authentication module containing states, actions and mutations
 import AuthService from '../src/services/auth_service'
+import UserService from '../src/services/user_service'
 
 const user = JSON.parse(localStorage.getItem('user'))
 
@@ -42,7 +43,19 @@ export const auth = {
         commit('REGISTER_FAILURE')
         return Promise.reject(error)
       }
-    }
+    },
+
+    async deleteAccount({ commit }, user) {
+      try {
+        const response = await UserService.deleteUser(user)
+        commit('DELETE_ACCOUNT_SUCCESS')
+        return Promise.resolve(response.data)
+      }
+      catch (error) {
+        commit('DELETE_ACCOUNT_FAILURE')
+        return Promise.reject(error)
+      }
+    } 
   },
   
   mutations: {
@@ -63,6 +76,13 @@ export const auth = {
     },
     REGISTER_FAILURE(state) {
       state.status.loggedIn = false
+    },
+    DELETE_ACCOUNT_SUCCESS(state) {
+      state.status.loggedIn = false
+      state.user = null
+    },
+    DELETE_ACCOUNT_FAILURE() {
+      console.log('Something went wrong.')
     }
   }
 }

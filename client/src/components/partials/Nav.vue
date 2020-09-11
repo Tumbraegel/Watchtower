@@ -108,7 +108,7 @@ export default {
     return {
       query: '',
       searchedForFilms: [],
-    };
+    }
   },
 
   computed: {
@@ -120,21 +120,22 @@ export default {
       else return false
     }
   },
+
   methods: {
     logout() {
-      this.$store.dispatch('auth/logout');
-      router.push({ name: 'login' });
+      this.$store.dispatch('auth/logout')
+      router.push({ name: 'login' })
     },
 
     async searchFilm() {
       const keyword = this.query
       this.$store.dispatch("search/performSimpleSearch", keyword).then(() => {
-        this.query = '';
+        this.query = ''
         this.$router.push({name: 'searchResults'})
       })
-    },
+    }
   }
-};
+}
 </script>
 
 <style scoped>

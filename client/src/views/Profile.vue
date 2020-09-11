@@ -22,7 +22,7 @@
     </div>
     <strong>Reviews:</strong>
     <div class="row row-cols-1 row-cols-md-3">
-        <p v-if="!(user.reviews).length" style="color: lightgray; margin-top: 20px;">You have not reviewed any films.</p>
+        <p v-if="!(user.reviews).length" style="color: lightgray; margin-top: 20px;" class="col mb-4">You have not reviewed any films.</p>
         <div v-for="item in user.reviews" :item="item" :key="item._id"  class="col mb-4">
           <div class="card" style="width: 18rem;">
             <div class="card-body">
@@ -42,11 +42,13 @@
         </div>
       </div>
     </div>
+    <button class="btn btn-danger" @click="deleteAccount(currentUser.email)">Delete account</button>
     <modal v-show="isModalVisible" @close="closeModal" />
   </div>
 </template>
 
 <script>
+import swal from 'sweetalert'
 import Modal from "../components/partials/ModalAddAdmin"
 import UserService from "../services/user_service"
 
@@ -97,6 +99,22 @@ export default {
     closeModal() {
       this.isModalVisible = false
     },
+
+    deleteAccount(email) {
+      swal({
+        title: 'Delete this account?',
+        text: 'Are you sure? You won\'t be able to revert this! All your data will be lost.',
+        icon: 'warning',
+        buttons: true,
+      }).then((confirmed) => {
+          if (confirmed) {
+            this.$store.dispatch('auth/deleteAccount', email).then(() => {
+            swal('Done!', 'Your account was deleted.', 'success', { buttons: false, timer: 2000 })
+            this.$router.push("/")
+            })
+          }
+      })
+    }
   }
 }
 </script>

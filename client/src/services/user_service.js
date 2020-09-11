@@ -13,6 +13,10 @@ class UserService {
   postNewAdminUser(payload) {
     return axios.post(API_URL + '/api/auth/add-admin', payload, { headers: authHeader() })
   }
+
+  deleteUser(email) {
+    return axios.delete(API_URL + '/api/auth/delete-user/' + email, { headers: authHeader() })
+  }
   
   postReview(payload, id) {
     return axios.post(API_URL + '/film/review/' + id, payload, { headers: authHeader() })

@@ -4,6 +4,7 @@
 import AuthService from '../src/services/auth_service'
 
 const user = JSON.parse(localStorage.getItem('user'))
+
 const initialState = user
   ? { status: { loggedIn: true }, user }
   : { status: { loggedIn: false }, user: null }
@@ -15,52 +16,52 @@ export const auth = {
   actions: {
     async login({ commit }, user) {
       try {
-        await AuthService.login(user)
-        commit('loginSuccess', user)
-        return Promise.resolve(user)
+        await AuthService.login(user).then(response => {
+          commit('LOGIN_SUCCESS', response)
+          return Promise.resolve(user)
+        })
       }
       catch (error) {
-        commit('loginFailure')
+        commit('LOGIN_FAILURE')
         return Promise.reject(error)
       }
     },
 
     logout({ commit }) {
       AuthService.logout()
-      commit('logout')
+      commit('LOGOUT')
     },
 
     async register({ commit }, user) {
       try {
         const response = await AuthService.register(user)
-        commit('registerSuccess')
+        commit('REGISTER_SUCCESS')
         return Promise.resolve(response.data)
       }
       catch (error) {
-        commit('registerFailure')
+        commit('REGISTER_FAILURE')
         return Promise.reject(error)
       }
     }
   },
   
   mutations: {
-    loginSuccess(state, user) {
+    LOGIN_SUCCESS(state, response) {
       state.status.loggedIn = true
-      state.user = user
-      console.log(user)
+      state.user = response
     },
-    loginFailure(state) {
+    LOGIN_FAILURE(state) {
       state.status.loggedIn = false
       state.user = null
     },
-    logout(state) {
+    LOGOUT(state) {
       state.status.loggedIn = false
       state.user = null
     },
-    registerSuccess(state) {
+    REGISTER_SUCCESS(state) {
       state.status.loggedIn = false
     },
-    registerFailure(state) {
+    REGISTER_FAILURE(state) {
       state.status.loggedIn = false
     }
   }

@@ -23,6 +23,10 @@ class FilmService {
     return await axios.get(API_URL + '/film/' + filmId)
   }
 
+  async addFilm(id, payload) {
+    return axios.post(API_URL + '/add-film/' + id, payload, { headers: authHeader() })
+  }
+
   postComment(id, payload) {
     return axios.post(API_URL + '/film/' + id + '/comment', payload, { headers: authHeader() })
   }

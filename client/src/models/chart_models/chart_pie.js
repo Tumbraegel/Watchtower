@@ -1,7 +1,7 @@
 // https://plotly.com/javascript/pie-charts/#donut-chart
 // LAST ACCESSED: 26/08/2020
 
-class ScoreChartService {
+class ScoreChartModel {
 
   fetchScores(reviews) {
     const result = {values: [], labels: ['1.0 - 2.5', '3.0 - 5.0', '5.5 - 7.5', '8.0 - 10.0']}
@@ -62,7 +62,7 @@ class ScoreChartService {
     return result
   }
 
-  getScoreData(data) {
+  createPlot(data) {
     const result = {}
     
     var chartData = [
@@ -109,4 +109,4 @@ class ScoreChartService {
   }
 }
 
-export default new ScoreChartService()
+export default new ScoreChartModel()

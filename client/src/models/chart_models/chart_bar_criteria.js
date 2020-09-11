@@ -1,7 +1,7 @@
 // https://plotly.com/javascript/bar-charts/#colored-and-styled-bar-chart
 // LAST ACCESSED: 26/08/2020
 
-class ReviewCriteriaChartService {
+class ReviewCriteriaChartModel {
 
   async fetchReviewCriteria(reviews, currentReviewCriteria) {
     const data = []
@@ -133,4 +133,4 @@ class ReviewCriteriaChartService {
   }
 }
 
-export default new ReviewCriteriaChartService()
+export default new ReviewCriteriaChartModel()

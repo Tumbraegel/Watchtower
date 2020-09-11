@@ -30,8 +30,7 @@
               />
             </div>
             <div class="form-group">
-            <button type="submit" class="btn btn-primary" :disabled="loading">
-              <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+            <button type="submit" class="btn btn-primary">
               <span>Login</span>
             </button>
             </div>

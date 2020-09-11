@@ -88,7 +88,7 @@ router.post(
   
         const payload = {
           user: {
-            id: user.id,
+            id: user.id
           }
         }
   
@@ -99,7 +99,7 @@ router.post(
           (err, token) => {
             if (err) throw err
             res.status(200).json({
-              token: token, role: user.role
+              token: token, role: user.role, username: user.username
             })
           }
         )
@@ -133,7 +133,7 @@ router.get('/me', auth, async (req, res) => {
 
 router.post('/add-criterion', auth, async (req, res) => {
   const user = await User.findById(req.user.id)
-  if(user.role == "admin") {
+  if(user.role == 'admin') {
       criterionRepo.addCriterion(req.body).then(criterion => {
         res.json(criterion)
     }).catch((error) => console.log(error))
@@ -149,19 +149,10 @@ router.post('/add-admin', auth, async (req, res) => {
   if(user != null) {
     user.role = 'admin'
     user.save().then(function() {
-      console.log("User role changed successfully.")
+      console.log('User role changed successfully.')
       console.log(user)  
   }).catch(error => console.log(error))
   }
-})
-
-router.get("/admin", auth, async (req, res) => {
-  const user = await User.findById(req.user.id)
-    try {
-      res.json(user)
-    } catch (e) {
-      res.send({ message: "Error in fetching user" })
-    }
 })
 
 module.exports = router

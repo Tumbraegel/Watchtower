@@ -5,6 +5,7 @@ const filmRepo = require('../repositories/FilmRepository')
 const reviewRepo = require('../repositories/ReviewRepository')
 const commentRepo = require('../repositories/CommentRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
+const filmAPI = require('../imdb_data/film_api')
 
 // Helper methods
 async function getFilmById(id) {
@@ -52,7 +53,7 @@ async function getAvailableDataForFilmPage(id) {
 router.get('/', (req, res) => {
     filmRepo.findAll().then((films) => {
         res.json(films)
-    }).catch((error) => console.log(error))
+    }).catch(error => console.log(error))
 });
 
 // GET statistical data for films
@@ -65,14 +66,14 @@ router.get('/statistics', async (req, res) => {
         films.genreList = listOfGenres
         films.reviewCriteriaData = allReviewCriteriaData
         res.json(films)
-    }).catch((error) => console.log(error))
+    }).catch(error => console.log(error))
 })
 
 // GET all films and filter by query
 router.get('/statistics/:query', (req, res) => {
     filmRepo.filterByQuery().then((films) => {
         res.json(films)
-    }).catch((error) => console.log(error))
+    }).catch(error => console.log(error))
 });
 
 
@@ -86,7 +87,7 @@ router.get('/film/:id', async (req, res) => {
         film.push({listOfReviewCriteria: data.reviewCriteria})
         film.push({allReviewCriteriaData: data.allReviewCriteriaData})
         res.json(film)
-    }).catch((error) => console.log("Errors " + error))
+    }).catch(error => console.log("Errors " + error))
 });
 
 // GET comments for one film
@@ -94,14 +95,14 @@ router.get('/film/:id/comments', (req, res) => {
     const id = req.params.id
     commentRepo.getAllCommentsPer(id).then(comments => {
         res.json(comments)
-    }).catch((error) => console.log("Errors " + error))
+    }).catch(error => console.log("Errors " + error))
 })
 
 // GET all existing genres
 router.get('/genre', (req, res) => {
     filmRepo.getAllGenres().then(genres => {
         res.json(genres);
-    }).catch((error) => console.log(error));
+    }).catch(error => console.log(error));
 });
 
 // GET films filtered by genre
@@ -109,7 +110,7 @@ router.get('/genre/:genre', (req, res) => {
     const genre = Object(req.params.genre);
     filmRepo.findByGenre(genre).then(films => {
         res.json(films);
-    }).catch((error) => console.log(error));
+    }).catch(error => console.log(error));
 });
 
 // GET search result
@@ -117,14 +118,21 @@ router.get('/search/:query', (req, res) => {
     const query = Object(req.params.query)
     filmRepo.findByUserSearch(query).then(films => {
         res.json(films)
-    }).catch((error) => console.log(error))
+    }).catch(error => console.log(error))
+})
+
+router.post('/add-film/:id', auth, async (req, res) => {
+    const id = req.params.id
+    await filmAPI.requestFilmDataFor(id).then(film => {
+        res.json(film)
+    }).catch(error => console.log(error))
 })
 
 // POST query for advanced search
 router.post('/advanced-search', (req, res) => {
     filmRepo.findByUserSearch(req.body).then(films => {
         res.json(films)
-    }).catch((error) => console.log(error))
+    }).catch(error => console.log(error))
 })
 
 // POST film review
@@ -133,7 +141,7 @@ router.post('/film/review/:id', auth, async (req, res) => {
     const film = await getFilmById(id)
     reviewRepo.createReview(film, req.body, req.user).then(review => {
         res.json(review)
-    }).catch((error) => console.log(error))
+    }).catch(error => console.log(error))
 })
 
 // POST film comment
@@ -142,14 +150,14 @@ router.post('/film/:id/comment', auth, async (req, res) => {
     const film = await getFilmById(id)
     commentRepo.addComment(film, req.body, req.user).then(() => {
         res.json(req.body)
-    }).catch((error) => console.log(error))
+    }).catch(error => console.log(error))
 })
 
 // POST vote for specific comment
 router.post('/film/:id/comment/vote', auth, async (req, res) => {
     commentRepo.addVote(req.body, req.user).then(() => {
         res.json(req.body)
-    }).catch((error) => console.log(error))
+    }).catch(error => console.log(error))
 })
 
 // DELETE a comment
@@ -157,7 +165,7 @@ router.delete('/film/comment/:id', auth, async (req, res) => {
     const id = req.params.id
     commentRepo.deleteComment(id).then(() => {
         res.json(req.body)
-    }).catch((error) => console.log(error))
+    }).catch(error => console.log(error))
 })
 
 router.get('/film/sorted-list', async (req, res) => {

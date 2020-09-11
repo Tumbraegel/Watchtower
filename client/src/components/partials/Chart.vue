@@ -40,7 +40,7 @@ export default {
     async getChartData(reviews) {
       // get chart data for all scores of selected film
       const scores = await this.ScoreChartModel.fetchScores(reviews)
-      const scoresChart = this.ScoreChartModel.getScoreData(scores)
+      const scoresChart = this.ScoreChartModel.createPlot(scores)
       
       // get chart data for all review criteria of selected film
       const reviewCriteria = await this.ReviewCriteriaChartModel.fetchReviewCriteria(reviews, this.reviewCriteriaList)
@@ -48,7 +48,7 @@ export default {
 
       // get chart data for percentage of reviewed criteria of selected film
       const reviewCriteriaScores = await this.ScoreChartModel.fetchCriteriaScores(reviews, this.reviewCriteriaList)
-      const criteriaScoresChart = this.ScoreChartModel.getScoreData(reviewCriteriaScores)
+      const criteriaScoresChart = this.ScoreChartModel.createPlot(reviewCriteriaScores)
 
       Plotly.newPlot('reviewCriteriaChart', reviewCriteriaChart.data, reviewCriteriaChart.layout)
       Plotly.newPlot('pieChartRating', scoresChart.data, scoresChart.layout)

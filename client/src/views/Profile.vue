@@ -21,10 +21,9 @@
       <a href @click="openModal">Assign admin rights to other user</a>
     </div>
     <strong>Reviews:</strong>
-    <div class="row">
-      <div class="col-md-6">
+    <div class="row row-cols-1 row-cols-md-3">
         <p v-if="!(user.reviews).length" style="color: lightgray; margin-top: 20px;">You have not reviewed any films.</p>
-        <div v-for="item in user.reviews" :item="item" :key="item._id">
+        <div v-for="item in user.reviews" :item="item" :key="item._id"  class="col mb-4">
           <div class="card" style="width: 18rem;">
             <div class="card-body">
               <h5 class="card-title">
@@ -40,7 +39,6 @@
                 >- {{ entry.name }} : {{ entry.result }}</div>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>

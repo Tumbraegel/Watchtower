@@ -12,7 +12,7 @@ const mongoose = require('mongoose');
 const config = require('./config/db_config');
 const film = require('./routes/film');
 const user = require('./routes/user');
-const imdbAPI = require('./routes/imdb_api');
+const filmAPI = require('./imdb_data/film_api');
 
 const app = express();
 
@@ -41,7 +41,7 @@ app.use('/', film);
 app.use('/api/auth', user);
 
 // Run API script
-//imdbAPI.runScript();
+//filmAPI.requestFilms()
 
 // Server listening on port
 app.listen(config.APP_PORT);

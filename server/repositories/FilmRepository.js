@@ -1,5 +1,5 @@
-const Film = require("../models/Film");
-const reviewRepo = require("../repositories/ReviewRepository");
+const Film = require('../models/Film')
+const reviewRepo = require('../repositories/ReviewRepository')
 
 class FilmRepository {
   constructor(model) {
@@ -306,7 +306,7 @@ class FilmRepository {
   }
 
   // Get film data from IMDb api and store in db
-  createEntry(film) {
+  async createEntry(film) {
     const entry = {
       title: film.Title,
       year: film.Year,
@@ -323,17 +323,20 @@ class FilmRepository {
       awards: film.Awards,
       poster: film.Poster,
       imdbID: film.imdbID,
-    };
-    const newFilm = new this.model(entry);
-    return newFilm.save().then(function (err, res) {
+      otherRatings: film.Ratings,
+      metascore: film.Metascore,
+      imdbRating: film.imdbRating
+    }
+    const newFilm = await new this.model(entry)
+    return await newFilm.save().then(function (err, res) {
       if (err) {
-        console.log("'" + film.Title + "'" + " already exists in database.");
+        console.log("'" + film.Title + "'" + " already exists in database.")
       } else {
         console.log(
           "'" + film.Title + "'" + "  successfully stored in database."
-        );
+        )
       }
-    });
+    }).catch(error => console.log(error))
   }
 }
 

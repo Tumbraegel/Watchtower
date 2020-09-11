@@ -116,10 +116,8 @@ export default {
       return this.$store.state.auth.user
     },
     showAdminArea() {
-      if (this.currentUser && this.currentUser.role) {
-        return this.currentUser.role == 'admin'
-      }
-      return false;
+      if(this.currentUser && this.currentUser.role == 'admin') return true
+      else return false
     }
   },
   methods: {

@@ -1,5 +1,6 @@
 const Film = require('../models/Film')
 const reviewRepo = require('../repositories/ReviewRepository')
+const criterionRepo = require('../repositories/CriterionRepository')
 
 class FilmRepository {
   constructor(model) {
@@ -11,17 +12,11 @@ class FilmRepository {
     return this.model.find();
   }
 
-  // Retrieve film by ObjectId
-  findById(id) {
-    return this.model.findById(id);
-  }
-
   // Retrieve film by IMDb ID
   findByImdbID(id) {
     return this.model.findOne({ imdbID: id });
   }
 
-  // FIXME: refactor this
   findFilmByImdbID(id) {
     return this.model.find({ imdbID: id });
   }
@@ -31,25 +26,23 @@ class FilmRepository {
     return this.model.find({ genres: genre });
   }
 
-  // TODO: dynamic data for criterialist missing
-  async getInitialStatistics() {
+  async getInitialStatistics(reviewCriteria) {
     const results = {}
     let listOfFilms = []
-    const criteriaList = 'Diversity|Queer Friendliness|Gender Equality'
 
-    await this.filterForFilmsWithReviewCriteria(criteriaList).then(response => {
+    await this.filterForFilmsWithReviewCriteria(reviewCriteria).then(response => {
       listOfFilms = response
       results.films = listOfFilms
     })
-    // console.log(listOfFilms)
     return results
   }
 
   async filterForFilmsWithReviewCriteria(criteriaList) {
     let matches = []
+
     await this.model.find().populate({
       path  : 'reviews',
-      match : { reviewCriteria : { $elemMatch: {name: {$regex: criteriaList} }}}
+      match : { reviewCriteria : { $elemMatch: {name: {$in: criteriaList} }}}
     }).then(films => {
       for(const film of films) {
         if(film.reviews.length) {
@@ -62,10 +55,6 @@ class FilmRepository {
       }
     })
     return matches
-  }
-
-  filterByQuery(query) {
-    return this.model
   }
 
   async getAllGenres() {

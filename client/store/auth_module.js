@@ -1,8 +1,7 @@
 // https://bezkoder.com/jwt-vue-vuex-authentication/
 // LAST ACCESSED: 14/06
-// Authentication module containing states, actions and mutations
+
 import AuthService from '../src/services/auth_service'
-import UserService from '../src/services/user_service'
 
 const user = JSON.parse(localStorage.getItem('user'))
 
@@ -47,9 +46,9 @@ export const auth = {
 
     async deleteAccount({ commit }, user) {
       try {
-        const response = await UserService.deleteUser(user)
+        const response = await AuthService.delete(user)
         commit('DELETE_ACCOUNT_SUCCESS')
-        return Promise.resolve(response.data)
+        return Promise.resolve(response)
       }
       catch (error) {
         commit('DELETE_ACCOUNT_FAILURE')

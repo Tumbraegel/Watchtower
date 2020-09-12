@@ -7,61 +7,71 @@ const commentRepo = require('../repositories/CommentRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
 const filmAPI = require('../imdb_data/film_api')
 
-// Helper methods
+/* HELPER METHODS */
 async function getFilmById(id) {
-    return await filmRepo.findByImdbID(id)
+  return await filmRepo.findByImdbID(id)
 }
 
 async function getAllReviewCriteria() {
-    return await criterionRepo.getAllReviewCriteria()
+  return await criterionRepo.getAllReviewCriteria()
 }
 
 async function getAllReviewCriteriaData() {
-    return await criterionRepo.findAll()
+  return await criterionRepo.findAll()
 }
 
 async function getAllGenres() {
-    return await filmRepo.getAllGenres()
+  return await filmRepo.getAllGenres()
 }
 
 async function getAllCommentsPer(id) {
-    return await commentRepo.getAllCommentsPer(id)
+  return await commentRepo.getAllCommentsPer(id)
 }
 
 async function getReviewDataOfOneFilm(id) {
-    let reviews = []
-    try {
-        const film = await getFilmById(id)
-        reviews = await reviewRepo.getReviewDataOfOneFilm(film._id)
-    } catch (error) {return next(error)}
-    return reviews
+  let reviews = []
+  try {
+    const film = await getFilmById(id)
+    reviews = await reviewRepo.getReviewDataOfOneFilm(film._id)
+  } catch (error) {
+    return next(error)
+  }
+  return reviews
 }
 
 async function getAvailableDataForFilmPage(id) {
-    const data = {comments: [], reviews: [], reviewCriteria: [], reviewCriteriaAndTest: []}
-    try {
-        data.comments = await getAllCommentsPer(id)
-        data.reviews = await getReviewDataOfOneFilm(id)
-        data.reviewCriteria = await getAllReviewCriteria()
-        data.allReviewCriteriaData = await getAllReviewCriteriaData()
-        return data
-    } catch (error) {return next(error)}
+  const data = {
+    comments: [],
+    reviews: [],
+    reviewCriteria: [],
+    reviewCriteriaAndTest: [],
+  }
+  try {
+    data.comments = await getAllCommentsPer(id)
+    data.reviews = await getReviewDataOfOneFilm(id)
+    data.reviewCriteria = await getAllReviewCriteria()
+    data.allReviewCriteriaData = await getAllReviewCriteriaData()
+    return data
+  } catch (error) {
+    return next(error)
+  }
 }
 
+/* ROUTES */ 
 
-// GET all films
+// Retrieve all films
 router.get('/', (req, res) => {
     filmRepo.findAll().then((films) => {
         res.json(films)
     }).catch(error => console.log(error))
-});
+})
 
-// GET statistical data for films
+// Retrieve statistical data for films
 router.get('/statistics', async (req, res) => {
     const listOfReviewCriteria = await getAllReviewCriteria()
     const allReviewCriteriaData = await getAllReviewCriteriaData()
     const listOfGenres = await getAllGenres()
-    filmRepo.getInitialStatistics().then((films) => {
+    filmRepo.getInitialStatistics(listOfReviewCriteria).then((films) => {
         films.reviewCriteria = listOfReviewCriteria
         films.genreList = listOfGenres
         films.reviewCriteriaData = allReviewCriteriaData
@@ -69,15 +79,7 @@ router.get('/statistics', async (req, res) => {
     }).catch(error => console.log(error))
 })
 
-// GET all films and filter by query
-router.get('/statistics/:query', (req, res) => {
-    filmRepo.filterByQuery().then((films) => {
-        res.json(films)
-    }).catch(error => console.log(error))
-});
-
-
-// GET one film
+// Retrieve one film
 router.get('/film/:id', async (req, res) => {
     const id = Object(req.params.id)
     const data = await getAvailableDataForFilmPage(id)
@@ -88,9 +90,9 @@ router.get('/film/:id', async (req, res) => {
         film.push({allReviewCriteriaData: data.allReviewCriteriaData})
         res.json(film)
     }).catch(error => console.log("Errors " + error))
-});
+})
 
-// GET comments for one film
+// Retrieve all comments for one film
 router.get('/film/:id/comments', (req, res) => {
     const id = req.params.id
     commentRepo.getAllCommentsPer(id).then(comments => {
@@ -98,22 +100,22 @@ router.get('/film/:id/comments', (req, res) => {
     }).catch(error => console.log("Errors " + error))
 })
 
-// GET all existing genres
+// Retrieve all existing genres
 router.get('/genre', (req, res) => {
     filmRepo.getAllGenres().then(genres => {
-        res.json(genres);
-    }).catch(error => console.log(error));
-});
+        res.json(genres)
+    }).catch(error => console.log(error))
+})
 
-// GET films filtered by genre
+// Retrieve films filtered by genre
 router.get('/genre/:genre', (req, res) => {
-    const genre = Object(req.params.genre);
+    const genre = Object(req.params.genre)
     filmRepo.findByGenre(genre).then(films => {
-        res.json(films);
-    }).catch(error => console.log(error));
-});
+        res.json(films)
+    }).catch(error => console.log(error))
+})
 
-// GET search result
+// Retrieve search result
 router.get('/search/:query', (req, res) => {
     const query = Object(req.params.query)
     filmRepo.findByUserSearch(query).then(films => {
@@ -121,6 +123,7 @@ router.get('/search/:query', (req, res) => {
     }).catch(error => console.log(error))
 })
 
+// Create new film
 router.post('/add-film/:id', auth, async (req, res) => {
     const id = req.params.id
     await filmAPI.requestFilmDataFor(id).then(film => {
@@ -128,14 +131,14 @@ router.post('/add-film/:id', auth, async (req, res) => {
     }).catch(error => console.log(error))
 })
 
-// POST query for advanced search
+// Process query for advanced search
 router.post('/advanced-search', (req, res) => {
     filmRepo.findByUserSearch(req.body).then(films => {
         res.json(films)
     }).catch(error => console.log(error))
 })
 
-// POST film review
+// Create film review
 router.post('/film/review/:id', auth, async (req, res) => {
     const id = req.params.id
     const film = await getFilmById(id)
@@ -144,7 +147,7 @@ router.post('/film/review/:id', auth, async (req, res) => {
     }).catch(error => console.log(error))
 })
 
-// POST film comment
+// Create film comment
 router.post('/film/:id/comment', auth, async (req, res) => {
     const id = req.params.id
     const film = await getFilmById(id)
@@ -153,19 +156,19 @@ router.post('/film/:id/comment', auth, async (req, res) => {
     }).catch(error => console.log(error))
 })
 
-// POST vote for specific comment
+// Add vote for specific comment
 router.post('/film/:id/comment/vote', auth, async (req, res) => {
     commentRepo.addVote(req.body, req.user).then(() => {
         res.json(req.body)
     }).catch(error => console.log(error))
 })
 
-// DELETE a comment
-router.delete('/film/comment/:id', auth, async (req, res) => {
-    const id = req.params.id
-    commentRepo.deleteComment(id).then(() => {
-        res.json(req.body)
-    }).catch(error => console.log(error))
+// Remove a comment
+router.delete("/film/comment/:id", auth, async (req, res) => {
+  const id = req.params.id
+  commentRepo.deleteComment(id).then(() => {
+      res.json(req.body)
+    }).catch((error) => console.log(error))
 })
 
 router.get('/film/sorted-list', async (req, res) => {

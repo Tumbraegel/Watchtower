@@ -7,9 +7,9 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
 const User = require('../models/User')
+const userRepo = require('../repositories/UserRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
 const auth = require('../config/auth_config')
-const userRepo = require('../repositories/UserRepository')
 
 // POST new user
 router.post('/register', [check('username', 'enter valid username').not().isEmpty(), 
@@ -27,26 +27,25 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
         const { username, email, password } = req.body
 
         try {
-            let user = await User.findOne({ email })
+            let user = await userRepo.findByEmail(email)
             if (user) {
                 return res.status(400).json({
                     msg: 'User already exists.'
                 })
             }
-
-            user = new User({
-                username, email, password
-            })
+            
+            user = { username, email, password }
 
             const salt = await bcrypt.genSalt(10)
             user.password = await bcrypt.hash(password, salt)
             user.role = 'user'
 
-            await user.save()
+            await userRepo.create(user)
 
             const payload = {
                 user: { id: user.id }
             }
+            console.log(payload)
 
             jwt.sign(payload, 'randomString', { expiresIn: 10000 }, (err, token) => {
                 if (err) throw err
@@ -159,8 +158,8 @@ router.post('/add-admin', auth, async (req, res) => {
   }
 })
 
-router.delete("/delete-user/:email", auth, async (req, res) => {
-  const email = req.params.email;
+router.delete("/delete-user/:email", async (req, res) => {
+  const email = req.params.email
   userRepo.deleteUser(email).then(() => {
       console.log('User was deleted successfully.')
       res.json(req.body)

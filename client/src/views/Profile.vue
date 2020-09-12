@@ -42,7 +42,7 @@
         </div>
       </div>
     </div>
-    <button class="btn btn-danger" @click="deleteAccount(currentUser.email)">Delete account</button>
+    <button class="btn btn-danger" @click="deleteAccount()">Delete account</button>
     <modal v-show="isModalVisible" @close="closeModal" />
   </div>
 </template>
@@ -100,7 +100,11 @@ export default {
       this.isModalVisible = false
     },
 
-    deleteAccount(email) {
+    deleteAccount() {
+      const payload = {
+        email: this.currentUser.email
+      }
+
       swal({
         title: 'Delete this account?',
         text: 'Are you sure? You won\'t be able to revert this! All your data will be lost.',
@@ -108,7 +112,7 @@ export default {
         buttons: true,
       }).then((confirmed) => {
           if (confirmed) {
-            this.$store.dispatch('auth/deleteAccount', email).then(() => {
+            this.$store.dispatch('auth/deleteAccount', payload).then(() => {
             swal('Done!', 'Your account was deleted.', 'success', { buttons: false, timer: 2000 })
             this.$router.push("/")
             })

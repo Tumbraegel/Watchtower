@@ -12,30 +12,42 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title">Give someone admin rights:</h5>
-                <button type="button" class="close" @click="close" aria-label="Close">
+                <button
+                  type="button"
+                  class="close"
+                  @click="close"
+                  aria-label="Close"
+                >
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
                 <div>
-                    <div>
-                      <div class="form-group">
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="username"
-                          v-model="username"
-                          placeholder="Enter username"
-                        />
-                      </div>
-  
+                  <div>
+                    <div class="form-group">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        v-model="username"
+                        placeholder="Enter username"
+                      />
                     </div>
-                    <button @click="submitResult" class="btn btn-primary" style="float: right;">Submit</button>
-                    <button
-                      @click="close"
-                      class="btn btn-outline-secondary"
-                      style="float: right; margin-right: 5px;"
-                    >Cancel</button>
+                  </div>
+                  <button
+                    @click="submitResult"
+                    class="btn btn-primary"
+                    style="float: right;"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    @click="close"
+                    class="btn btn-outline-secondary"
+                    style="float: right; margin-right: 5px;"
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             </div>
@@ -48,30 +60,35 @@
 
 <script>
 import swal from 'sweetalert'
-import UserService from "../../services/user_service.js";
+import UserService from '../../services/user_service.js'
 
 export default {
-  name: "ModalAddAdmin",
+  name: 'ModalAddAdmin',
 
   data() {
     return {
-        username: '',
+      username: ''
     }
   },
 
   methods: {
     close() {
-      this.$emit("close")
+      this.$emit('close')
     },
 
     submitResult() {
       const payload = {
-          username: this.username,
+        username: this.username
       }
-      
+
       UserService.postNewAdminUser(payload).then(
         response => {
-          swal('Admin added!', 'You just added ' + payload.username + ' as an admin.', 'success', { buttons: false, timer: 2500 });
+          swal(
+            'Admin added!',
+            'You just added ' + payload.username + ' as an admin.',
+            'success',
+            { buttons: false, timer: 2500 }
+          )
           console.log(response)
         },
         error => {
@@ -79,7 +96,7 @@ export default {
         }
       )
       this.close()
-    },
-  },
+    }
+  }
 }
 </script>

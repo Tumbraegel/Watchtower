@@ -1,5 +1,5 @@
 <template>
-  <div class="admin">
+  <div>
     <div class="container">
       <br />
       <p>Statistics Area</p>

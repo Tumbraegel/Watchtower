@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'home',
@@ -13,6 +13,21 @@ Vue.use(VueRouter)
     path: '/about',
     name: 'about',
     component: () => import('../views/About.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/Login.vue'),
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/Register.vue'),
+  },
+  {
+    path: '/me',
+    name: 'profile',
+    component: () => import('../views/Profile.vue'),
   },
   {
     path: '/admin',
@@ -33,21 +48,6 @@ Vue.use(VueRouter)
     path: '/statistics',
     name: 'statistics',
     component: () => import('../views/Statistics.vue')
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('../views/Login.vue'),
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: () => import('../views/Register.vue'),
-  },
-  {
-    path: '/me',
-    name: 'profile',
-    component: () => import('../views/Profile.vue'),
   },
   {
     path: '/error',

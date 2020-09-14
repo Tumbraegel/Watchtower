@@ -1,6 +1,4 @@
 const Review = require('../models/Review')
-const filmRepo = require('../repositories/FilmRepository')
-const Film = require('../models/Film')
 const User = require('../models/User')
 
 class ReviewRepository {
@@ -31,7 +29,7 @@ class ReviewRepository {
             reviewCriteria: data.reviewCriteria,
             author: user,
             film: film
-        };
+        }
 
         const ObjectId = require('mongoose').Types.ObjectId;
         const oldReview = await this.model.findOne({film: ObjectId(film._id), author: ObjectId(user._id)})
@@ -54,6 +52,9 @@ class ReviewRepository {
             }).catch(error => console.log(error))
         }
         this.calculateScore(film.imdbID)
+        
+        const reviewList = await this.getReviewDataOfOneFilm(film._id)
+        return reviewList
     }
 
     // calculate general score for one film based on median value

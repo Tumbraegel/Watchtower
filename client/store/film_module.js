@@ -7,7 +7,8 @@ export const film = {
         reviewList: [],
         commentList: [],
         reviewCriteriaList: [],
-        allReviewCriteriaData: []
+        allReviewCriteriaData: [],
+        overallRating: 0
     },
   
     actions: {
@@ -24,6 +25,19 @@ export const film = {
             }
         },
 
+        async addFilmReview({ commit }, payload) {
+            try {
+                await FilmService.postFilmReview(payload.filmId, payload).then(response => {
+                    commit('ADD_REVIEW', response.data)
+                    return Promise.resolve(response.data)
+                })
+            }
+              catch (error) {
+                console.log("Error in adding film review.")
+                return Promise.reject(error)
+              }
+        },
+
         async addComment({ commit }, payload) {
             try {
                 await FilmService.postComment(payload.filmId, payload).then(response => {
@@ -37,9 +51,22 @@ export const film = {
               }
         },
 
-        async deleteComment({ commit }, id) {
+        async voteForComment({ commit }, payload) {
             try {
-                await FilmService.deleteComment(id).then(response => {
+                await FilmService.postCommentVote(payload.filmId, payload).then(response => {
+                    commit('VOTE_FOR_COMMENT', response.data)
+                    return Promise.resolve(response.data)
+                })
+            }
+              catch (error) {
+                console.log("Error in up or downvoting a comment.")
+                return Promise.reject(error)
+              }
+        },
+
+        async deleteComment({ commit }, payload) {
+            try {
+                await FilmService.deleteComment(payload.filmId, payload.commentId).then(response => {
                     commit('DELETE_COMMENT', response.data)
                     return Promise.resolve(response.data)
                 })
@@ -58,15 +85,23 @@ export const film = {
             state.reviewList = response[2].reviews
             state.reviewCriteriaList = response[3].listOfReviewCriteria
             state.allReviewCriteriaData = response[4].allReviewCriteriaData
+            state.overallRating = response[0].overallRating
+        },
+
+        ADD_REVIEW(state, response) {
+            state.reviewList = response
         },
 
         ADD_COMMENT(state, response) {
-            state.commentList.push(response)
+            state.commentList = response
         },
 
         DELETE_COMMENT(state, response) {
-            state.commentList = state.commentList.filter(comment => response._id != comment._id)
-            console.log(state.commentList)
+            state.commentList = response
+        },
+
+        VOTE_FOR_COMMENT(state, response) {
+            state.commentList = response
         }
     },
   }

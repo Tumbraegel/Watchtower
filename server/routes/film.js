@@ -139,11 +139,11 @@ router.post('/advanced-search', (req, res) => {
 })
 
 // Create film review
-router.post('/film/review/:id', auth, async (req, res) => {
+router.post('/film/:id/review', auth, async (req, res) => {
     const id = req.params.id
     const film = await getFilmById(id)
-    reviewRepo.createReview(film, req.body, req.user).then(review => {
-        res.json(review)
+    reviewRepo.createReview(film, req.body, req.user).then(response => {
+        res.json(response)
     }).catch(error => console.log(error))
 })
 
@@ -151,23 +151,25 @@ router.post('/film/review/:id', auth, async (req, res) => {
 router.post('/film/:id/comment', auth, async (req, res) => {
     const id = req.params.id
     const film = await getFilmById(id)
-    commentRepo.addComment(film, req.body, req.user).then(() => {
-        res.json(req.body)
+    commentRepo.addComment(film, req.body, req.user).then(response => {
+        res.json(response)
     }).catch(error => console.log(error))
 })
 
 // Add vote for specific comment
 router.post('/film/:id/comment/vote', auth, async (req, res) => {
-    commentRepo.addVote(req.body, req.user).then(() => {
-        res.json(req.body)
+    const filmId = req.params.id
+    commentRepo.addVote(filmId, req.body, req.user).then(response => {
+        res.json(response)
     }).catch(error => console.log(error))
 })
 
 // Remove a comment
-router.delete("/film/comment/:id", auth, async (req, res) => {
-  const id = req.params.id
-  commentRepo.deleteComment(id).then(() => {
-      res.json(req.body)
+router.delete("/film/:id/comment/:commentId", auth, async (req, res) => {
+  const filmId = req.params.id
+  const commentId = req.params.commentId
+  commentRepo.deleteComment(filmId, commentId).then(response => {
+      res.json(response)
     }).catch((error) => console.log(error))
 })
 

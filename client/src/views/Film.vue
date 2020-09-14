@@ -4,10 +4,11 @@
       <div class="container">
         <div class="row">
         <h1 class="title col-md-9" style="padding: 0px">{{ film.title }} ({{ film.year }})</h1>
-        <p class="col-md-3" v-if="userScoreForThisFilm != ''">Your score: {{ userScoreForThisFilm }}</p>
+        <p class="col-md-3" v-if="currentUserRating != 0">Your score: {{ currentUserRating }}</p>
+        <p class="col-md-3" v-if="userScore != 0">Your score: {{ userScore }}</p>
       </div>
       <div class="row">
-        <button v-if="userScoreForThisFilm != ''" style="float: right;" class="btn btn-custom col-md-3" @click="checkifUserLoggedIn()">Review again</button>
+        <button v-if="currentUserRating != 0" style="float: right;" class="btn btn-custom col-md-3" @click="checkifUserLoggedIn()">Review again</button>
         <button v-else style="float: right;" class="btn btn-custom col-md-2" @click="checkifUserLoggedIn()">Review</button>
         <div style="margin-left: 10px; vertical-align: middle;" class="favourite-button">
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -22,9 +23,9 @@
       <div class="container">
         <div class="row">
           <div class="col-md-8">
-            <p v-if="film.overallRating != null">
+            <p v-if="overallRating != 0">
               <strong>Rating:</strong>
-              {{ film.overallRating }}
+              {{ overallRating }}
             </p>
             <p v-else>
               <strong>Rating:</strong>
@@ -102,24 +103,33 @@ export default {
       reviews: [],
       isModalVisible: false,
       toBeEdited: false,
-      userScoreForThisFilm: '',
       dataLoaded: false,
+      userScore: 0,
       user: {}
     }
   },
 
   computed: {
-    ...mapState('film', ['filmContext', 'reviewList', 'commentList']),
+    ...mapState('film', ['filmContext', 'reviewList', 'commentList', 'overallRating', 'userRating']),
 
     currentUser() {
       return this.$store.state.auth.user
-    }
+    },
+
+    currentUserRating() {
+      let userScore = 0
+      if(this.user.reviews != undefined) {
+        const userReviewForThisFilm = (this.user.reviews).filter(review => review.film._id == this.film._id)
+        if(userReviewForThisFilm.length) userScore = userReviewForThisFilm[0].rating
+      }
+      return userScore
+    },
   },
 
   async created() {
-    await this.getFilmData().then(() => {
+    await this.getFilmData().then(async () => {
       if(this.reviewList.length) this.dataLoaded = true
-      if(this.$store.state.auth.status.loggedIn == true) this.getUserInformation()
+      if(this.$store.state.auth.status.loggedIn == true) await this.getUserInformation()
     }) 
   },
 
@@ -153,22 +163,22 @@ export default {
           this.user =
             (error.response && error.response.data) ||
             error.message ||
-            error.toString();
+            error.toString()
         }
-      ).then(() => { this.getExistingUserRating(this.user) })
-    },
-
-    getExistingUserRating(user) {
-      const userReviewForThisFilm = (user.reviews).filter(review => review.film._id == this.film._id)
-      if(userReviewForThisFilm.length) this.userScoreForThisFilm = userReviewForThisFilm[0].rating
+      )
     },
 
     showModal() {
       this.isModalVisible = true
     },
 
-    closeModal() {
+    async closeModal() {
       this.isModalVisible = false
+      this.dataLoaded = false
+      await this.getFilmData().then(async () => {
+        this.dataLoaded = true
+        if(this.currentUser) await this.getUserInformation()
+      }) 
     }
   }
 }

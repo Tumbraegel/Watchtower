@@ -18,10 +18,6 @@ class UserService {
     return axios.post(API_URL + '/film/review/' + id, payload, { headers: authHeader() })
   }
 
-  postCommentVote(payload, id) {
-    return axios.post(API_URL + '/film/' + id + '/comment/vote', payload, { headers: authHeader() })
-  }
-
   postNewCriterion(payload) {
     return axios.post(API_URL + '/api/auth/add-criterion', payload, { headers: authHeader() })
   }

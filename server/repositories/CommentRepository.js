@@ -40,7 +40,6 @@ class CommentRepository {
 
     async addComment(film, data, userData) {
         const user = await User.findById(userData.id)
-        //const film = await filmRepo.findByImdbID(id)
 
         const comment = {
             body: data.body,
@@ -67,27 +66,36 @@ class CommentRepository {
                 user.save()
             }).catch((error) => console.log(error))
         }
+
+        const commentList = await this.getAllCommentsPer(film.imdbID)
+        return commentList
     }
 
-    async addVote(data, userData) {
-        const user = await User.findById(userData.id);
-        const comment = await this.findById(data.comment_id);
-        console.log(data);
+    async addVote(filmId, data, userData) {
+        const user = await User.findById(userData.id)
+        const comment = await this.findById(data.commentId)
+
         if(data.vote == 'downvote') {
             comment.downvotes.push(user._id)
-            comment.save()
+            await comment.save()
         }
         else if (data.vote == 'upvote') {
             comment.upvotes.push(user._id)
-            comment.save()
+            await comment.save()
         }
+
+        const commentList = await this.getAllCommentsPer(filmId)
+        return commentList
     }
 
-    deleteComment(id) {
-        return this.model.findByIdAndDelete(id).then(() => {
+    async deleteComment(filmId, commentId) {
+        await this.model.findByIdAndDelete(commentId).then(() => {
             console.log("Comment successfully removed!")
-        }).catch(error => console.log(error));
+        }).catch(error => console.log(error))
+
+        const commentList = await this.getAllCommentsPer(filmId)
+        return commentList
     }
 }
 
-module.exports = new CommentRepository(Comment);
+module.exports = new CommentRepository(Comment)

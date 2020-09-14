@@ -12,7 +12,7 @@
         <div style="float:right;">
 
           <button
-            @click="voteForComment('downvote', comment._id)"
+            @click="voteOnComment('downvote', comment._id)"
             v-if="!comment.downvotes.includes(user._id)"
             class="btn btn-comment-vote"
             style="float: right; margin-right: 5px;"
@@ -31,7 +31,7 @@
           </button>
 
           <button
-            @click="voteForComment('upvote', comment._id)"
+            @click="voteOnComment('upvote', comment._id)"
             v-if="!comment.upvotes.includes(user._id)"
             class="btn btn-comment-vote"
             style="float: right;"
@@ -87,7 +87,7 @@
 
 <script>
 import swal from 'sweetalert'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import UserService from '../services/user_service.js'
 import Modal from '../components/partials/ModalComment'
 
@@ -121,6 +121,8 @@ export default {
   },
 
   methods: {
+    ...mapActions('film', ['voteForComment', 'deleteComment']),
+
     async getUserInformation() {
       await UserService.getUserProfile().then(
         (response) => {
@@ -146,7 +148,7 @@ export default {
       else if (this.currentUser && modal == "commentEdit")
         this.showModal("commentEdit", commentId, commentBody)
       else if (this.currentUser && modal == "commentDelete") {
-        this.deleteComment(commentId)
+        this.removeComment(commentId)
       }
     },
 
@@ -165,17 +167,16 @@ export default {
         this.toBeEdited = false;
     },
 
-    voteForComment(type, comment_id) {
+    voteOnComment(type, commentId) {
       if(this.currentUser) {
         const id = this.$route.params.id
         const payload = {
-          comment_id: comment_id,
+          filmId: id,
+          commentId: commentId,
           vote: type,
-        };
+        }
 
-        console.log(type);
-        console.log(comment_id);
-        UserService.postCommentVote(payload, id).then(
+        this.voteForComment(payload).then(
           (response) => {
             console.log(response)
           },
@@ -192,7 +193,14 @@ export default {
 
     },
 
-    deleteComment(id) {
+    removeComment(id) {
+      const filmId = this.$route.params.id
+
+      const payload = {
+        filmId: filmId,
+        commentId: id
+      }
+
       swal({
         title: 'Delete this comment?',
         text: 'Are you sure? You won\'t be able to revert this!',
@@ -200,7 +208,7 @@ export default {
         buttons: true,
       }).then((confirmed) => {
           if (confirmed) {
-            this.$store.dispatch('film/deleteComment', id)
+            this.deleteComment(payload)
       }})
     }
   }

@@ -23,7 +23,11 @@ class FilmService {
     return await axios.get(API_URL + '/film/' + filmId)
   }
 
-  async addFilm(id, payload) {
+  async postFilmReview(id, payload) {
+    return await axios.post(API_URL + '/film/' + id + '/review', payload, { headers: authHeader() })
+  }
+
+  addFilm(id, payload) {
     return axios.post(API_URL + '/add-film/' + id, payload, { headers: authHeader() })
   }
 
@@ -31,8 +35,12 @@ class FilmService {
     return axios.post(API_URL + '/film/' + id + '/comment', payload, { headers: authHeader() })
   }
 
-  deleteComment(id) {
-    return axios.delete(API_URL + '/film/comment/' + id, { headers: authHeader() })
+  postCommentVote(id, payload) {
+    return axios.post(API_URL + '/film/' + id + '/comment/vote', payload, { headers: authHeader() })
+  }
+
+  deleteComment(id, commentId) {
+    return axios.delete(API_URL + '/film/' + id + '/comment/' + commentId, { headers: authHeader() })
   }
 
   executeAdvancedSearch(payload) {

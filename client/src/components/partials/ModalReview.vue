@@ -92,10 +92,9 @@
 </template>
 
 <script>
-import UserService from "../../services/user_service.js"
 import ReviewCriteria from "./ModalReviewCriteria"
 import swal from 'sweetalert'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: "ModalReview",
@@ -116,13 +115,17 @@ export default {
 
   computed: {
     ...mapState('film', ['allReviewCriteriaData']),
+
     isEmpty: function () {
       return Object.keys(this.allReviewResults).length === 0
-      },
-      reviewCriteriaData() {return this.allReviewCriteriaData}
+    },
+
+    reviewCriteriaData() {return this.allReviewCriteriaData}
   },
 
   methods: {
+    ...mapActions('film', ['addFilmReview']),
+
     close() {
       this.$emit("close")
     },
@@ -156,7 +159,7 @@ export default {
     },
 
     changeSlide() {
-      if (!this.nextSlide) this.nextSlide = true;
+      if (this.nextSlide == false) this.nextSlide = true
       else this.nextSlide = false
     },
 
@@ -168,11 +171,11 @@ export default {
     submitReview() {
       const id = this.$route.params.id
       const payload = {
+        filmId: id,
         rating: this.rating,
         reviewCriteria: this.allReviewResults
       }
 
-      console.log(payload)
       if(!payload.reviewCriteria.length) {
         swal({
           title: 'You\'re not quite done :)',
@@ -180,7 +183,7 @@ export default {
           icon: 'warning',
         })
       } else {
-        UserService.postReview(payload, id).then(
+        this.addFilmReview(payload).then(
           response => {
             console.log(response)
             swal('Done!', 'You rated this film with a score of ' + payload.rating, 'success', { buttons: false, timer: 2500 });

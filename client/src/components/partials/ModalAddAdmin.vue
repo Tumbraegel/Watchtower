@@ -81,7 +81,7 @@ export default {
         username: this.username
       }
 
-      UserService.postNewAdminUser(payload).then(
+      UserService.addNewAdminUser(payload).then(
         response => {
           swal(
             'Admin added!',

@@ -89,7 +89,7 @@ export default {
 
   methods: {
     close() {
-      this.$emit("close")
+      this.$emit('close')
     },
 
     addTestQuestion(e) {
@@ -111,7 +111,7 @@ export default {
           questions: this.questions
       }
       
-      UserService.postNewCriterion(payload).then(
+      UserService.addNewReviewCriterion(payload).then(
         response => {
           swal('Criterion added!', 'You just added "' + payload.criterion + '" to the criteria collection =)', 'success', { buttons: false, timer: 3000 });
           console.log(response)

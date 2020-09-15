@@ -1,8 +1,7 @@
-// https://bezkoder.com/jwt-vue-vuex-authentication/
+// https://bezkoder.com/jwt-vue-vuex-authentication/#Define_Vuex_Authentication_module
 // LAST ACCESSED: 14/06
 
 import AuthService from '../src/services/auth_service'
-
 const user = JSON.parse(localStorage.getItem('user'))
 
 const initialState = user

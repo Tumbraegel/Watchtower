@@ -13,7 +13,8 @@
 </template>
 
 <script>
-import FilmList from '../components/FilmList';
+import FilmService from '../services/film_service'
+import FilmList from '../components/FilmList'
 
 export default {
   name: 'home',
@@ -25,36 +26,36 @@ export default {
     return {
       listOfFilmsWithReviews: [],
       featuredFilms: []
-    };
+    }
   },
 
   created() {
-    this.getFilmData();
+    this.getFilmData()
   },
 
   methods: {
     randomiseFeaturedFilms() {
-      const array = this.listOfFilmsWithReviews;
+      const array = this.listOfFilmsWithReviews
       for (var i = 0; i < 3; i++) {
-        const film = array[Math.floor(Math.random() * array.length)];
-        if (this.featuredFilms.includes(film)) i -= 1;
-        else this.featuredFilms.push(film);
+        const film = array[Math.floor(Math.random() * array.length)]
+        if (this.featuredFilms.includes(film)) i -= 1
+        else this.featuredFilms.push(film)
       }
     },
 
     getFilmData() {
-      this.$http.get('/').then(res => {
-        const films = res.data;
+      FilmService.getAllFilms().then(res => {
+        const films = res.data
 
         films.forEach(element => {
           // filter out films without reviews
-          if (element.reviews.length) this.listOfFilmsWithReviews.push(element);
-        });
-        this.randomiseFeaturedFilms();
-      });
+          if (element.reviews.length) this.listOfFilmsWithReviews.push(element)
+        })
+        this.randomiseFeaturedFilms()
+      })
     }
   }
-};
+}
 </script>
 
 <style scoped>

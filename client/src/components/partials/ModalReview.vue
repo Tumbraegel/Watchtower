@@ -127,7 +127,7 @@ export default {
     ...mapActions('film', ['addFilmReview']),
 
     close() {
-      this.$emit("close")
+      this.$emit('close')
     },
 
     addCriterion(criterion) {

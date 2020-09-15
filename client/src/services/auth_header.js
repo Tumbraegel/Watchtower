@@ -1,3 +1,4 @@
+// https://bezkoder.com/jwt-vue-vuex-authentication/#data_service
 // Check for authorization (JWT) if user wants to access protected resources
 export default function authHeader() {
     let user = JSON.parse(localStorage.getItem('user'))

@@ -7,28 +7,24 @@ class FilmService {
     return axios.get(API_URL + '/')
   }
 
-  getInitialStatisticalData() {
-    return axios.get(API_URL + '/statistics')
+  async getCollectedFilmInfo(filmId) {
+    return await axios.get(API_URL + '/film/' + filmId)
   }
 
-  getFilteredFilms(query) {
-    return axios.get(API_URL + '/' + query)
+  getGenreData() {
+    return axios.get(API_URL + '/genre')
+  }
+
+  getListOfFilmsPer(genre) {
+    return axios.get(API_URL + '/genre/' + genre)
   }
 
   getAllComments(filmId) {
     return axios.get(API_URL + '/film/' + filmId + '/comments')
   }
 
-  async getCollectedFilmInfo(filmId) {
-    return await axios.get(API_URL + '/film/' + filmId)
-  }
-
   async postFilmReview(id, payload) {
     return await axios.post(API_URL + '/film/' + id + '/review', payload, { headers: authHeader() })
-  }
-
-  addFilm(id, payload) {
-    return axios.post(API_URL + '/add-film/' + id, payload, { headers: authHeader() })
   }
 
   postComment(id, payload) {
@@ -49,6 +45,10 @@ class FilmService {
 
   executeSimpleSearch(keyword) {
     return axios.get(API_URL + '/search/' + keyword)
+  }
+
+  getInitialStatisticalData() {
+    return axios.get(API_URL + '/statistics')
   }
 }
 

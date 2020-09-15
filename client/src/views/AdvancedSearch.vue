@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import FilmService from '../services/film_service'
+import { mapActions } from 'vuex'
 
 export default {
   name: "advancedSearch",
@@ -94,13 +96,15 @@ export default {
   },
 
   methods: {
+    ...mapActions('search', ['performAdvancedSearch']),
+
     async getGenreList() {
       function Element(id, name) {
         this.id = id.toString()
         this.name = name
       }
 
-      await this.$http.get("/genre").then((res) => {
+      await FilmService.getGenreData().then((res) => {
         const list = res.data
         let sum = 0
 
@@ -114,12 +118,12 @@ export default {
     submitSearchQuery(e) {
       e.preventDefault()
       const payload = this.searchQuery
-      this.$store.dispatch("search/performAdvancedSearch", payload).then(() => {
+      this.performAdvancedSearch(payload).then(() => {
           this.$router.push({name: 'searchResults'})
       })
     },
   },
-};
+}
 </script>
 
 <style scoped>

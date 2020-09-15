@@ -27,7 +27,9 @@
 </template>
 
 <script>
-import GenreList from "../components/GenreList";
+import FilmService from '../services/film_service'
+import GenreList from "../components/GenreList"
+
 export default {
   name: 'genre',
   components: {
@@ -47,17 +49,18 @@ export default {
 
   methods: {
     getFilmData(genre) {
-      this.$http.get("/genre/" + genre).then((res) => {
-        this.filteredFilms = res.data;
-      });
+      FilmService.getListOfFilmsPer(genre).then((res) => {
+        this.filteredFilms = res.data
+      })
     },
+
     async getGenreList() {
-      await this.$http.get("/genre").then((res) => {
-        this.genreList = res.data;
-      });
+      await FilmService.getGenreData().then((res) => {
+        this.genreList = res.data
+      })
     },
-  },
-};
+  }
+}
 </script>
 
 <style scoped>

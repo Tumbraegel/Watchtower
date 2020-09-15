@@ -47,7 +47,7 @@
 
 <script>
 import swal from 'sweetalert'
-import FilmService from '../../services/film_service'
+import UserService from '../../services/user_service'
 
 export default {
   name: "ModalAddAdmin",
@@ -60,7 +60,7 @@ export default {
 
   methods: {
     close() {
-      this.$emit("close")
+      this.$emit('close')
     },
 
     submitResult() {
@@ -68,7 +68,7 @@ export default {
         imdbID: this.imdbID
       }
 
-      FilmService.addFilm(this.imdbID, payload).then(
+      UserService.addFilm(this.imdbID, payload).then(
         response => {
           swal('Film added!', 'The film was successfully stored in the database.', 'success', { buttons: false, timer: 2500 })
           console.log(response)

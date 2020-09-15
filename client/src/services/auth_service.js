@@ -1,4 +1,4 @@
-// https://bezkoder.com/jwt-vue-vuex-authentication/
+// https://bezkoder.com/jwt-vue-vuex-authentication/#Authentication_service
 // LAST ACCESSED: 14/06
 import axios from 'axios'
 const API_URL = 'http://localhost:8000/api/auth'

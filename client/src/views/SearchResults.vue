@@ -5,16 +5,18 @@
           <h5 v-if="getSearchKeyword">Results for "{{ getSearchKeyword }}" </h5>
           <h5 v-else>Results</h5>
       </div>
-      <div v-if="getSearchResults">
+      <div v-if="getSearchResults.length">
         <div v-for="film in getSearchResults" :film="film" :key="film._id" class="col mb-9"> 
           <FilmCard :film="film" />
         </div>
       </div>
+      <div v-else>Oops. There seem to be no films matching your query.</div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import FilmCard from '../components/partials/FilmCard';
 
 export default {
@@ -24,19 +26,20 @@ export default {
   },
 
   computed: {
+    ...mapState('search', ['keyword', 'simple', 'advanced']),
+
     getSearchKeyword() {
-      const result = this.$store.state.search.keyword
-      if (result[0] != undefined) return result[0].searchKeyword
+      if (this.keyword != '') return this.keyword
       else return null
     },
 
     getSearchResults() {
       let results = []
-      if(this.$store.state.search.keyword != '') {
-        results = this.$store.state.search.simple
+      if(this.simple.length) {
+        results = this.simple
       }
       else {
-        results = this.$store.state.search.advanced
+        results = this.advanced
       }
       return results
     }

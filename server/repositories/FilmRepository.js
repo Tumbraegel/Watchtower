@@ -221,25 +221,34 @@ class FilmRepository {
   }
 
   async titleSearch(query) {
-    const matches = []
-    const listOfFilms = []
+    let matches = []
+    let listOfFilms = []
     await this.findAll()
       .then((result) => {
-        listOfFilms.push(result)
+        listOfFilms = result
       })
       .catch((error) => {
         console.log(error)
       })
 
-    let result = 100;
-    for (const entry of listOfFilms[0]) {
-      if (entry.title != null) {
-        const cost = await this.calculateLevenstheinDistance(
-          entry.title,
-          query
-        )
-        if (cost < result) result = cost
-        if (cost < 7) matches.push(entry)
+    let result = 100
+    for (const entry of listOfFilms) {
+      if(entry.title != null) {
+        // check if query has exact match and break out of loop if true
+        if((entry.title).toUpperCase() == query.toUpperCase()) {
+          matches = []
+          matches.push(entry)
+          break
+        } 
+        // calculate result based on Levensthein distance
+        else {
+          const cost = await this.calculateLevenstheinDistance(
+            entry.title,
+            query
+          )
+          if (cost < result) result = cost
+          if (cost < 7) matches.push(entry)
+        }
       }
     }
     return matches

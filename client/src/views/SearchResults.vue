@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div class='container-fluid'>
       <div style="margin-top:30px">
           <h5 v-if="getSearchKeyword">Results for "{{ getSearchKeyword }}" </h5>
           <h5 v-else>Results</h5>

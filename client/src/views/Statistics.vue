@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div class='container-fluid'>
       <br />
       <p>Statistics Area</p>
       <div class="dropdown col-md-1">

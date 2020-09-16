@@ -1,10 +1,21 @@
 <template>
-  <div class="container" style="margin-bottom: 40px;">
-    <header class="jumbotron">
-      <h3>
-        <strong>{{ user.username }}</strong> Profile
-      </h3>
+  <div class="container-fluid" style="margin-bottom: 40px;">
+        <header class="banner-image">
+      <div class="h-100">
+        <div class="row h-100 align-items-center">
+          <span class="col-md-1"></span>
+          <div class="col-md-11 banner-text">
+            <h3 >
+              <strong>{{ user.username }}</strong> Profile
+            </h3>
+          </div>
+        </div>
+      </div>
     </header>
+
+    <div class="row" style="margin-top: 40px">
+      <span class="col-md-1"></span>
+      <div class="col">
     <p>
       <strong>Username:</strong>
       {{ user.username }}
@@ -62,6 +73,8 @@
     <button class="btn btn-danger" @click="deleteAccount()">
       Delete account
     </button>
+    </div>
+    </div>
     <modal v-show="isModalVisible" @close="closeModal" />
   </div>
 </template>
@@ -145,3 +158,18 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.banner-image {
+  height: 200px;
+  min-height: 200px;
+  background-image: url('../assets/background_3.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.banner-text {
+  color: darkslategray;
+}
+</style>

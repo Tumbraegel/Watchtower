@@ -89,8 +89,7 @@ class ReviewCriteriaChartModel {
         b: 40,
         t: 150
       },
-      height: 450,
-      width: 500,
+      autosize: true,
       xaxis: {
         title: 'Score',
           titlefont: {

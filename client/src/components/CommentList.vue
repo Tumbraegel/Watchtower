@@ -2,7 +2,7 @@
 <template>
   <div class="comments container">
     <h5>Comments</h5>
-    <button class="btn btn-outline-warning" @click="checkifUserLoggedIn('comment')">Write</button>
+    <button class="btn btn-outline-custom" @click="checkifUserLoggedIn('comment')">Write</button>
     <div v-for="comment in commentList" :comment="comment" :key="comment._id">
       <li class="list-group-item list-group-item-outline-primary">
         {{comment.body}}
@@ -216,6 +216,17 @@ export default {
 </script>
 
 <style scoped>
+.btn-outline-custom {
+  border-color: #5d5dd5;
+  color: #5d5dd5
+}
+
+.btn-outline-custom:hover {
+  border-color: #5d5dd5;
+  background-color: #5d5dd5;
+  color: whitesmoke
+}
+
 .btn-comment-vote {
   color: purple;
   border-radius: 50px;

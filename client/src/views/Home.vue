@@ -1,6 +1,6 @@
 <template>
   <div class='home'>
-    <div class='container'>
+    <div class='container-fluid'>
       <h1>Welcome to this review website</h1>
         <h4>Make sure to check out the Top Picks below</h4>
       <hr>

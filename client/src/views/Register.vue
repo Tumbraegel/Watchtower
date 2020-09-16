@@ -1,8 +1,7 @@
 <template>
-  <div class="register">
-    <div class="container">
+    <div class='container-fluid'>
       <div class="row">
-        <div class="col-md-6 offset-md-3">
+        <div class="col-md-4 offset-md-4">
           <h1 class="text-xs-center">Register</h1>
           <p class="text-xs-center">
             <router-link :to="{ name: 'login' }">
@@ -50,7 +49,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>

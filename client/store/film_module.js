@@ -8,10 +8,24 @@ export const film = {
         commentList: [],
         reviewCriteriaList: [],
         allReviewCriteriaData: [],
+        allGenres: [],
         overallRating: 0
     },
   
     actions: {
+        // async fetchFilmMetaData({ commit }, id) {
+        //     try {
+        //         await FilmService.getAllFilms().then(response => {
+        //             commit('SET_META_DATA', response.data)
+        //             return Promise.resolve(response.data)
+        //         })
+        //     }
+        //     catch (error) {
+        //         console.log("Error in setting film context.")
+        //         return Promise.reject(error)
+        //     }
+        // },
+
         async fetchFilmContext({ commit }, id) {
             try {
                 await FilmService.getCollectedFilmInfo(id).then(response => {
@@ -79,6 +93,12 @@ export const film = {
     },
 
     mutations: {
+        // SET_META_DATA(state, response) {
+        //     state.allFilms = response[0]
+        //     state.reviewCriteriaList = response[1].listOfReviewCriteria
+        //     state.reviewCriteriaData = response[2].reviewCriteriaData
+        // },
+
         SET_FILM_CONTEXT(state, response) {
             state.filmContext = response[0]
             state.commentList = response[1].comments
@@ -96,11 +116,11 @@ export const film = {
             state.commentList = response
         },
 
-        DELETE_COMMENT(state, response) {
+        VOTE_FOR_COMMENT(state, response) {
             state.commentList = response
         },
 
-        VOTE_FOR_COMMENT(state, response) {
+        DELETE_COMMENT(state, response) {
             state.commentList = response
         }
     },

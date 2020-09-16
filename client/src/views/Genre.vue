@@ -1,6 +1,5 @@
 <template>
-  <div class="genre">
-    <div class="container">
+    <div class='container-fluid'>
       <div>
         <h4>Pick a genre:</h4>
       </div>
@@ -23,7 +22,6 @@
       </div>
       <genre-list :filteredFilms="filteredFilms" />
     </div>
-  </div>
 </template>
 
 <script>

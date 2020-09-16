@@ -1,11 +1,12 @@
 <template>
   <div>
     <div class="row">
-        <div id="reviewCriteriaChart" class=col-md-8></div>
+        <div id="reviewCriteriaChart" class="col-md-12"></div>
     </div>
     <div class="row">
-        <div id="pieChartReviewCriteria" class=col-md-4></div>
-        <div id="pieChartRating" class=col-md-4></div>
+      <div id="pieChartReviewCriteria" class="col-md-4"></div>
+      <div class="col-md-4"></div>
+      <div id="pieChartRating" class="col-md-4"></div>
     </div>
   </div>
 </template>

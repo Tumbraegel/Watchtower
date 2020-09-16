@@ -251,7 +251,8 @@ class FilmRepository {
         }
       }
     }
-    return matches
+    if(matches.length > 1) return matches.splice(0,14)
+    else return matches
   }
 
   // Reference: https://www.geeksforgeeks.org/edit-distance-dp-5/

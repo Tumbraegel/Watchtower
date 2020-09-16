@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div class='container-fluid'>
       <div style="margin-top:30px">
         <h5 style="font-strech: ultra-condensed">Advanced Search</h5>
       </div>

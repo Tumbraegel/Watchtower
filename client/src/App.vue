@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <Nav />
-    <router-view/>
+    <div id="content">
+      <router-view/>
+    </div>
   </div>
 </template>
 
@@ -17,9 +19,12 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: Verdana, Geneva, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+}
+
+#content {
+  margin: 30px 20px 0px 20px;
 }
 </style>

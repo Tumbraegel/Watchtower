@@ -104,7 +104,7 @@ export default {
     }
   },
 
-  mounted() {
+  created() {
     if (!this.currentUser) {
       this.$router.push('/login')
     } else {

@@ -17,12 +17,7 @@ export default {
   components : {
     FilmCard
   },
-  props: {
-    featuredFilms: {
-      type: Array,
-      required: true
-    }
-  }
+  props: ['featuredFilms']
 }
 </script>
 

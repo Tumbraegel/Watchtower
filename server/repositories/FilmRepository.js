@@ -4,56 +4,88 @@ const criterionRepo = require('../repositories/CriterionRepository')
 
 class FilmRepository {
   constructor(model) {
-    this.model = model;
+    this.model = model
   }
 
   // Retrieve all films
   findAll() {
-    return this.model.find();
+    return this.model.find()
   }
 
   // Retrieve film by IMDb ID
   findByImdbID(id) {
-    return this.model.findOne({ imdbID: id });
+    return this.model.findOne({ imdbID: id })
   }
 
   findFilmByImdbID(id) {
-    return this.model.find({ imdbID: id });
+    return this.model.find({ imdbID: id })
   }
 
   // Retrieve film by specific genre
   findByGenre(genre) {
-    return this.model.find({ genres: genre });
+    return this.model.find({ genres: genre })
+  }
+
+  // Retrieve all films that have been reviewed at least once
+  findAllReviewedFilms() {
+    return this.model.find({
+      reviews: { $exists: true, $not: { $size: 0 } },
+    })
+  }
+
+  async getThreeRandomReviewedFilms() {
+    const films = await this.findAllReviewedFilms()
+    const featuredFilms = []
+
+    for (var i = 0; i < 3; i++) {
+      const film = films[Math.floor(Math.random() * films.length)]
+      if (featuredFilms.includes(film)) i -= 1
+      else featuredFilms.push(film)
+    }
+    return featuredFilms
   }
 
   async getInitialStatistics(reviewCriteria) {
     const results = {}
     let listOfFilms = []
 
-    await this.filterForFilmsWithReviewCriteria(reviewCriteria).then(response => {
-      listOfFilms = response
-      results.films = listOfFilms
-    })
+    await this.filterForFilmsWithReviewCriteria(reviewCriteria).then(
+      (response) => {
+        listOfFilms = response
+        results.films = listOfFilms
+      }
+    )
     return results
   }
 
   async filterForFilmsWithReviewCriteria(criteriaList) {
     let matches = []
 
-    await this.model.find().populate({
-      path  : 'reviews',
-      match : { reviewCriteria : { $elemMatch: {name: {$in: criteriaList} }}}
-    }).then(films => {
-      for(const film of films) {
-        if(film.reviews.length) {
-          const reviewData = []
-          for(const review of film.reviews) {
-            reviewData.push(review.reviewCriteria)
+    await this.model
+      .find()
+      .populate({
+        path: 'reviews',
+        match: {
+          reviewCriteria: { $elemMatch: { name: { $in: criteriaList } } },
+        },
+      })
+      .then((films) => {
+        for (const film of films) {
+          if (film.reviews.length) {
+            const reviewData = []
+            for (const review of film.reviews) {
+              reviewData.push(review.reviewCriteria)
+            }
+            matches.push({
+              title: film.title,
+              year: film.year,
+              genre: film.genres,
+              score: film.overallRating,
+              criteria: reviewData,
+            })
           }
-          matches.push({title: film.title, year: film.year, genre: film.genres, score: film.overallRating, criteria: reviewData })
         }
-      }
-    })
+      })
     return matches
   }
 
@@ -62,8 +94,8 @@ class FilmRepository {
     const allFilms = await this.findAll()
 
     for (let entry of allFilms) {
-      if(entry.genres) {
-        const genres = entry.genres.split(", ")
+      if (entry.genres) {
+        const genres = entry.genres.split(', ')
         for (const genre of genres) {
           if (!genreList.includes(genre)) {
             genreList.push(genre)
@@ -75,51 +107,56 @@ class FilmRepository {
   }
 
   async findByUserSearch(query) {
-    if ("advancedSearch" in query) return await this.advancedSearch(query);
-    else return await this.simpleSearch(query);
+    if ('advancedSearch' in query) return await this.advancedSearch(query)
+    else return await this.simpleSearch(query)
   }
 
-  async filterEntriesBasedOnUserSelection(selectedReviewCriteria, selectedGenres, selectedReleaseDate, operator) {
+  async filterEntriesBasedOnUserSelection(
+    selectedReviewCriteria,
+    selectedGenres,
+    selectedReleaseDate,
+    operator
+  ) {
     let results = []
-    const preparedCriteria = await this.querySelectedReviewCriteria(selectedReviewCriteria)
+    const reviewsContainingSelectedCriteria = await this.querySelectedReviewCriteria(
+      selectedReviewCriteria
+    )
     const preparedGenres = this.querySelectedGenres(selectedGenres)
-    
-    if(operator == 'and') {
-      await this.model.find({
+
+    if (operator == 'and') {
+      await this.model
+        .find({
           $and: [
-            { genres: { $regex: preparedGenres, $options: "i" } },
+            { genres: { $regex: preparedGenres, $options: 'i' } },
             { year: selectedReleaseDate },
-            { reviews: { $in: preparedCriteria } },
+            { reviews: { $in: reviewsContainingSelectedCriteria } },
           ],
-        }
-      )
-      .then((response) => {
-        return results = response
-      })
-      .catch((error) => console.log(error))
-      return results
-    }
-    
-    else if (operator == 'or') {
-      console.log(preparedGenres)
-      await this.model.find({
-            $or: [
-              { genres: { $regex: preparedGenres, $options: "i" } },
-              { year: selectedReleaseDate },
-              { reviews: { $in: preparedCriteria } },
-            ],
-          }
-        )
+        })
         .then((response) => {
-          return results = response
+          return (results = response)
         })
         .catch((error) => console.log(error))
-        return results
-      }      
+      return results
+    } else if (operator == 'or') {
+      console.log(preparedGenres)
+      await this.model
+        .find({
+          $or: [
+            { genres: { $regex: preparedGenres, $options: 'i' } },
+            { year: selectedReleaseDate },
+            { reviews: { $in: reviewsContainingSelectedCriteria } },
+          ],
+        })
+        .then((response) => {
+          return (results = response).reverse()
+        })
+        .catch((error) => console.log(error))
+      return results
+    }
   }
 
   async advancedSearch(query) {
-    console.log("advancedSearch")
+    console.log('advancedSearch')
     const selectedGenres = query.selectedGenre
     const selectedReviewCriteria = query.selectedReviewCriteria
     const selectedReleaseDate = query.selectedReleaseDate
@@ -131,54 +168,54 @@ class FilmRepository {
         selectedGenres.constructor != Object) &&
       (Object.keys(selectedReviewCriteria).length != 0 ||
         selectedReviewCriteria.constructor != Object) &&
-      selectedReleaseDate != ""
+      selectedReleaseDate != ''
     ) {
-      console.log("ReviewCriteria & Genre & Year selected");
+      console.log('ReviewCriteria & Genre & Year selected')
       await this.filterEntriesBasedOnUserSelection(
-        selectedReviewCriteria, 
-        selectedGenres, 
-        selectedReleaseDate, 
-        'and').then((response) => {
-          return results = response
-        })
-      }
-        
-    else if (
+        selectedReviewCriteria,
+        selectedGenres,
+        selectedReleaseDate,
+        'and'
+      ).then((response) => {
+        return (results = response)
+      })
+    } else if (
       Object.keys(selectedGenres).length != 0 ||
       selectedGenres.constructor != Object ||
       Object.keys(selectedReviewCriteria).length != 0 ||
       selectedReviewCriteria.constructor != Object ||
-      selectedReleaseDate != ""
+      selectedReleaseDate != ''
     ) {
-      console.log("ReviewCriteria OR Genre OR Year selected")
+      console.log('ReviewCriteria OR Genre OR Year selected')
       await this.filterEntriesBasedOnUserSelection(
-        selectedReviewCriteria, 
-        selectedGenres, 
-        selectedReleaseDate, 
-        'or').then((response) => {
-          return results = response
-        })
+        selectedReviewCriteria,
+        selectedGenres,
+        selectedReleaseDate,
+        'or'
+      ).then((response) => {
+        return (results = response)
+      })
     }
     return results
   }
 
   async querySelectedReviewCriteria(selectedReviewCriteria) {
-    const criteriaList = [];
-    const filmsWithSelectedCriteria = [];
+    const criteriaList = []
+    const filmsWithSelectedCriteria = []
 
     for (const [key, value] of Object.entries(selectedReviewCriteria)) {
       if (value === true) {
-        criteriaList.push(key);
+        criteriaList.push(key)
       }
     }
 
-    const allReviewedFilms = await reviewRepo.findAllReviewedFilms();
+    const allReviews = await reviewRepo.findAll()
 
-    for (const entry of allReviewedFilms) {
+    for (const entry of allReviews) {
       for (const selectedCriterion of criteriaList) {
         for (const criterion of entry.reviewCriteria) {
           if (criterion.name == selectedCriterion)
-            filmsWithSelectedCriteria.push(entry._id);
+            filmsWithSelectedCriteria.push(entry._id)
         }
       }
     }
@@ -186,37 +223,37 @@ class FilmRepository {
     // check and store true values in criteria object
     for (const [key, value] of Object.entries(selectedReviewCriteria)) {
       if (value === true) {
-        criteriaList.push(key);
+        criteriaList.push(key)
       }
     }
-    return filmsWithSelectedCriteria;
+    return filmsWithSelectedCriteria
   }
 
   querySelectedGenres(selectedGenres) {
-    const genreList = [];
-    let genreRegexExp = "";
+    const genreList = []
+    let genreRegexExp = ''
 
     // check and store true values in genre object, e.g. { Drama : true }
     for (const [key, value] of Object.entries(selectedGenres)) {
       if (value === true) {
-        genreList.push(key);
+        genreList.push(key)
       }
     }
     // create regex expression with logical OR of (possibly multiple) selected genres
-    let iterator = 0;
+    let iterator = 0
     for (const entry of genreList) {
-      if (genreList.length === 1) genreRegexExp += entry;
+      if (genreList.length === 1) genreRegexExp += entry
       else {
-        iterator += 1;
-        if (iterator != genreList.length) genreRegexExp += entry + "|";
-        else genreRegexExp += entry;
+        iterator += 1
+        if (iterator != genreList.length) genreRegexExp += entry + '|'
+        else genreRegexExp += entry
       }
     }
-    return genreRegexExp;
+    return genreRegexExp
   }
 
   simpleSearch(query) {
-    console.log("simpleTitleSearch")
+    console.log('simpleTitleSearch')
     return this.titleSearch(query)
   }
 
@@ -233,13 +270,13 @@ class FilmRepository {
 
     let result = 100
     for (const entry of listOfFilms) {
-      if(entry.title != null) {
+      if (entry.title != null) {
         // check if query has exact match and break out of loop if true
-        if((entry.title).toUpperCase() == query.toUpperCase()) {
+        if (entry.title.toUpperCase() == query.toUpperCase()) {
           matches = []
           matches.push(entry)
           break
-        } 
+        }
         // calculate result based on Levensthein distance
         else {
           const cost = await this.calculateLevenstheinDistance(
@@ -251,57 +288,57 @@ class FilmRepository {
         }
       }
     }
-    if(matches.length > 1) return matches.splice(0,14)
+    if (matches.length > 1) return matches.splice(0, 14)
     else return matches
   }
 
   // Reference: https://www.geeksforgeeks.org/edit-distance-dp-5/
   // Reference: https://www.youtube.com/watch?v=We3YDTzNXEk
   calculateLevenstheinDistance(string1, string2) {
-    let matrix = [];
+    let matrix = []
 
-    const length1 = string1.length;
-    const length2 = string2.length;
+    const length1 = string1.length
+    const length2 = string2.length
 
     // if one string is empty, all characters of other string need
     // to be inserted into the first one and vice versa
-    if (length1 == 0) return length2;
-    if (length2 == 0) return length1;
+    if (length1 == 0) return length2
+    if (length2 == 0) return length1
 
     // create empty 2D array (matrix) based on input string lengths
-    matrix = new Array(length1);
+    matrix = new Array(length1)
 
     for (let i = 0; i <= length1; i++) {
-      matrix[i] = new Array(length2);
+      matrix[i] = new Array(length2)
     }
 
     // add string indices to matrix
-    for (let i = 0; i <= length1; i++) matrix[i][0] = i;
-    for (let j = 0; j <= length2; j++) matrix[0][j] = j;
+    for (let i = 0; i <= length1; i++) matrix[i][0] = i
+    for (let j = 0; j <= length2; j++) matrix[0][j] = j
 
     for (let i = 1; i <= length1; i++) {
       for (let j = 1; j <= length2; j++) {
         // if character is the same, take diagonal value
         // lower cost with -1 if characters are the same
         if (string1.charAt(i - 1) == string2.charAt(j - 1))
-          matrix[i][j] = matrix[i - 1][j - 1] - 1;
+          matrix[i][j] = matrix[i - 1][j - 1] - 1
         // if character is different, take minimum of three surrounding values
         // in matrix (left, diagonal, top)
         else
           matrix[i][j] =
             Math.min(matrix[i - 1][j], matrix[i - 1][j - 1], matrix[i][j - 1]) +
-            1;
+            1
       }
     }
-    return matrix[length1][length2];
+    return matrix[length1][length2]
   }
 
   // Add reference to respective reviews
   async addReview(id, review) {
     // MISSING error handling on save
-    const film = await this.model.findOne({ imdbID: id });
-    film.reviews.push(review._id);
-    film.save();
+    const film = await this.model.findOne({ imdbID: id })
+    film.reviews.push(review._id)
+    film.save()
   }
 
   // Get film data from IMDb api and store in db
@@ -324,19 +361,22 @@ class FilmRepository {
       imdbID: film.imdbID,
       otherRatings: film.Ratings,
       metascore: film.Metascore,
-      imdbRating: film.imdbRating
+      imdbRating: film.imdbRating,
     }
     const newFilm = await new this.model(entry)
-    return await newFilm.save().then(function (err, res) {
-      if (err) {
-        console.log("'" + film.Title + "'" + " already exists in database.")
-      } else {
-        console.log(
-          "'" + film.Title + "'" + "  successfully stored in database."
-        )
-      }
-    }).catch(error => console.log(error))
+    return await newFilm
+      .save()
+      .then(function (err, res) {
+        if (err) {
+          console.log("'" + film.Title + "'" + ' already exists in database.')
+        } else {
+          console.log(
+            "'" + film.Title + "'" + '  successfully stored in database.'
+          )
+        }
+      })
+      .catch((error) => console.log(error))
   }
 }
 
-module.exports = new FilmRepository(Film);
+module.exports = new FilmRepository(Film)

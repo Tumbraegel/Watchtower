@@ -3,7 +3,7 @@ const API_URL = 'http://localhost:8000'
 import authHeader from './auth_header'
 
 class FilmService {
-  getAllFilms() {
+  getRandomReviewedFilms() {
     return axios.get(API_URL + '/')
   }
 

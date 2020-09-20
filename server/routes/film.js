@@ -8,6 +8,9 @@ const criterionRepo = require('../repositories/CriterionRepository')
 const filmAPI = require('../imdb_data/film_api')
 
 /* HELPER METHODS */
+async function getRandomSelectionOfFilms() {
+  return await filmRepo.getThreeRandomReviewedFilms()
+}
 async function getFilmById(id) {
   return await filmRepo.findByImdbID(id)
 }
@@ -59,9 +62,9 @@ async function getAvailableDataForFilmPage(id) {
 
 /* ROUTES */ 
 
-// Retrieve all films
+// Retrieve random reviewed films
 router.get('/', (req, res) => {
-    filmRepo.findAll().then((films) => {
+    getRandomSelectionOfFilms().then((films) => {
         res.json(films)
     }).catch(error => console.log(error))
 })

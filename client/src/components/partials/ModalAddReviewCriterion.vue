@@ -120,6 +120,9 @@ export default {
           console.log(error.response)
         }
       )
+      this.name = ''
+      this.test = ''
+      this.questions = {}
       this.close()
     },
   },

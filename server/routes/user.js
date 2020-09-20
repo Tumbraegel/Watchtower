@@ -6,7 +6,6 @@ const { check, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
-const User = require('../models/User')
 const userRepo = require('../repositories/UserRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
 const auth = require('../config/auth_config')
@@ -74,7 +73,7 @@ router.post(
       const { email, password } = req.body
 
       try {
-        let user = await User.findOne({ email })
+        let user = await userRepo.findByEmail(email)
         if (!user)
           return res.status(400).json({
             message: 'User does not exist.'
@@ -119,7 +118,7 @@ router.post(
 router.get('/me', auth, async (req, res) => {
   try {
     // request.user is getting fetched from Middleware after token authentication
-    const user = await User.findById(req.user.id).populate(
+    const user = await userRepo.findById(req.user.id).populate(
       {
         path: 'reviews',
         populate: {
@@ -135,7 +134,7 @@ router.get('/me', auth, async (req, res) => {
 })
 
 router.post('/add-criterion', auth, async (req, res) => {
-  const user = await User.findById(req.user.id)
+  const user = await userRepo.findById(req.user.id)
   if(user.role == 'admin') {
       criterionRepo.addCriterion(req.body).then(criterion => {
         res.json(criterion)
@@ -148,14 +147,9 @@ router.post('/add-criterion', auth, async (req, res) => {
 })
 
 router.post('/add-admin', auth, async (req, res) => {
-  const user = await User.findOne({username: req.body.username})
-  if(user != null) {
-    user.role = 'admin'
-    user.save().then(function() {
-      console.log('User role changed successfully.')
-      console.log(user)  
+  await userRepo.addAdminUser(req.body.username).then(response => {
+    res.json(response)
   }).catch(error => console.log(error))
-  }
 })
 
 router.delete("/delete-user/:email", async (req, res) => {

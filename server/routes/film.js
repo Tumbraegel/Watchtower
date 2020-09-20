@@ -5,6 +5,7 @@ const filmRepo = require('../repositories/FilmRepository')
 const reviewRepo = require('../repositories/ReviewRepository')
 const commentRepo = require('../repositories/CommentRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
+const searchRepo = require('../repositories/SearchRepository')
 const filmAPI = require('../imdb_data/film_api')
 
 /* HELPER METHODS */
@@ -121,7 +122,7 @@ router.get('/genre/:genre', (req, res) => {
 // Retrieve search result
 router.get('/search/:query', (req, res) => {
     const query = Object(req.params.query)
-    filmRepo.findByUserSearch(query).then(films => {
+    searchRepo.findByUserSearch(query).then(films => {
         res.json(films)
     }).catch(error => console.log(error))
 })
@@ -136,7 +137,7 @@ router.post('/add-film/:id', auth, async (req, res) => {
 
 // Process query for advanced search
 router.post('/advanced-search', (req, res) => {
-    filmRepo.findByUserSearch(req.body).then(films => {
+    searchRepo.findByUserSearch(req.body).then(films => {
         res.json(films)
     }).catch(error => console.log(error))
 })

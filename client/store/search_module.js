@@ -45,6 +45,7 @@ export const search = {
     },
     PERFORM_ADVANCED_SEARCH(state, response) {
       state.keyword = ''
+      state.simple = []
       state.advanced = response
     }
   },

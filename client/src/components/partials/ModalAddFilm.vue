@@ -78,6 +78,7 @@ export default {
           console.log(error.response)
         }
       )
+      this.imdbID = ''
       this.close()
     },
   },

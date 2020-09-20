@@ -83,18 +83,26 @@ export default {
 
       UserService.addNewAdminUser(payload).then(
         response => {
+          if(response.data) {
+            swal(
+              'Admin added!',
+              'You just added ' + payload.username + ' as an admin.',
+              'success',
+              { buttons: false, timer: 2500 }
+            )
+            console.log(response.data)
+          }
+          else {
           swal(
-            'Admin added!',
-            'You just added ' + payload.username + ' as an admin.',
-            'success',
-            { buttons: false, timer: 2500 }
+            'That didn\'t work :(',
+            'Something went wrong. Check if this user actually exists.',
+            'error',
+            { buttons: true }
           )
-          console.log(response)
-        },
-        error => {
-          console.log(error.response)
-        }
-      )
+          }
+          }).catch(error => { console.log(error)
+        })
+      this.username = ''
       this.close()
     }
   }

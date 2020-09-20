@@ -124,8 +124,6 @@ export default {
 
   data() {
     return {
-      film: {},
-      reviews: [],
       isModalVisible: false,
       toBeEdited: false,
       dataLoaded: false,
@@ -135,7 +133,7 @@ export default {
 
   computed: {
     ...mapState('film', [
-      'filmContext',
+      'film',
       'reviewList',
       'commentList',
       'overallRating',
@@ -160,7 +158,7 @@ export default {
   },
 
   async created() {
-    await this.getFilmData().then(async () => {
+    await this.fetchFilmContext(this.$route.params.id).then(async () => {
       if (this.reviewList.length) this.dataLoaded = true
       if (this.$store.state.auth.status.loggedIn == true)
         await this.getUserInformation()
@@ -169,17 +167,6 @@ export default {
 
   methods: {
     ...mapActions('film', ['fetchFilmContext', 'deleteComment']),
-
-    getFilmData() {
-      const filmInformation = this.fetchFilmContext(this.$route.params.id).then(
-        () => {
-          this.film = this.filmContext
-          this.reviews = this.reviewList
-        }
-      )
-      if (this.reviews.length) this.reviewsPopulated = true
-      return filmInformation
-    },
 
     checkifUserLoggedIn() {
       if (this.currentUser) this.showModal()
@@ -211,7 +198,7 @@ export default {
     async closeModal() {
       this.isModalVisible = false
       this.dataLoaded = false
-      await this.getFilmData().then(async () => {
+      await this.fetchFilmContext(this.$route.params.id).then(async () => {
         this.dataLoaded = true
         if (this.currentUser) await this.getUserInformation()
       })

@@ -57,7 +57,7 @@ async function getAvailableDataForFilmPage(id) {
     data.allReviewCriteriaData = await getAllReviewCriteriaData()
     return data
   } catch (error) {
-    return next(error)
+    return null
   }
 }
 

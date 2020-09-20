@@ -3,6 +3,7 @@
   <div class="comments container">
     <h5>Comments</h5>
     <button class="btn btn-outline-custom" @click="checkifUserLoggedIn('comment')">Write</button>
+    <div v-if="commentList.length">
     <div v-for="comment in commentList" :comment="comment" :key="comment._id">
       <li class="list-group-item list-group-item-outline-primary">
         {{comment.body}}
@@ -71,6 +72,7 @@
         ({{ new Date(comment.updatedAt).toLocaleDateString('en-GB', {weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' }) }}
         {{ new Date(comment.updatedAt).toLocaleTimeString('en-GB') }} )
       </small>
+    </div>
     </div>
 
     <modal

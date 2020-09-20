@@ -3,7 +3,7 @@ import FilmService from '../src/services/film_service'
 export const film = {
     namespaced: true,
     state: {
-        filmContext: {},
+        film: {},
         reviewList: [],
         commentList: [],
         reviewCriteriaList: [],
@@ -100,7 +100,7 @@ export const film = {
         // },
 
         SET_FILM_CONTEXT(state, response) {
-            state.filmContext = response[0]
+            state.film = response[0]
             state.commentList = response[1].comments
             state.reviewList = response[2].reviews
             state.reviewCriteriaList = response[3].listOfReviewCriteria

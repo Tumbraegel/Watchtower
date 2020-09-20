@@ -10,7 +10,7 @@
         </button>
         <div class="dropdown-menu dropdown-scrollable">
         <div v-for="genre in genreList" :key="genre" :value="genre">
-          <a class="dropdown-item" href="#" @click="getFilmData(genre)">{{ genre }}</a>
+          <a class="dropdown-item" href="#" @click="getFilteredFilms(genre)">{{ genre }}</a>
         </div>
       </div>
       </div>
@@ -42,19 +42,15 @@ export default {
   },
 
   created() {
-    this.getGenreList()
+    FilmService.getGenreData().then((res) => {
+        this.genreList = res.data
+      })
   },
 
   methods: {
-    getFilmData(genre) {
+    getFilteredFilms(genre) {
       FilmService.getListOfFilmsPer(genre).then((res) => {
         this.filteredFilms = res.data
-      })
-    },
-
-    async getGenreList() {
-      await FilmService.getGenreData().then((res) => {
-        this.genreList = res.data
       })
     },
   }

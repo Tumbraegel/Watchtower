@@ -1,11 +1,11 @@
 <template>
   <div class="container-fluid" style="margin-bottom: 40px;">
-        <header class="banner-image">
+    <header class="banner-image">
       <div class="h-100">
         <div class="row h-100 align-items-center">
           <span class="col-md-1"></span>
           <div class="col-md-11 banner-text">
-            <h3 >
+            <h3>
               <strong>{{ user.username }}</strong> Profile
             </h3>
           </div>
@@ -16,37 +16,33 @@
     <div class="row" style="margin-top: 40px">
       <span class="col-md-1"></span>
       <div class="col">
-    <p>
-      <strong>Username:</strong>
-      {{ user.username }}
-    </p>
-    <p>
-      <strong>Email:</strong>
-      {{ user.email }}
-    </p>
-    <div v-if="user.role == 'admin'" style="margin-bottom: 20px;">
-      <p>
-        You are classified as
-        <strong>{{ user.role }}</strong>
-      </p>
-      <a href @click="openModal">Assign admin rights to other user</a>
+        <p>
+          <strong>Username:</strong>
+          {{ user.username }}
+        </p>
+        <p>
+          <strong>Email:</strong>
+          {{ user.email }}
+        </p>
+        <div v-if="user.role == 'admin'" style="margin-bottom: 20px;">
+          <p>
+            You are classified as
+            <strong>{{ user.role }}</strong>
+          </p>
+        </div>
+        <strong>Reviews:</strong>
+      </div>
     </div>
-    <strong>Reviews:</strong>
-    <div class="row row-cols-1 row-cols-md-3">
+
+    <div class="row" style="margin: 30px 0px 0px 100px">
       <p
-        v-if="!user.reviews.length"
+        v-if="!user.reviews == undefined"
         style="color: lightgray; margin-top: 20px;"
-        class="col mb-4"
       >
         You have not reviewed any films.
       </p>
-      <div
-        v-for="item in user.reviews"
-        :item="item"
-        :key="item._id"
-        class="col mb-4"
-      >
-        <div class="card" style="width: 18rem;">
+      <div v-for="item in user.reviews" :key="item._id" class="col-md-4">
+        <div class="card" style="margin-bottom: 20px;">
           <div class="card-body">
             <h5 class="card-title">
               <router-link :to="'/film/' + item.film.imdbID">{{
@@ -73,28 +69,19 @@
     <button class="btn btn-danger" @click="deleteAccount()">
       Delete account
     </button>
-    </div>
-    </div>
-    <modal v-show="isModalVisible" @close="closeModal" />
   </div>
 </template>
 
 <script>
 import swal from 'sweetalert'
-import Modal from '../components/partials/ModalAddAdmin'
 import UserService from '../services/user_service'
 
 export default {
   name: 'profile',
 
-  components: {
-    Modal
-  },
-
   data() {
     return {
-      user: {},
-      isModalVisible: false
+      user: {}
     }
   },
 
@@ -123,15 +110,6 @@ export default {
   },
 
   methods: {
-    openModal(e) {
-      e.preventDefault()
-      this.isModalVisible = true
-    },
-
-    closeModal() {
-      this.isModalVisible = false
-    },
-
     deleteAccount() {
       const payload = {
         email: this.currentUser.email

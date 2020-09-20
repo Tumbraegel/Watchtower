@@ -43,7 +43,7 @@
                 <div v-if="nextSlide">
                   <div>
                     <p>Choose at least one criterion:</p>
-                    <div v-for="entry in reviewCriteriaData" :key="entry">
+                    <div v-for="entry in reviewCriteriaData" :key="entry._id">
                       <a
                         href="#"
                         class="badge badge-warning"
@@ -63,7 +63,7 @@
                   <hr />
                   <div v-if="!isEmpty" style="margin-bottom:25px;">
                     Your review criteria:
-                    <div v-for="criterion in allReviewResults" :key="criterion.name">
+                    <div v-for="criterion in allReviewResults" :key="criterion.index">
                       <span
                         class="badge badge-light"
                         style="margin-right: 6px;"
@@ -192,6 +192,11 @@ export default {
             console.log(error.response)
           }
         )
+        // reset modal values
+        this.rating = 0
+        this.reviewCriterion = ""
+        this.allReviewResults = []
+        this.nextSlide = false
         this.close()
       }
     }

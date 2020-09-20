@@ -111,7 +111,11 @@ data() {
 
       this.showConfirmButton = false
 
-      this.$emit("addCriterion", criterion)
+      await this.$emit("addCriterion", criterion).then(() => {
+        // reset modal values
+        this.reviewResult = 0
+        this.questions = {}
+      })
     },
   }
 }

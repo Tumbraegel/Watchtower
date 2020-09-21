@@ -47,7 +47,7 @@ class FilmRepository {
     const results = {}
     let listOfFilms = []
 
-    await this.filterForFilmsWithReviewCriteria(reviewCriteria).then(
+    await this.filterForFilmsWithReviewCriterion(reviewCriteria).then(
       (response) => {
         listOfFilms = response
         results.films = listOfFilms
@@ -56,7 +56,7 @@ class FilmRepository {
     return results
   }
 
-  async filterForFilmsWithReviewCriteria(criteriaList) {
+  async filterForFilmsWithReviewCriterion(criterion) {
     let matches = []
 
     await this.model
@@ -64,7 +64,7 @@ class FilmRepository {
       .populate({
         path: 'reviews',
         match: {
-          reviewCriteria: { $elemMatch: { name: { $in: criteriaList } } },
+          reviewCriteria: { $elemMatch: { name: criterion } },
         },
       })
       .then((films) => {

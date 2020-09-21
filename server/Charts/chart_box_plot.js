@@ -1,6 +1,7 @@
-class ScatterPlot {
+class BoxPlot {
     async fetchData(data, reviewCriteria) {
        const collectedCriteriaAndTheiritems = []
+
        for(const criterion of reviewCriteria) {
         collectedCriteriaAndTheiritems.push({name: criterion, results: []})
        }
@@ -108,4 +109,4 @@ class ScatterPlot {
     }
 }
 
-export default new ScatterPlot()
+module.exports = new BoxPlot()

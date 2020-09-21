@@ -85,4 +85,4 @@ class ScatterPlot {
     }
 }
 
-export default new ScatterPlot()
+module.exports = new ScatterPlot()

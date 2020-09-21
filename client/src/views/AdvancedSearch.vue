@@ -22,13 +22,13 @@
         </p>
         <div class="form-check" style="margin-bottom: 15px;">
           <div class="row">
-            <div v-for="genre in genreList" :key="genre.id" class="col-md-4">
+            <div v-for="genre in currentGenres" :key="genre.index" class="col-md-4">
               <input
                 type="checkbox"
                 class="form-check-input"
-                v-model="searchQuery.selectedGenre[genre.name]"
+                v-model="searchQuery.selectedGenre[genre]"
               />
-              <label class="form-check-label">{{ genre.name }}</label>
+              <label class="form-check-label">{{ genre }}</label>
             </div>
           </div>
         </div>
@@ -37,18 +37,18 @@
         </p>
         <div class="form-check" style="margin-bottom: 15px;">
           <div class="row">
-            <div v-for="criterion in reviewCriteria" :key="criterion.id" class="col-md-4">
+            <div v-for="entry in currentReviewCriteria" :key="entry._id" class="col-md-4">
               <input
                 type="checkbox"
                 class="form-check-input"
-                v-model="searchQuery.selectedReviewCriteria[criterion.name]"
+                v-model="searchQuery.selectedReviewCriteria[entry.criterion]"
               />
-              <label class="form-check-label">{{ criterion.name }}</label>
+              <label class="form-check-label">{{ entry.criterion }}</label>
             </div>
           </div>
         </div>
         <p>
-          <b>Release Date</b>
+          <b>Release Year</b>
         </p>
         <div class="form-group">
           <input
@@ -67,8 +67,8 @@
 </template>
 
 <script>
-import FilmService from '../services/film_service'
-import { mapActions } from 'vuex'
+//import FilmService from '../services/film_service'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: "advancedSearch",
@@ -76,11 +76,6 @@ export default {
   data() {
     return {
       genreList: [],
-      reviewCriteria: [
-        { id: "1", name: "Diversity" },
-        { id: "2", name: "Queer Friendliness" },
-        { id: "3", name: "Gender Equality" },
-      ],
       searchQuery: {
         selectedTitle: "",
         selectedGenre: {},
@@ -91,28 +86,27 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState('film', ['allReviewCriteriaData', 'allGenres']),
+    currentReviewCriteria() {
+      return this.allReviewCriteriaData
+    },
+    currentGenres() {
+      return this.allGenres
+    }
+  },
+
   created() {
-    this.getGenreList()
+    this.getInitialData()
   },
 
   methods: {
     ...mapActions('search', ['performAdvancedSearch']),
+    ...mapActions('film', ['fetchReviewCriteriaContext', 'fetchAllGenres']),
 
-    async getGenreList() {
-      function Element(id, name) {
-        this.id = id.toString()
-        this.name = name
-      }
-
-      await FilmService.getGenreData().then((res) => {
-        const list = res.data
-        let sum = 0
-
-        for (const entry of list) {
-          const element = new Element((sum += 1), entry)
-          this.genreList.push(element)
-        }
-      })
+    async getInitialData() {
+      this.fetchReviewCriteriaContext()
+      this.fetchAllGenres()
     },
 
     submitSearchQuery(e) {

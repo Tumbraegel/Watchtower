@@ -15,7 +15,7 @@
       </div>
       </div>
       <div class="col-md-2">
-      <button class="btn btn-outline-warning" style="margin-right:10px;" @click="getFilmData('None')">
+      <button class="btn btn-outline-warning" style="margin-right:10px;" @click="getFilteredFilms('None')">
         Clear Filters
       </button>
       </div>

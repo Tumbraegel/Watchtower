@@ -3,7 +3,7 @@
 
 class ReviewCriteriaChartModel {
 
-  async fetchReviewCriteria(reviews, currentReviewCriteria) {
+  fetchReviewCriteria(reviews, currentReviewCriteria) {
     const data = []
     
     for(const criterion of currentReviewCriteria) {
@@ -132,4 +132,4 @@ class ReviewCriteriaChartModel {
   }
 }
 
-export default new ReviewCriteriaChartModel()
+module.exports = new ReviewCriteriaChartModel()

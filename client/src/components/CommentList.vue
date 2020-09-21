@@ -1,6 +1,6 @@
 <!-- Tutorial https://auth0.com/blog/beginner-vuejs-tutorial-with-user-login -->
 <template>
-  <div class="comments container">
+  <div class="container">
     <h5>Comments</h5>
     <button class="btn btn-outline-custom" @click="checkifUserLoggedIn('comment')">Write</button>
     <div v-if="commentList.length">
@@ -192,7 +192,6 @@ export default {
           timer: 2000,
         })
       }
-
     },
 
     removeComment(id) {

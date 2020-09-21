@@ -109,4 +109,4 @@ class ScoreChartModel {
   }
 }
 
-export default new ScoreChartModel()
+module.exports = new ScoreChartModel()

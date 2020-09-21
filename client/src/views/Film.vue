@@ -137,7 +137,8 @@ export default {
       'reviewList',
       'commentList',
       'overallRating',
-      'userRating'
+      'userRating',
+      'chartData'
     ]),
 
     currentUser() {
@@ -159,14 +160,15 @@ export default {
 
   async created() {
     await this.fetchFilmContext(this.$route.params.id).then(async () => {
-      if (this.reviewList.length) this.dataLoaded = true
+      await this.fetchReviewCriteriaContext()
+      if (this.chartData != undefined) this.dataLoaded = true
       if (this.$store.state.auth.status.loggedIn == true)
         await this.getUserInformation()
     })
   },
 
   methods: {
-    ...mapActions('film', ['fetchFilmContext', 'deleteComment']),
+    ...mapActions('film', ['fetchFilmContext', 'fetchReviewCriteriaContext', 'deleteComment']),
 
     checkifUserLoggedIn() {
       if (this.currentUser) this.showModal()

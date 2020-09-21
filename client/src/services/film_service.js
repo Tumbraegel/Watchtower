@@ -19,6 +19,10 @@ class FilmService {
     return axios.get(API_URL + '/genre/' + genre)
   }
 
+  getReviewCriteriaData() {
+    return axios.get(API_URL + '/review-criteria')
+  }
+
   getAllComments(filmId) {
     return axios.get(API_URL + '/film/' + filmId + '/comments')
   }
@@ -49,6 +53,10 @@ class FilmService {
 
   getInitialStatisticalData() {
     return axios.get(API_URL + '/statistics')
+  }
+
+  getChart(type, value) {
+    return axios.get(API_URL + '/statistics/' + type + '/' + value)
   }
 }
 

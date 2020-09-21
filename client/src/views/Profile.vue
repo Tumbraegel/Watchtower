@@ -66,9 +66,12 @@
         </div>
       </div>
     </div>
+    <div class="row" style="margin-top: 40px">
+    <span class="col-md-1"></span>
     <button class="btn btn-danger" @click="deleteAccount()">
       Delete account
     </button>
+    </div>
   </div>
 </template>
 

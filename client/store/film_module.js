@@ -9,27 +9,41 @@ export const film = {
         reviewCriteriaList: [],
         allReviewCriteriaData: [],
         allGenres: [],
+        chartData: {},
         overallRating: 0
     },
   
     actions: {
-        // async fetchFilmMetaData({ commit }, id) {
-        //     try {
-        //         await FilmService.getAllFilms().then(response => {
-        //             commit('SET_META_DATA', response.data)
-        //             return Promise.resolve(response.data)
-        //         })
-        //     }
-        //     catch (error) {
-        //         console.log("Error in setting film context.")
-        //         return Promise.reject(error)
-        //     }
-        // },
-
         async fetchFilmContext({ commit }, id) {
             try {
                 await FilmService.getCollectedFilmInfo(id).then(response => {
                     commit('SET_FILM_CONTEXT', response.data)
+                    return Promise.resolve(response.data)
+                })
+            }
+            catch (error) {
+                console.log("Error in setting film context.")
+                return Promise.reject(error)
+            }
+        },
+
+        async fetchReviewCriteriaContext({ commit }) {
+            try {
+                await FilmService.getReviewCriteriaData().then(response => {
+                    commit('SET_REVIEW_CRITERIA_CONTEXT', response.data)
+                    return Promise.resolve(response.data)
+                })
+            }
+            catch (error) {
+                console.log("Error in setting criteria context.")
+                return Promise.reject(error)
+            }
+        },
+
+        async fetchAllGenres({ commit }) {
+            try {
+                await FilmService.getGenreData().then(response => {
+                    commit('SET_GENRE_LIST', response.data)
                     return Promise.resolve(response.data)
                 })
             }
@@ -93,19 +107,21 @@ export const film = {
     },
 
     mutations: {
-        // SET_META_DATA(state, response) {
-        //     state.allFilms = response[0]
-        //     state.reviewCriteriaList = response[1].listOfReviewCriteria
-        //     state.reviewCriteriaData = response[2].reviewCriteriaData
-        // },
-
         SET_FILM_CONTEXT(state, response) {
-            state.film = response[0]
-            state.commentList = response[1].comments
-            state.reviewList = response[2].reviews
-            state.reviewCriteriaList = response[3].listOfReviewCriteria
-            state.allReviewCriteriaData = response[4].allReviewCriteriaData
-            state.overallRating = response[0].overallRating
+            state.film = response.film
+            state.commentList = response.comments
+            state.reviewList = response.reviews
+            state.overallRating = response.film.overallRating
+            state.chartData = response.charts
+        },
+
+        SET_REVIEW_CRITERIA_CONTEXT(state, response) {
+            state.allReviewCriteriaData = response.criteriaData
+            state.reviewCriteriaList = response.listOfReviewCriteria
+        },
+
+        SET_GENRE_LIST(state, response) {
+            state.allGenres = response
         },
 
         ADD_REVIEW(state, response) {

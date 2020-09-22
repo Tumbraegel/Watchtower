@@ -31,27 +31,17 @@
 </template>
 
 <script>
-// import UserService from "../../services/user_service.js"
-
 export default {
   name: "ModalComment",
-  props:['toBeEdited', 'commentId', 'commentBody', 'user'],
+  props:['toBeEdited', 'commentId', 'userId'],
 
   data() {
     return {
       comment: ''
-    };
-  },
-
-  async created() {
-    this.getExistingCommentText()
+    }
   },
 
   methods: {
-    getExistingCommentText() {
-      this.comment = this.commentBody
-    },
-
     close() {
       this.$emit('close')
       this.comment = ''
@@ -64,7 +54,7 @@ export default {
         commentId: this.commentId,
         filmId: this.$route.params.id,
         updatedAt: Date.now(),
-        author: this.user._id,
+        author: this.userId,
         upvotes: [],
         downvotes: []
       }

@@ -5,7 +5,7 @@
     <button class="btn btn-outline-custom" @click="checkifUserLoggedIn('comment')">Write</button>
     <div v-if="commentList.length">
     <div v-for="comment in commentList" :comment="comment" :key="comment._id">
-      <li class="list-group-item list-group-item-outline-primary">
+      <div class="list-group-item list-group-item-outline-primary">
         {{comment.body}}
         <span
           style="float:right;"
@@ -14,7 +14,7 @@
 
           <button
             @click="voteOnComment('downvote', comment._id)"
-            v-if="!comment.downvotes.includes(user._id)"
+            v-if="!comment.downvotes.includes(currentUser.id)"
             class="btn btn-comment-vote"
             style="float: right; margin-right: 5px;"
             ><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -23,7 +23,7 @@
           </button>
           <button
             disabled
-            v-if="comment.downvotes.includes(user._id)"
+            v-if="comment.downvotes.includes(currentUser.id)"
             class="btn btn-comment-disabled"
             style="float: right; margin-right: 5px;"
             ><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -33,7 +33,7 @@
 
           <button
             @click="voteOnComment('upvote', comment._id)"
-            v-if="!comment.upvotes.includes(user._id)"
+            v-if="!comment.upvotes.includes(currentUser.id)"
             class="btn btn-comment-vote"
             style="float: right;"
             ><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -42,7 +42,7 @@
           </button>
           <button
             disabled
-            v-if="comment.upvotes.includes(user._id)"
+            v-if="comment.upvotes.includes(currentUser.id)"
             class="btn btn-comment-disabled"
             style="float: right;"
             ><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -51,16 +51,16 @@
           </button>
 
         </div>
-      </li>
+      </div>
       <div>
         <span
-          v-if="comment.author == user._id"
+          v-if="comment.author == currentUser.id"
           @click="checkifUserLoggedIn('commentEdit', comment._id, comment.body)"
           class="badge badge-light"
           style="cursor: pointer; float:right;"
         >edit</span>
         <span
-          v-if="comment.author == user._id"
+          v-if="comment.author == currentUser.id"
           @click="checkifUserLoggedIn('commentDelete', comment._id)"
           class="badge badge-light"
           style="cursor: pointer; float:right;"
@@ -78,8 +78,7 @@
     <modal
       :toBeEdited="toBeEdited"
       :commentId="commentId"
-      :commentBody="commentBody"
-      :user="user"
+      :userId="currentUser ? currentUser.id : ''"
       v-show="isModalVisible"
       @close="closeModal()"
     />
@@ -90,7 +89,6 @@
 <script>
 import swal from 'sweetalert'
 import { mapState, mapActions } from 'vuex'
-import UserService from '../services/user_service.js'
 import Modal from '../components/partials/ModalComment'
 
 export default {
@@ -104,14 +102,9 @@ export default {
     return {
       commentId: "",
       commentBody: "",
-      user: {},
       isModalVisible: false,
       toBeEdited: false,
     }
-  },
-
-  created() {
-    if(this.$store.state.auth.status.loggedIn == true) this.getUserInformation()
   },
 
   computed: {
@@ -124,20 +117,6 @@ export default {
 
   methods: {
     ...mapActions('film', ['voteForComment', 'deleteComment']),
-
-    async getUserInformation() {
-      await UserService.getUserProfile().then(
-        (response) => {
-          this.user = response.data
-        },
-        (error) => {
-          this.user =
-            (error.response && error.response.data) ||
-            error.message ||
-            error.toString();
-        }
-      )
-    },
 
     checkifUserLoggedIn(modal, commentId, commentBody) {
       if (this.currentUser && modal == "comment")

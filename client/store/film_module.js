@@ -4,7 +4,6 @@ export const film = {
     namespaced: true,
     state: {
         film: {},
-        reviewList: [],
         commentList: [],
         reviewCriteriaList: [],
         allReviewCriteriaData: [],
@@ -110,8 +109,6 @@ export const film = {
         SET_FILM_CONTEXT(state, response) {
             state.film = response.film
             state.commentList = response.comments
-            state.reviewList = response.reviews
-            state.overallRating = response.film.overallRating
             state.chartData = response.charts
         },
 

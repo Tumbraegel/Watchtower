@@ -61,9 +61,9 @@ async function getAvailableDataForFilmPage(id) {
   }
   
   const chartData = await getFilmPageChartData(id) 
+
   try {
     data.comments = await getAllCommentsPer(id)
-    data.reviews = await getReviewDataOfOneFilm(id)
     data.reviewCriteria = await getAllReviewCriteria()
     data.allReviewCriteriaData = await getAllReviewCriteriaData()
     data.charts = chartData
@@ -82,10 +82,10 @@ router.get('/', (req, res) => {
     }).catch(error => console.log(error))
 })
 
-// Retrieve statistical data for films
-router.get('/statistics', async (req, res) => {
+// // Retrieve statistical data for films
+// router.get('/statistics', async (req, res) => {
 
-})
+// })
 
 // Retrieve statistical data for films
 router.get('/statistics/:type/:value', async (req, res) => {
@@ -104,7 +104,6 @@ router.get('/film/:id', async (req, res) => {
       const context = {
         film: film[0],
         comments: data.comments,
-        reviews: data.reviews,
         charts: data.charts
       }
       res.json(context)

@@ -51,10 +51,6 @@ class FilmService {
     return axios.get(API_URL + '/search/' + keyword)
   }
 
-  getInitialStatisticalData() {
-    return axios.get(API_URL + '/statistics')
-  }
-
   getChart(type, value) {
     return axios.get(API_URL + '/statistics/' + type + '/' + value)
   }

@@ -18,12 +18,6 @@ import { mapState } from 'vuex'
 export default {
   name: 'ChartItem',
 
-  data() {
-    return {
-      isModalVisible: false
-    }
-  },
-
   computed: {
     ...mapState('film', ['chartData']),
   }, 

@@ -30,7 +30,7 @@
                       style="width: 90%;"
                       v-model="rating"
                     />
-                    <span class="slider-color" style="margin-left: 7px;">10</span>
+                    <span class="slider-color" style="margin-left: 5px;">10</span>
                     <hr />
                     <p>
                       Result:
@@ -54,7 +54,7 @@
                   </div>
                   <hr />
 
-                  <review-criteria
+                  <review-criteria-modal
                     v-if="criterionSelected"
                     @addCriterion="addCriterion"
                     :reviewCriterion="reviewCriterion"
@@ -92,14 +92,14 @@
 </template>
 
 <script>
-import ReviewCriteria from "./ModalReviewCriteria"
+import ReviewCriteriaModal from "./ModalReviewCriteria"
 import swal from 'sweetalert'
 import { mapState, mapActions } from 'vuex'
 
 export default {
   name: "ModalReview",
   components: {
-    ReviewCriteria
+    ReviewCriteriaModal
   },
 
   data() {
@@ -107,7 +107,6 @@ export default {
       nextSlide: false,
       criterionSelected: false,
       reviewCriterion: "",
-      reviewResult: 0,
       rating: 0,
       allReviewResults: []
     }
@@ -132,21 +131,16 @@ export default {
 
     addCriterion(criterion) {
       const results = this.allReviewResults
-      const entry = {
-        name: criterion.name,
-        result: criterion.result,
-        testResult: criterion.testResult
-      }
 
       const criterionToOverwrite = results.findIndex(
-        criterion => criterion.name === entry.name
+        entry => entry.name === criterion.name
       )
 
       if (criterionToOverwrite > -1) {
         results.splice(criterionToOverwrite, 1);
       }
 
-      results.push(entry)
+      results.push(criterion)
       this.criterionSelected = false
     },
 
@@ -185,7 +179,6 @@ export default {
       } else {
         this.addFilmReview(payload).then(
           response => {
-            console.log(response)
             swal('Done!', 'You rated this film with a score of ' + payload.rating, 'success', { buttons: false, timer: 2500 });
           },
           error => {

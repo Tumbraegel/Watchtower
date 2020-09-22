@@ -51,9 +51,9 @@
     <div class="row film-content" style="margin: 40px 0px 30px 0px;">
           <div class="col-md-1"></div>
           <div class="col-md-7">
-            <p v-if="overallRating != 0">
+            <p v-if="film.overallRating != 0">
               <strong>Rating:</strong>
-              {{ overallRating }}
+              {{ film.overallRating }}
             </p>
             <p v-else>
               <strong>Rating:</strong>
@@ -94,10 +94,11 @@
 
           <div class="col-md-4">
             <div style="margin: auto">
-              <img :src="film.poster" :alt="film.title" />
+              <img v-if="film.poster=='N/A'" src="../assets/film-placeholder.jpg" :alt="film.title" class="placeholder-img"/>
+              <img v-else :src="film.poster" :alt="film.title" />
             </div>
             <div style="padding-top: 20px">
-              <comment-list :commentList="commentList"></comment-list>
+              <comment-list />
             </div>
           </div>
     </div>
@@ -125,7 +126,6 @@ export default {
   data() {
     return {
       isModalVisible: false,
-      toBeEdited: false,
       dataLoaded: false,
       user: {}
     }
@@ -134,10 +134,6 @@ export default {
   computed: {
     ...mapState('film', [
       'film',
-      'reviewList',
-      'commentList',
-      'overallRating',
-      'userRating',
       'chartData'
     ]),
 
@@ -162,8 +158,7 @@ export default {
     await this.fetchFilmContext(this.$route.params.id).then(async () => {
       await this.fetchReviewCriteriaContext()
       if (this.chartData != undefined) this.dataLoaded = true
-      if (this.$store.state.auth.status.loggedIn == true)
-        await this.getUserInformation()
+      if (this.$store.state.auth.status.loggedIn == true) await this.getUserInformation()
     })
   },
 
@@ -259,5 +254,10 @@ export default {
 .favourite_icon:hover {
   color: crimson;
   cursor: pointer;
+}
+
+.placeholder-img {
+  height: 450px;
+  width: 300px;
 }
 </style>

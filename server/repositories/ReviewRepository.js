@@ -1,5 +1,5 @@
 const Review = require('../models/Review')
-const User = require('../models/User')
+const userRepo = require('../repositories/UserRepository')
 
 class ReviewRepository {
   constructor(model) {
@@ -21,7 +21,7 @@ class ReviewRepository {
   }
 
   async createReview(film, data, userData) {
-    const user = await User.findById(userData.id)
+    const user = await userRepo.findById(userData.id)
     const review = {
       rating: data.rating,
       reviewCriteria: data.reviewCriteria,

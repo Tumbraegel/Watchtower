@@ -2,13 +2,13 @@
 // https://express-validator.github.io/docs/index.html
 
 const express = require('express')
+const router = express.Router()
+const auth = require('../config/auth_config')
 const { check, validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const router = express.Router()
 const userRepo = require('../repositories/UserRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
-const auth = require('../config/auth_config')
 
 // POST new user
 router.post('/register', [check('username', 'enter valid username').not().isEmpty(), 
@@ -32,7 +32,6 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
                     msg: 'User already exists.'
                 })
             }
-            
             user = { username, email, password }
 
             const salt = await bcrypt.genSalt(10)
@@ -40,23 +39,13 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
             user.role = 'user'
 
             await userRepo.create(user)
+            res.status(200).json({ message: 'Registration successful' })
 
-            const payload = {
-                user: { id: user.id }
-            }
-            console.log(payload)
-
-            jwt.sign(payload, 'randomString', { expiresIn: 10000 }, (err, token) => {
-                if (err) throw err
-                res.status(200).json({ token })
-            }
-            )
-        } catch (err) {
-            console.log(err.message)
+      } catch (error) {
+     console.log(error.message)
             res.status(500).send('Error in saving.')
-        }
-    }
-)
+      }
+})
 
 // POST user login
 router.post(
@@ -93,10 +82,10 @@ router.post(
   
         jwt.sign(
           payload,
-          'randomString',
+          'secretKey',
           { expiresIn: '6h' },
-          (err, token) => {
-            if (err) throw err
+          (error, token) => {
+            if (error) throw error
             res.status(200).json({
               token: token,
               role: user.role,
@@ -115,7 +104,7 @@ router.post(
     }
   )
   
-// GET user - require authentication
+// retrieve user information for profile page - require authentication
 router.get('/me', auth, async (req, res) => {
   try {
     // request.user is getting fetched from Middleware after token authentication
@@ -129,11 +118,13 @@ router.get('/me', auth, async (req, res) => {
       }
     )
     res.json(user)
-  } catch (e) {
-    res.send({ message: 'Error in fetching user' })
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send('Error in fetching user.')
   }
 })
 
+// add a new criterion for reviewing films - require authentication and admin access
 router.post('/add-criterion', auth, async (req, res) => {
   const user = await userRepo.findById(req.user.id)
   if(user.role == 'admin') {
@@ -142,15 +133,16 @@ router.post('/add-criterion', auth, async (req, res) => {
     }).catch((error) => console.log(error))
   }
   else { 
-    res.status(401).json({
-      message: 'Action not allowed, missing authentication!'
-    })}
+    res.status(401).send('Action not allowed, missing authentication!')}
 })
 
 router.post('/add-admin', auth, async (req, res) => {
   await userRepo.addAdminUser(req.body.username).then(response => {
     res.json(response)
-  }).catch(error => console.log(error))
+  }).catch(error => {
+    console.log(error.message)
+    res.status(500).send('Error in saving.')
+  })
 })
 
 router.delete("/delete-user/:email", async (req, res) => {
@@ -158,9 +150,9 @@ router.delete("/delete-user/:email", async (req, res) => {
   userRepo.deleteUser(email).then(() => {
       console.log('User was deleted successfully.')
       res.json(req.body)
-    }).catch((error) => {
+    }).catch(error => {
       console.log(error.message)
-      res.status(500).send("Error in deleting user.")
+      res.status(500).send('Error in deleting user.')
     })
 })
 

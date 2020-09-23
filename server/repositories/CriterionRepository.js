@@ -1,5 +1,4 @@
 const Criterion = require('../models/Criterion')
-const User = require('../models/User')
 
 class CriterionRepository {
     constructor(model) {

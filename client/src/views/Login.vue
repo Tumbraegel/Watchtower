@@ -45,8 +45,8 @@
 </template>
 
 <script>
-import router from '../router';
-import User from '../models/user';
+import router from '../router'
+import User from '../models/user'
 
 export default {
   name: 'login',
@@ -59,12 +59,12 @@ export default {
 
   computed: {
     loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
+      return this.$store.state.auth.status.loggedIn
     }
   },
   created() {
     if (this.loggedIn) {
-      router.push({name: 'home'});
+      router.push({name: 'home'})
     }
   },
 
@@ -73,15 +73,12 @@ export default {
         if (this.user.email && this.user.password) {
           this.$store.dispatch('auth/login', this.user).then(
             () => {
-              router.push({name: 'home'});
+              router.push({name: 'home'})
             },
             error => {
-              this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+              this.message = error.response.data.message
             }
-          );
+          )
         }
     }
   }

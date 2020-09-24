@@ -23,10 +23,6 @@ class FilmService {
     return axios.get(API_URL + '/review-criteria')
   }
 
-  getAllComments(filmId) {
-    return axios.get(API_URL + '/film/' + filmId + '/comments')
-  }
-
   async postFilmReview(id, payload) {
     return await axios.post(API_URL + '/film/' + id + '/review', payload, { headers: authHeader() })
   }

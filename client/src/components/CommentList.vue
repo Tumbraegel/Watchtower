@@ -54,19 +54,19 @@
       </div>
       <div>
         <span
-          v-if="comment.author == currentUser.id"
+          v-if="comment.author._id == currentUser.id"
           @click="checkifUserLoggedIn('commentEdit', comment._id, comment.body)"
           class="badge badge-light"
           style="cursor: pointer; float:right;"
         >edit</span>
         <span
-          v-if="comment.author == currentUser.id"
+          v-if="comment.author._id == currentUser.id"
           @click="checkifUserLoggedIn('commentDelete', comment._id)"
           class="badge badge-light"
           style="cursor: pointer; float:right;"
         >delete</span>
       </div>
-      <small style="color: gray; margin-right: 10px;">{{ comment.username }}</small>
+      <small style="color: gray; margin-right: 10px;">{{ comment.author.username }}</small>
       <!-- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString -->
       <small style="color: lightgray">
         ({{ new Date(comment.updatedAt).toLocaleDateString('en-GB', {weekday: 'short', year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC' }) }}

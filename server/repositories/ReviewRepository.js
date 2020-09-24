@@ -92,7 +92,7 @@ class ReviewRepository {
   }
 
   calculateMedian(numbers) {
-    //https://stackoverflow.com/questions/45309447/calculating-median-javascript
+    // https://stackoverflow.com/questions/45309447/calculating-median-javascript
     const sorted = numbers.slice().sort((a, b) => a - b)
     const middle = Math.floor(sorted.length / 2)
     if (sorted.length % 2 === 0) {

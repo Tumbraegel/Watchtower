@@ -18,24 +18,19 @@ class CommentRepository {
   }
 
   async getAllCommentsPer(id) {
-    const commentList = []
     const film = await this.getFilmById(id)
     const ObjectId = require('mongoose').Types.ObjectId
     const comments = await this.model.find({ film: ObjectId(film._id) })
-
-    // turn mongoose objects into regular objects in order to manipulate content
-    for (let comment of comments) {
-      commentList.push(comment.toObject())
-    }
-
-    for (let comment of commentList) {
-      const id = comment.author
-      const user = await userRepo.findById(id)
-      comment.username = user.username
-      comment.email = user.email
-    }
-
-    return commentList
+    .populate({
+        path: 'author',
+        select: "_id username email",
+        populate: {
+          path: 'user',
+          model: 'User',
+        }
+      }
+    )
+    return comments
   }
 
   async addComment(film, data, userData) {

@@ -11,16 +11,9 @@ const userRepo = require('../repositories/UserRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
 const filmAPI = require('../imdb_data/film_api')
 
-// /* HELPER METHODS */
-// async function checkAdminStatus(id) {
-//   return await userRepo.checkForAdminStatus(id)
-// }
-
-/* ROUTES */
-
-// POST new user
-router.post('/register', [check('username', 'enter valid username').not().isEmpty(), 
-    check('email', 'enter valid email').isEmail(), 
+// create new user
+router.post('/register', [check('username', 'Please enter a valid username.').not().isEmpty(), 
+    check('email', 'Please enter a valid email.').isEmail(), 
     check('password', 'enter valid password').isLength({ min: 8 })],
 
     async (req, res) => {
@@ -37,7 +30,7 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
             let user = await userRepo.findByEmail(email)
             if (user) {
                 return res.status(400).json({
-                    msg: 'User already exists.'
+                    message: 'User already exists.'
                 })
             }
             user = { username, email, password }
@@ -55,10 +48,10 @@ router.post('/register', [check('username', 'enter valid username').not().isEmpt
       }
 })
 
-// POST user login
+// login user
 router.post(
-    '/login',[check('email', 'enter valid email').isEmail(), 
-    check('password', 'enter valid password').isLength({ min: 8})],
+    '/login',[check('email', 'Please enter a valid email.').isEmail(), 
+    check('password', 'Please enter a valid password.').isLength({ min: 8})],
     async (req, res) => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
@@ -79,7 +72,7 @@ router.post(
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch)
           return res.status(400).json({
-            message: 'Incorrect password!'
+            message: 'The email or password was incorrect!'
           })
   
         const payload = {

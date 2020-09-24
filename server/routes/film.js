@@ -53,9 +53,6 @@ async function getFilmPageChartData(id) {
 async function getAvailableDataForFilmPage(id) {
   const data = {
     comments: [],
-    reviews: [],
-    reviewCriteria: [],
-    reviewCriteriaAndTest: [],
     charts: {}
   }
   
@@ -63,8 +60,6 @@ async function getAvailableDataForFilmPage(id) {
 
   try {
     data.comments = await getAllCommentsPer(id)
-    data.reviewCriteria = await getAllReviewCriteria()
-    data.allReviewCriteriaData = await getAllReviewCriteriaData()
     data.charts = chartData
     return data
   } catch (error) {
@@ -74,7 +69,7 @@ async function getAvailableDataForFilmPage(id) {
 
 /* ROUTES */ 
 
-// Retrieve random reviewed films
+// retrieve random reviewed films
 router.get('/', (req, res) => {
     getRandomSelectionOfFilms().then((films) => {
         res.json(films)
@@ -84,8 +79,25 @@ router.get('/', (req, res) => {
     })
 })
 
-// Retrieve statistical data for films
-router.get('/statistics/:type/:value', async (req, res) => {
+// retrieve one film
+router.get('/film/:id', async (req, res) => {
+  const id = Object(req.params.id)
+  const data = await getAvailableDataForFilmPage(id)
+  filmRepo.findFilmByImdbID(id).then(film => {
+    const context = {
+      film: film[0],
+      comments: data.comments,
+      charts: data.charts
+    }
+    res.json(context)
+  }).catch(error => {
+    console.log(error.message)
+    res.status(500).send('Error in retrieving film data.')
+  })
+})
+
+// retrieve statistical data for films
+router.get('/statistics/:type/:value', (req, res) => {
   const type = req.params.type
   const value = req.params.value
   chartFetcher.fetchChart(type, value).then((films) => {
@@ -96,35 +108,7 @@ router.get('/statistics/:type/:value', async (req, res) => {
   })
 })
 
-// Retrieve one film
-router.get('/film/:id', async (req, res) => {
-    const id = Object(req.params.id)
-    const data = await getAvailableDataForFilmPage(id)
-    filmRepo.findFilmByImdbID(id).then(film => {
-      const context = {
-        film: film[0],
-        comments: data.comments,
-        charts: data.charts
-      }
-      res.json(context)
-    }).catch(error => {
-      console.log(error.message)
-      res.status(500).send('Error in retrieving film data.')
-    })
-})
-
-// Retrieve all comments for one film
-router.get('/film/:id/comments', (req, res) => {
-    const id = req.params.id
-    commentRepo.getAllCommentsPer(id).then(comments => {
-        res.json(comments)
-    }).catch(error => {
-      console.log(error.message)
-      res.status(500).send('Error in retrieving comments.')
-    })
-})
-
-// Retrieve all existing genres
+// retrieve all existing genres
 router.get('/genre', (req, res) => {
     getAllGenres().then(genres => {
         res.json(genres)
@@ -134,7 +118,7 @@ router.get('/genre', (req, res) => {
     })
 })
 
-// Retrieve films filtered by genre
+// retrieve films filtered by genre
 router.get('/genre/:genre', (req, res) => {
     const genre = Object(req.params.genre)
     filmRepo.findByGenre(genre).then(films => {
@@ -145,7 +129,7 @@ router.get('/genre/:genre', (req, res) => {
     })
 })
 
-// Retrieve all review criteria data
+// retrieve all review criteria data
 router.get('/review-criteria', async (req, res) => {
   const reviewCriteria = await getAllReviewCriteria()
   getAllReviewCriteriaData().then(criteria => {
@@ -157,7 +141,7 @@ router.get('/review-criteria', async (req, res) => {
   })
 })
 
-// Retrieve search result
+// retrieve search result
 router.get('/search/:query', (req, res) => {
     const query = Object(req.params.query)
     searchRepo.findByUserSearch(query).then(films => {
@@ -168,7 +152,7 @@ router.get('/search/:query', (req, res) => {
     })
 })
 
-// Process query for advanced search
+// process query for advanced search
 router.post('/advanced-search', (req, res) => {
     searchRepo.findByUserSearch(req.body).then(films => {
         res.json(films)
@@ -178,7 +162,7 @@ router.post('/advanced-search', (req, res) => {
     })
 })
 
-// Create film review
+// create film review
 router.post('/film/:id/review', auth, async (req, res) => {
     const id = req.params.id
     const film = await getFilmById(id)
@@ -190,7 +174,7 @@ router.post('/film/:id/review', auth, async (req, res) => {
     })
 })
 
-// Create film comment
+// create film comment
 router.post('/film/:id/comment', auth, async (req, res) => {
     const id = req.params.id
     const film = await getFilmById(id)
@@ -202,8 +186,8 @@ router.post('/film/:id/comment', auth, async (req, res) => {
     })
 })
 
-// Add vote for specific comment
-router.post('/film/:id/comment/vote', auth, async (req, res) => {
+// add vote for specific comment
+router.post('/film/:id/comment/vote', auth, (req, res) => {
     const filmId = req.params.id
     commentRepo.addVote(filmId, req.body, req.user).then(response => {
         res.json(response)
@@ -213,8 +197,8 @@ router.post('/film/:id/comment/vote', auth, async (req, res) => {
     })
 })
 
-// Remove a comment
-router.delete("/film/:id/comment/:commentId", auth, async (req, res) => {
+// remove a comment
+router.delete("/film/:id/comment/:commentId", auth, (req, res) => {
   const filmId = req.params.id
   const commentId = req.params.commentId
   commentRepo.deleteComment(filmId, commentId).then(response => {
@@ -225,7 +209,7 @@ router.delete("/film/:id/comment/:commentId", auth, async (req, res) => {
     })
 })
 
-router.get('/film/sorted-list', async (req, res) => {
+router.get('/film/sorted-list', (req, res) => {
     reviewRepo.quickSort().then(response => {
         res.json(response)
     }).catch(error => console.log(error))

@@ -44,7 +44,7 @@
           </form>
           <div
             v-if="message"
-            class="alert"
+            class="alert alert-danger"
           >{{message}}</div>
         </div>
       </div>
@@ -62,7 +62,6 @@ export default {
   data() {
     return {
       user: new User('', '', ''),
-      submitted: false,
       message: ''
     }
   },
@@ -81,7 +80,6 @@ export default {
   methods: {
     createNewUser() {
       this.message = ''
-      this.submitted = true
           this.$store.dispatch('auth/register', this.user).then( function() {
             swal('Done!', 'Account created!', 'success', { buttons: false, timer: 1500 })
             router.push({name: 'login'})
@@ -91,7 +89,6 @@ export default {
                 (error.response && error.response.data) ||
                 error.message ||
                 error.toString()
-              this.successful = false
             }
           )
     }

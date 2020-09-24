@@ -11,15 +11,15 @@ class UserService {
   }
 
   addNewAdminUser(payload) {
-    return axios.post(API_URL + '/add-admin', payload, { headers: authHeader() })
+    return axios.post(API_URL + '/admin/data', payload, { headers: authHeader() })
   }
 
   addNewReviewCriterion(payload) {
-    return axios.post(API_URL + '/add-criterion', payload, { headers: authHeader() })
+    return axios.post(API_URL + '/admin/data', payload, { headers: authHeader() })
   }
 
-  addFilm(id, payload) {
-    return axios.post(API_URL + '/add-film/' + id, payload, { headers: authHeader() })
+  addFilm(payload) {
+    return axios.post(API_URL + '/admin/data', payload, { headers: authHeader() })
   }
 }
 

@@ -9,6 +9,14 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const userRepo = require('../repositories/UserRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
+const filmAPI = require('../imdb_data/film_api')
+
+// /* HELPER METHODS */
+// async function checkAdminStatus(id) {
+//   return await userRepo.checkForAdminStatus(id)
+// }
+
+/* ROUTES */
 
 // POST new user
 router.post('/register', [check('username', 'enter valid username').not().isEmpty(), 
@@ -107,7 +115,6 @@ router.post(
 // retrieve user information for profile page - require authentication
 router.get('/me', auth, async (req, res) => {
   try {
-    // request.user is getting fetched from Middleware after token authentication
     const user = await userRepo.findById(req.user.id).populate(
       {
         path: 'reviews',
@@ -124,27 +131,7 @@ router.get('/me', auth, async (req, res) => {
   }
 })
 
-// add a new criterion for reviewing films - require authentication and admin access
-router.post('/add-criterion', auth, async (req, res) => {
-  const user = await userRepo.findById(req.user.id)
-  if(user.role == 'admin') {
-      criterionRepo.addCriterion(req.body).then(criterion => {
-        res.json(criterion)
-    }).catch((error) => console.log(error))
-  }
-  else { 
-    res.status(401).send('Action not allowed, missing authentication!')}
-})
-
-router.post('/add-admin', auth, async (req, res) => {
-  await userRepo.addAdminUser(req.body.username).then(response => {
-    res.json(response)
-  }).catch(error => {
-    console.log(error.message)
-    res.status(500).send('Error in saving.')
-  })
-})
-
+// remove user from database
 router.delete("/delete-user/:email", async (req, res) => {
   const email = req.params.email
   userRepo.deleteUser(email).then(() => {
@@ -154,6 +141,32 @@ router.delete("/delete-user/:email", async (req, res) => {
       console.log(error.message)
       res.status(500).send('Error in deleting user.')
     })
+})
+
+// assign admin rights OR add review criterion OR add new film entry
+// - require authentication and admin status
+router.post('/admin/data', auth, async (req, res) => {
+  userRepo.checkAdminStatus(req.user.id).then(async () => {
+    try {
+      if(req.body.hasOwnProperty('username')) {
+        userRepo.addAdminUser(req.body.username).then(() => {
+          res.send('This user is now an admin user.')
+        })
+      }
+      if (req.body.hasOwnProperty('criterion')) {
+        await criterionRepo.addCriterion(req.body).then(() => {
+          res.send('The new review criterion has been added.')
+        })
+      } else {
+          filmAPI.requestFilmDataFor(req.body.imdbID).then(() => {
+            res.send('The new film has been added.')
+          })
+        }
+      } catch(error ) {
+      console.log(error)
+      res.status(401).send('Action not allowed, missing authentication!')
+    }   
+  })
 })
 
 module.exports = router

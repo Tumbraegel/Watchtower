@@ -6,7 +6,6 @@ const reviewRepo = require('../repositories/ReviewRepository')
 const commentRepo = require('../repositories/CommentRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
 const searchRepo = require('../repositories/SearchRepository')
-const filmAPI = require('../imdb_data/film_api')
 const chartFetcher = require('../Charts/chart_fetcher')
 
 /* HELPER METHODS */
@@ -166,17 +165,6 @@ router.get('/search/:query', (req, res) => {
     }).catch(error => {
       console.log(error.message)
       res.status(500).send('Error in retrieving data for search query.')
-    })
-})
-
-// Create new film
-router.post('/add-film/:id', auth, async (req, res) => {
-    const id = req.params.id
-    await filmAPI.requestFilmDataFor(id).then(film => {
-        res.json(film)
-    }).catch(error => {
-      console.log(error.message)
-      res.status(500).send('Error in saving film.')
     })
 })
 

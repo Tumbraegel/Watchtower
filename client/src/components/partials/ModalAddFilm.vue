@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import router from '../../router'
 import swal from 'sweetalert'
 import UserService from '../../services/user_service'
 
@@ -64,20 +65,18 @@ export default {
     },
 
     submitResult() {
+      const id = this.imdbID
       const payload = {
-        imdbID: this.imdbID
+        imdbID: id
       }
 
-      UserService.addFilm(this.imdbID, payload).then(
-        response => {
+      UserService.addFilm(payload).then(() => {
           swal('Film added!', 'The film was successfully stored in the database.', 'success', { buttons: false, timer: 2500 })
-          console.log(response)
-        },
-        error => {
-           swal('Oops, something went wrong :(', 'There was an error trying to add the film. Check if it perhaps already exists on the platform.', 'error', { buttons: true })
-          console.log(error.response)
-        }
-      )
+          router.push({ name: 'film', params: { id } })
+        }).catch(error => {
+          swal('Oops, something went wrong :(', 'There was an error trying to add the film. Check if it perhaps already exists on the platform.', 'error', { buttons: true })
+          console.log(error)
+        })
       this.imdbID = ''
       this.close()
     },

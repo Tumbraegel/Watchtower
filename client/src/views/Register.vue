@@ -52,9 +52,9 @@
 </template>
 
 <script>
-import router from '../router';
-import swal from 'sweetalert';
-import User from '../models/user';
+import router from '../router'
+import swal from 'sweetalert'
+import User from '../models/user'
 
 export default {
   name: 'register',
@@ -69,31 +69,31 @@ export default {
 
   computed: {
     loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
+      return this.$store.state.auth.status.loggedIn
     }
   },
   created() {
     if (this.loggedIn) {
-      router.push({name: 'home'});
+      router.push({name: 'home'})
     }
   },
 
   methods: {
     createNewUser() {
-      this.message = '';
-      this.submitted = true;
+      this.message = ''
+      this.submitted = true
           this.$store.dispatch('auth/register', this.user).then( function() {
-            swal('Done!', 'Account created!', 'success', { buttons: false, timer: 1500 });
-            router.push({name: 'login'});
+            swal('Done!', 'Account created!', 'success', { buttons: false, timer: 1500 })
+            router.push({name: 'login'})
           },
             error => {
               this.message =
                 (error.response && error.response.data) ||
                 error.message ||
-                error.toString();
-              this.successful = false;
+                error.toString()
+              this.successful = false
             }
-          );
+          )
     }
   }
 }

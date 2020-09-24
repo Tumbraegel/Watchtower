@@ -22,13 +22,24 @@ class UserRepository {
     return this.model.findOne({ email: email })
   }
 
-  async addAdminUser(user) {
-    const existingUser = await this.findByUsername(user)
-    if(existingUser != null) {
-        existingUser.role = 'admin'
-        existingUser.save()
+  async checkAdminStatus(id) {
+    const user = await this.model.findById(id)
+    if(user.role == 'admin') return true
+    else return false
+  }
+
+  async addAdminUser(username) {
+    try {
+      await this.findByUsername(username).then(user => {
+        user.role = 'admin'
+        user.save()
+        return Promise.resolve(user.data)
+      })
     }
-    return existingUser
+    catch (error ){
+      console.log("Error in adding admin user.")
+      return Promise.reject(error)
+    }
   }
 
   deleteUser(email) {

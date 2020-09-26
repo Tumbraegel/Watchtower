@@ -47,8 +47,8 @@ class FilmService {
     return axios.get(API_URL + '/search/' + keyword)
   }
 
-  getChart(type, value) {
-    return axios.get(API_URL + '/statistics/' + type + '/' + value)
+  getChart(type, value, status) {
+    return axios.get(API_URL + '/statistics/' + type + '/' + value + '/' + status)
   }
 }
 

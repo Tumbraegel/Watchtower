@@ -1,5 +1,6 @@
 const Review = require('../models/Review')
 const userRepo = require('../repositories/UserRepository')
+const criterionRepo = require('../repositories/CriterionRepository')
 
 class ReviewRepository {
   constructor(model) {
@@ -87,7 +88,6 @@ class ReviewRepository {
           console.log('Overall film rating was successfully updated.')
         })
         .catch((error) => console.log(error))
-      console.log('MEDIAN ' + median)
     }
   }
 
@@ -129,6 +129,43 @@ class ReviewRepository {
 
       return sorted.concat(quickSort(left), pivot, quickSort(right))
     }
+  }
+
+  async getAllTestResults(comparisonValue, dataset, status) {
+    let testStatus = ''
+    if(status == 'false') testStatus = false
+    else testStatus = true
+
+    const reviewCriteriaList = await criterionRepo.getAllReviewCriteria()
+
+    const data = {}
+    for(const criterion of reviewCriteriaList) {
+      data[criterion] = {}
+      for(const entry of dataset) {
+        data[criterion][entry] = 0
+      }
+    }
+
+    await this.model.find({$and: [
+      { "reviewCriteria.name": { $in: reviewCriteriaList} },
+      { "reviewCriteria.testResult.testPassed": testStatus }
+      ]}).populate('film').then(results => { 
+          for(const entry of results) {
+            for(const criterion of entry.reviewCriteria) {
+              if(criterion.hasOwnProperty('testResult') && (criterion.testResult.testPassed == testStatus)) {
+                if(comparisonValue == 'releaseYears') data[criterion.name][entry.film.year] += 1
+                if(comparisonValue == 'genres') {
+                  const filmGenres = entry.film.genres.split(', ')
+                  for(const genre of filmGenres) {
+                    data[criterion.name][genre] += 1
+                  }
+                }
+                if(comparisonValue == 'reviewCriteria') data[criterion.name][criterion.name] += 1
+              }
+            }
+          }         
+      })
+    return data
   }
 }
 

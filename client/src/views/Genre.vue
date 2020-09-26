@@ -5,7 +5,7 @@
       </div>
       <div class="row">
       <div class="dropdown col-md-1">
-        <button class="btn btn-outline-primary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-outline-custom dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Select
         </button>
         <div class="dropdown-menu dropdown-scrollable">
@@ -61,5 +61,16 @@ export default {
 .dropdown-scrollable {
   height:150px;
   overflow-y:auto;
+}
+
+.btn-outline-custom {
+  border-color: #5d5dd5;
+  color: #5d5dd5
+}
+
+.btn-outline-custom:hover {
+  border-color: #5d5dd5;
+  background-color: #5d5dd5;
+  color: whitesmoke
 }
 </style>

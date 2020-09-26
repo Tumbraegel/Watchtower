@@ -16,49 +16,90 @@ class SearchRepository {
     else return await this.simpleSearch(query)
   }
 
-  async filterEntriesBasedOnUserSelection(
-    selectedReviewCriteria,
-    selectedGenres,
-    selectedReleaseDate,
-    operator
-  ) {
-    let results = []
-    const reviewsContainingSelectedCriteria = await this.querySelectedReviewCriteria(
-      selectedReviewCriteria
-    )
-    const preparedGenres = this.querySelectedGenres(selectedGenres)
-
-    if (operator == 'and') {
-      await this.model
-        .find({
-          $and: [
-            { genres: { $regex: preparedGenres, $options: 'i' } },
-            { year: selectedReleaseDate },
-            { reviews: { $in: reviewsContainingSelectedCriteria } },
-          ],
-        })
-        .then((response) => {
-          return (results = response)
-        })
-        .catch((error) => console.log(error))
-      return results
-    } else if (operator == 'or') {
-      await this.model
-        .find({
-          $or: [
-            { genres: { $regex: preparedGenres, $options: 'i' } },
-            { year: selectedReleaseDate },
-            { reviews: { $in: reviewsContainingSelectedCriteria } },
-          ],
-        })
-        .then((response) => {
-          return (results = response)
-        })
-        .catch((error) => console.log(error))
-      return results
-    }
+  simpleSearch(query) {
+    console.log('simpleTitleSearch')
+    return this.titleSearch(query)
   }
 
+  /* SIMPLE SEARCH */
+  async titleSearch(query) {
+    let matches = []
+    let listOfFilms = []
+    await this.findAll()
+      .then((result) => {
+        listOfFilms = result
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    let result = 100
+    for (const entry of listOfFilms) {
+      if (entry.title != null) {
+        // check if query has exact match and break out of loop if true
+        if (entry.title.toUpperCase() == query.toUpperCase()) {
+          matches = []
+          matches.push(entry)
+          break
+        }
+        // calculate result based on Levensthein distance
+        else {
+          const cost = await this.calculateLevenstheinDistance(
+            entry.title,
+            query
+          )
+          if (cost < result) result = cost
+          if (cost < 7) matches.push(entry)
+        }
+      }
+    }
+    if (matches.length > 1) return matches.splice(0, 14)
+    else return matches
+  }
+
+  // Reference: https://www.geeksforgeeks.org/edit-distance-dp-5/
+  // Reference: https://www.youtube.com/watch?v=We3YDTzNXEk
+  // LAST ACCESSED: 02/07/2020
+  calculateLevenstheinDistance(string1, string2) {
+    let matrix = []
+
+    const length1 = string1.length
+    const length2 = string2.length
+
+    // if one string is empty, all characters of other string need
+    // to be inserted into the first one and vice versa
+    if (length1 == 0) return length2
+    if (length2 == 0) return length1
+
+    // create empty 2D array (matrix) based on input string lengths
+    matrix = new Array(length1)
+
+    for (let i = 0; i <= length1; i++) {
+      matrix[i] = new Array(length2)
+    }
+
+    // add string indices to matrix
+    for (let i = 0; i <= length1; i++) matrix[i][0] = i
+    for (let j = 0; j <= length2; j++) matrix[0][j] = j
+    
+    for (let i = 1; i <= length1; i++) {
+      for (let j = 1; j <= length2; j++) {
+        // if character is the same, take diagonal value
+        // lower cost with -1 if characters are the same
+        if (string1.charAt(i - 1) == string2.charAt(j - 1))
+          matrix[i][j] = matrix[i - 1][j - 1] - 1
+        // if character is different, take minimum of three surrounding values
+        // in matrix (left, diagonal, top)
+        else
+          matrix[i][j] =
+            Math.min(matrix[i - 1][j], matrix[i - 1][j - 1], matrix[i][j - 1]) +
+            1
+      }
+    }
+    return matrix[length1][length2]
+  }
+
+  /* ADVANCED SEARCH */
   async advancedSearch(query) {
     console.log('advancedSearch')
     const selectedGenres = query.selectedGenre
@@ -80,10 +121,11 @@ class SearchRepository {
         selectedGenres,
         selectedReleaseDate,
         'and'
-      ).then((response) => {
+      ).then(response => {
         return (results = response)
       })
     } else if (
+      // when only some query parameters are filled
       Object.keys(selectedGenres).length != 0 ||
       selectedGenres.constructor != Object ||
       Object.keys(selectedReviewCriteria).length != 0 ||
@@ -96,12 +138,59 @@ class SearchRepository {
         selectedGenres,
         selectedReleaseDate,
         'or'
-      ).then((response) => {
+      ).then(response => {
         return (results = response)
       })
     }
     return results
   }
+
+  async filterEntriesBasedOnUserSelection(
+    selectedReviewCriteria,
+    selectedGenres,
+    selectedReleaseDate,
+    operator
+  ) {
+    let results = []
+    const reviewsContainingSelectedCriteria = await this.querySelectedReviewCriteria(
+      selectedReviewCriteria
+    )
+    const preparedGenres = this.querySelectedGenres(selectedGenres)
+    console.log(preparedGenres)
+    console.log(reviewsContainingSelectedCriteria)
+
+    if (operator == 'and') {
+      await this.model
+        .find({
+          $and: [
+            { genres: { $regex: preparedGenres, $options: 'i' } },
+            { year: selectedReleaseDate },
+            { reviews: { $in: reviewsContainingSelectedCriteria } },
+          ],
+        })
+        .then(response => {
+          return (results = response)
+        })
+        .catch(error => console.log(error))
+      return results
+    } else if (operator == 'or') {
+      await this.model
+        .find({
+          $or: [
+            { genres: { $regex: preparedGenres, $options: 'i' } },
+            { year: selectedReleaseDate },
+            { reviews: { $in: reviewsContainingSelectedCriteria } },
+          ],
+        })
+        .then(response => {
+          return (results = response)
+        })
+        .catch(error => console.log(error))
+      return results
+    }
+  }
+
+
 
   async querySelectedReviewCriteria(selectedReviewCriteria) {
     const criteriaList = []
@@ -154,87 +243,6 @@ class SearchRepository {
       }
     }
     return genreRegexExp
-  }
-
-  simpleSearch(query) {
-    console.log('simpleTitleSearch')
-    return this.titleSearch(query)
-  }
-
-  async titleSearch(query) {
-    let matches = []
-    let listOfFilms = []
-    await this.findAll()
-      .then((result) => {
-        listOfFilms = result
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-
-    let result = 100
-    for (const entry of listOfFilms) {
-      if (entry.title != null) {
-        // check if query has exact match and break out of loop if true
-        if (entry.title.toUpperCase() == query.toUpperCase()) {
-          matches = []
-          matches.push(entry)
-          break
-        }
-        // calculate result based on Levensthein distance
-        else {
-          const cost = await this.calculateLevenstheinDistance(
-            entry.title,
-            query
-          )
-          if (cost < result) result = cost
-          if (cost < 7) matches.push(entry)
-        }
-      }
-    }
-    if (matches.length > 1) return matches.splice(0, 14)
-    else return matches
-  }
-
-  // Reference: https://www.geeksforgeeks.org/edit-distance-dp-5/
-  // Reference: https://www.youtube.com/watch?v=We3YDTzNXEk
-  calculateLevenstheinDistance(string1, string2) {
-    let matrix = []
-
-    const length1 = string1.length
-    const length2 = string2.length
-
-    // if one string is empty, all characters of other string need
-    // to be inserted into the first one and vice versa
-    if (length1 == 0) return length2
-    if (length2 == 0) return length1
-
-    // create empty 2D array (matrix) based on input string lengths
-    matrix = new Array(length1)
-
-    for (let i = 0; i <= length1; i++) {
-      matrix[i] = new Array(length2)
-    }
-
-    // add string indices to matrix
-    for (let i = 0; i <= length1; i++) matrix[i][0] = i
-    for (let j = 0; j <= length2; j++) matrix[0][j] = j
-
-    for (let i = 1; i <= length1; i++) {
-      for (let j = 1; j <= length2; j++) {
-        // if character is the same, take diagonal value
-        // lower cost with -1 if characters are the same
-        if (string1.charAt(i - 1) == string2.charAt(j - 1))
-          matrix[i][j] = matrix[i - 1][j - 1] - 1
-        // if character is different, take minimum of three surrounding values
-        // in matrix (left, diagonal, top)
-        else
-          matrix[i][j] =
-            Math.min(matrix[i - 1][j], matrix[i - 1][j - 1], matrix[i][j - 1]) +
-            1
-      }
-    }
-    return matrix[length1][length2]
   }
 }
 

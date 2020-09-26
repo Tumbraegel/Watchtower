@@ -97,10 +97,11 @@ router.get('/film/:id', async (req, res) => {
 })
 
 // retrieve statistical data for films
-router.get('/statistics/:type/:value', (req, res) => {
+router.get('/statistics/:type/:value/:status', (req, res) => {
   const type = req.params.type
   const value = req.params.value
-  chartFetcher.fetchChart(type, value).then((films) => {
+  const status = req.params.status
+  chartFetcher.fetchChart(type, value, status).then((films) => {
       res.json(films)
   }).catch(error => {
     console.log(error.message)
@@ -207,12 +208,6 @@ router.delete("/film/:id/comment/:commentId", auth, (req, res) => {
       console.log(error.message)
       res.status(500).send('Error in removal process.')
     })
-})
-
-router.get('/film/sorted-list', (req, res) => {
-    reviewRepo.quickSort().then(response => {
-        res.json(response)
-    }).catch(error => console.log(error))
 })
 
 module.exports = router

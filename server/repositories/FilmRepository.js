@@ -89,22 +89,32 @@ class FilmRepository {
 
   async getAllGenres() {
     const genreList = []
-    const allFilms = await this.findAll()
 
-    for (let entry of allFilms) {
-      if (entry.genres) {
-        const genres = entry.genres.split(', ')
+    await this.model.distinct('genres').then(result => {
+      for(const entry of result) {
+        const genres = entry.split(', ')
         for (const genre of genres) {
-          if (!genreList.includes(genre)) {
-            genreList.push(genre)
+          if(genre != 'N/A') {
+            if (!genreList.includes(genre)) {
+              genreList.push(genre)
+            }
           }
         }
       }
-    }
+    })
+
     return genreList
   }
 
-  
+  async getAllReleaseYears() {
+    let releaseYears = []
+
+    await this.model.distinct('year').then(result => {
+      releaseYears = result
+    })
+
+    return releaseYears
+  }
 
   // Add reference to respective reviews
   async addReview(id, review) {

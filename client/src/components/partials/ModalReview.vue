@@ -126,6 +126,7 @@ export default {
     ...mapActions('film', ['addFilmReview']),
 
     close() {
+      this.resetModalInputs()
       this.$emit('close')
     },
 
@@ -162,6 +163,13 @@ export default {
       this.reviewCriterion = value
     },
 
+    resetModalInputs() {
+        this.rating = 0
+        this.reviewCriterion = ""
+        this.allReviewResults = []
+        this.nextSlide = false
+    },
+
     submitReview() {
       const id = this.$route.params.id
       const payload = {
@@ -178,18 +186,13 @@ export default {
         })
       } else {
         this.addFilmReview(payload).then(
-          response => {
+          () => {
             swal('Done!', 'You rated this film with a score of ' + payload.rating, 'success', { buttons: false, timer: 2500 });
           },
           error => {
             console.log(error.response)
           }
         )
-        // reset modal values
-        this.rating = 0
-        this.reviewCriterion = ""
-        this.allReviewResults = []
-        this.nextSlide = false
         this.close()
       }
     }

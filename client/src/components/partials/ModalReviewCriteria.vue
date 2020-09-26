@@ -100,6 +100,11 @@ data() {
       else this.questions.testPassed = false
     },
 
+    resetModalInput() {
+      this.reviewResult = 0
+      this.questions = {}
+    },
+
     async confirmSelection() {
       if(Object.keys(this.questions).length != 0) await this.checkIfTestPassed()
 
@@ -111,12 +116,9 @@ data() {
 
       this.showConfirmButton = false
 
-      await this.$emit("addCriterion", criterion).then(() => {
-        // reset modal values
-        this.reviewResult = 0
-        this.questions = {}
-      })
-    },
+      this.resetModalInput()
+      this.$emit("addCriterion", criterion)
+    }
   }
 }
 </script>

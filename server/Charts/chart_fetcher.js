@@ -1,22 +1,45 @@
 const filmRepo = require('../repositories/FilmRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
+const reviewRepo = require('../repositories/ReviewRepository')
 const boxPlot = require('../Charts/chart_box_plot')
 const scatterPlot = require('../Charts/chart_scatter_plot')
 const barChart = require('../Charts/chart_bar')
 const pieChart = require('../Charts/chart_pie')
+const barChartTest = require('../Charts/chart_bar_test')
 
+/*
+2) x axis amount of queer friendly values 
+   y axis amount of true bechtdel tests
+
+*/
 class ChartFetcher {
-  async fetchChart(type, value) {
-    // const allFilms = await filmRepo.findAll()
-    const selectedFilms = await filmRepo.filterForFilmsWithReviewCriterion(value)
-    const allGenres = await filmRepo.getAllGenres()
-    const allReviewCriteria = await criterionRepo.getAllReviewCriteria()
-
+  async fetchChart(type, value, status) {
     let result = {}
+    let dataset = []
+    let testResults = []
 
     if (type == 'boxplot') {
+      const selectedFilms = await filmRepo.filterForFilmsWithReviewCriterion(value)
+      const allGenres = await filmRepo.getAllGenres()
+      const allReviewCriteria = await criterionRepo.getAllReviewCriteria()
       const data = await boxPlot.fetchData(selectedFilms, allReviewCriteria)
       result = boxPlot.createPlot(data, allGenres, value)
+    }
+
+    if(type == 'barChart') {
+      if(value == 'releaseYears') {
+        dataset = await filmRepo.getAllReleaseYears()
+        testResults = await reviewRepo.getAllTestResults('releaseYears', dataset, status)
+      }
+      if(value == 'genres') {
+        dataset = await filmRepo.getAllGenres()
+        testResults = await reviewRepo.getAllTestResults('genres', dataset, status)
+      }
+      if(value == 'reviewCriteria') {
+        dataset = await criterionRepo.getAllReviewCriteria()
+        testResults = await reviewRepo.getAllTestResults('reviewCriteria', dataset, status)
+      }
+      result = barChartTest.createPlot(testResults, dataset)
     }
     return result
   }

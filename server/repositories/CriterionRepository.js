@@ -33,6 +33,14 @@ class CriterionRepository {
             console.log("Criterion was successfully stored in database.")
         }).catch((error) => console.log(error)) 
     }
+
+    async getTestBasedOnCriterion(criterion) {
+        let test = ''
+        await this.model.findOne({ criterion: criterion }).then(result => {
+            test = result.test
+        })
+        return test
+    }
 }
 
 module.exports = new CriterionRepository(Criterion)

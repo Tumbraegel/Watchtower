@@ -5,6 +5,10 @@ class UserRepository {
     this.model = model
   }
 
+  findAll() {
+    return this.model.find()
+  }
+
   findById(id) {
     return this.model.findById(id)
   }

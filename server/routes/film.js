@@ -28,8 +28,8 @@ async function getAllGenres() {
   return await filmRepo.getAllGenres()
 }
 
-async function getAllCommentsPer(id) {
-  return await commentRepo.getAllCommentsPer(id)
+async function getAllCommentsPer(film) {
+  return await commentRepo.getAllCommentsPer(film)
 }
 
 async function getReviewDataOfOneFilm(id) {
@@ -51,15 +51,17 @@ async function getFilmPageChartData(id) {
 }
 
 async function getAvailableDataForFilmPage(id) {
+  const film = await getFilmById(id)
   const data = {
     comments: [],
     charts: {}
   }
   
-  const chartData = await getFilmPageChartData(id) 
+  const chartData = await getFilmPageChartData(id)
+  const commentData = await getAllCommentsPer(film)
 
   try {
-    data.comments = await getAllCommentsPer(id)
+    data.comments = commentData
     data.charts = chartData
     return data
   } catch (error) {
@@ -110,7 +112,8 @@ router.get('/statistics/:type/:value/:status', (req, res) => {
 })
 
 // retrieve all existing genres
-router.get('/genre', (req, res) => {
+router.get('/genre', async (req, res) => {
+  await filmRepo.addTestData()
     getAllGenres().then(genres => {
         res.json(genres)
     }).catch(error => {
@@ -188,9 +191,10 @@ router.post('/film/:id/comment', auth, async (req, res) => {
 })
 
 // add vote for specific comment
-router.post('/film/:id/comment/vote', auth, (req, res) => {
+router.post('/film/:id/comment/vote', auth, async (req, res) => {
     const filmId = req.params.id
-    commentRepo.addVote(filmId, req.body, req.user).then(response => {
+    const film = await getFilmById(filmId)
+    commentRepo.addVote(film._id, req.body, req.user).then(response => {
         res.json(response)
     }).catch(error => {
       console.log(error.message)
@@ -199,10 +203,11 @@ router.post('/film/:id/comment/vote', auth, (req, res) => {
 })
 
 // remove a comment
-router.delete("/film/:id/comment/:commentId", auth, (req, res) => {
+router.delete("/film/:id/comment/:commentId", auth, async (req, res) => {
   const filmId = req.params.id
   const commentId = req.params.commentId
-  commentRepo.deleteComment(filmId, commentId).then(response => {
+  const film = await getFilmById(filmId)
+  commentRepo.deleteComment(film._id, commentId).then(response => {
       res.json(response)
     }).catch(error => {
       console.log(error.message)

@@ -1,6 +1,7 @@
 const Review = require('../models/Review')
 const userRepo = require('../repositories/UserRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
+const { getThreeRandomReviewedFilms } = require('../repositories/FilmRepository')
 
 class ReviewRepository {
   constructor(model) {
@@ -133,38 +134,66 @@ class ReviewRepository {
 
   async getAllTestResults(comparisonValue, dataset, status) {
     let testStatus = ''
-    if(status == 'false') testStatus = false
+    if (status == 'false') testStatus = false
     else testStatus = true
 
     const reviewCriteriaList = await criterionRepo.getAllReviewCriteria()
 
     const data = {}
-    for(const criterion of reviewCriteriaList) {
+    for (const criterion of reviewCriteriaList) {
       data[criterion] = {}
-      for(const entry of dataset) {
+      for (const entry of dataset) {
         data[criterion][entry] = 0
       }
     }
 
-    await this.model.find({$and: [
-      { "reviewCriteria.name": { $in: reviewCriteriaList} },
-      { "reviewCriteria.testResult.testPassed": testStatus }
-      ]}).populate('film').then(results => { 
-          for(const entry of results) {
-            for(const criterion of entry.reviewCriteria) {
-              if(criterion.hasOwnProperty('testResult') && (criterion.testResult.testPassed == testStatus)) {
-                if(comparisonValue == 'releaseYears') data[criterion.name][entry.film.year] += 1
-                if(comparisonValue == 'genres') {
-                  const filmGenres = entry.film.genres.split(', ')
-                  for(const genre of filmGenres) {
-                    data[criterion.name][genre] += 1
+    await this.model
+      .find({
+        $and: [
+          { 'reviewCriteria.name': { $in: reviewCriteriaList } },
+          { 'reviewCriteria.testResult.testPassed': testStatus },
+        ],
+      })
+      .populate('film')
+      .then((results) => {
+        for (const entry of results)
+          for (const criterion of entry.reviewCriteria) {
+            if (
+              criterion.hasOwnProperty('testResult') &&
+              criterion.testResult.testPassed == testStatus
+            ) {
+              if (comparisonValue == 'releaseYears')
+                data[criterion.name][entry.film.year] += 1
+              if (comparisonValue == 'genres') {
+                const filmGenres = entry.film.genres.split(', ')
+                for (const genre of filmGenres) {
+                  data[criterion.name][genre] += 1
+                }
+              }
+              if (comparisonValue == 'reviewCriteria') {
+                for (const testName of Object.keys(data)) {
+                  if (testName == criterion.name) {
+                    for (const item of entry.reviewCriteria) {
+                      if (item != criterion.name) {
+                        data[testName][item.name] += 1
+                      }
+                    }
                   }
                 }
-                if(comparisonValue == 'reviewCriteria') data[criterion.name][criterion.name] += 1
               }
             }
-          }         
+          }
       })
+
+    if (comparisonValue == 'reviewCriteria') {
+      for (const [mainKey, valueSet] of Object.entries(data)) {
+        for (let key of Object.keys(valueSet)) {
+          if (key == mainKey) {
+            data[mainKey][key] = 0
+          }
+        }
+      }
+    }
     return data
   }
 }

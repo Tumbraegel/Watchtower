@@ -1,5 +1,4 @@
 const Comment = require('../models/Comment')
-const filmRepo = require('../repositories/FilmRepository')
 const userRepo = require('../repositories/UserRepository')
 
 class CommentRepository {
@@ -12,24 +11,17 @@ class CommentRepository {
     return this.model.findById(id)
   }
 
-  async getFilmById(id) {
-    const film = await filmRepo.findByImdbID(id)
-    return film
-  }
-
-  async getAllCommentsPer(id) {
-    const film = await this.getFilmById(id)
+  async getAllCommentsPer(film) {
     const ObjectId = require('mongoose').Types.ObjectId
-    const comments = await this.model.find({ film: ObjectId(film._id) })
+    let comments = []
+    await this.model.find({ film: ObjectId(film._id) })
     .populate({
         path: 'author',
-        select: "_id username email",
-        populate: {
-          path: 'user',
-          model: 'User',
-        }
+        select: "_id username email"
       }
-    )
+    ).then(results => {
+      comments = results
+    })
     return comments
   }
 
@@ -67,7 +59,7 @@ class CommentRepository {
         .catch((error) => console.log(error))
     }
 
-    const commentList = await this.getAllCommentsPer(film.imdbID)
+    const commentList = await this.getAllCommentsPer(film._id)
     return commentList
   }
 

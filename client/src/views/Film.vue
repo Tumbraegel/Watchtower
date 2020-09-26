@@ -22,7 +22,7 @@
               </svg>
             </h1>
             <div class="row">
-              <div class="lead col-8" v-if="currentUserRating != 0">
+              <div class="lead col-9" v-if="currentUserRating != 0">
                 Your score: {{ currentUserRating }}
                 </div>
                 <div class="lead col-4">

@@ -41,7 +41,7 @@
             See how the test results compare to the release year, the genre or
             the review criterion of a film:
           </p>
-          <div class="dropdown col-3">
+          <div class="dropdown col-4">
             <button
               class="btn btn-outline-custom dropdown-toggle"
               id="dropdownMenuButton"
@@ -148,11 +148,11 @@ export default {
     },
 
     async createChart(chartType, value, status) {
-      console.log(status)
       this.selectedChart = chartType
       this.isChartVisible = true
       const chartData = await FilmService.getChart(chartType, value, status)
-      Plotly.newPlot(chartType, chartData.data.data, chartData.layout)
+      console.log(chartData.layout)
+      Plotly.newPlot(chartType, chartData.data.data, chartData.data.layout)
     }
   }
 }

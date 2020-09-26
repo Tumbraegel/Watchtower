@@ -24,21 +24,21 @@ class IMDbData {
             const splitString = line.split("\t");
 
             // check if film is from the year 2020
-            if (splitString.includes("2020") && splitString.includes("movie")) {
+            if (splitString.includes("2018") && splitString.includes("movie")) {
                 listOfIDs.push(firstValue)
             }
         }
         
-        // >> Count actual length of list to splice accordingly
-        // var count1 = 0;
-        // for (var i = 0; i < listOfIDs.length; ++i) {
-        //     count1++;
-        // }
-        
-        // console.log(listOfIDs)
-        // DONT RUN THIS BEFORE CHECKING IF SPLICE ACTUALLY ONLY REQUESTS UNDER 1000 ITEMS!!!!
-        // finalListOfIDs = listOfIDs.splice(0, 800);
+        //>> Count actual length of list to splice accordingly
+        var count1 = 0;
+        for (var i = 0; i < listOfIDs.length; ++i) {
+            count1++;
+        }
 
+        // DONT RUN THIS BEFORE CHECKING IF SPLICE ACTUALLY ONLY REQUESTS UNDER 1000 ITEMS!!!!
+        finalListOfIDs = listOfIDs.splice(0, 140);
+
+        console.log(finalListOfIDs)
         return finalListOfIDs
     }
 }

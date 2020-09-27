@@ -112,8 +112,8 @@ router.get('/statistics/:type/:value/:status', (req, res) => {
 })
 
 // retrieve all existing genres
-router.get('/genre', async (req, res) => {
-  await filmRepo.addTestData()
+router.get('/lists', async (req, res) => {
+  await filmRepo.calculateHighestRatedFilms('Diversity')
     getAllGenres().then(genres => {
         res.json(genres)
     }).catch(error => {
@@ -123,7 +123,7 @@ router.get('/genre', async (req, res) => {
 })
 
 // retrieve films filtered by genre
-router.get('/genre/:genre', (req, res) => {
+router.get('/lists/genre/:genre', (req, res) => {
     const genre = Object(req.params.genre)
     filmRepo.findByGenre(genre).then(films => {
         res.json(films)
@@ -131,6 +131,17 @@ router.get('/genre/:genre', (req, res) => {
       console.log(error.message)
       res.status(500).send('Error in retrieving genre data.')
     })
+})
+
+// retrieve films filtered by genre
+router.get('/lists/criterion/:criterion', (req, res) => {
+  const criterion = Object(req.params.criterion)
+  filmRepo.calculateHighestRatedFilms(criterion).then(films => {
+      res.json(films)
+  }).catch(error => {
+    console.log(error.message)
+    res.status(500).send('Error in retrieving films.')
+  })
 })
 
 // retrieve all review criteria data

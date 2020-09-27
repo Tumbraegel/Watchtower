@@ -59,15 +59,13 @@
             v-model="searchQuery.selectedReleaseDate"
           />
         </div>
-        <p>{{searchQuery}}</p>
-        <button type="submit" class="btn btn-primary" @click="submitSearchQuery">Search</button>
+        <button type="submit" class="btn btn-outline-custom" @click="submitSearchQuery">Search</button>
       </form>
     </div>
   </div>
 </template>
 
 <script>
-//import FilmService from '../services/film_service'
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -121,4 +119,14 @@ export default {
 </script>
 
 <style scoped>
+.btn-outline-custom {
+  border-color: #5d5dd5;
+  color: #5d5dd5
+}
+
+.btn-outline-custom:hover {
+  border-color: #5d5dd5;
+  background-color: #5d5dd5;
+  color: whitesmoke
+}
 </style>

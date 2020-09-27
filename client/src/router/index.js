@@ -40,9 +40,9 @@ const routes = [
     component: () => import('../views/Film.vue'),
   },
   {
-    path: '/genre',
-    name: 'genre',
-    component: () => import('../views/Genre.vue')
+    path: '/lists',
+    name: 'lists',
+    component: () => import('../views/Lists.vue')
   },
   {
     path: '/statistics',

@@ -2,16 +2,10 @@ const filmRepo = require('../repositories/FilmRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
 const reviewRepo = require('../repositories/ReviewRepository')
 const boxPlot = require('../Charts/chart_box_plot')
-const scatterPlot = require('../Charts/chart_scatter_plot')
 const barChart = require('../Charts/chart_bar')
 const pieChart = require('../Charts/chart_pie')
 const barChartTest = require('../Charts/chart_bar_test')
 
-/*
-2) x axis amount of queer friendly values 
-   y axis amount of true bechtdel tests
-
-*/
 class ChartFetcher {
   async fetchChart(type, value, status) {
     let result = {}

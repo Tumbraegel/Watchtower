@@ -12,11 +12,15 @@ class FilmService {
   }
 
   getGenreData() {
-    return axios.get(API_URL + '/genre')
+    return axios.get(API_URL + '/lists')
   }
 
   getListOfFilmsPer(genre) {
-    return axios.get(API_URL + '/genre/' + genre)
+    return axios.get(API_URL + '/lists/genre/' + genre)
+  }
+
+  getListOfHighestRankingFilms(criterion) {
+    return axios.get(API_URL + '/lists/criterion/' + criterion)
   }
 
   getReviewCriteriaData() {

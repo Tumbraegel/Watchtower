@@ -1,0 +1,29 @@
+[
+    {
+        "criterion": "Diversity",
+        "test": "DuVernay Test",
+        "questions": {
+            "0": "Is there a POC - or someone from another minority - that has a fully realised life?",
+            "1": "Do they act independently?",
+            "2": "Do they act independent from any white characters?"
+        }
+    },
+    {
+        "criterion": "Gender Equality",
+        "test": "Bechdel Test",
+        "questions": {
+            "0": "Does this film have at least two (named) women in it?",
+            "1": "Do the women talk to each other?",
+            "2": "Do they talk about something besides a man?"
+        }
+    },
+    {
+        "criterion": "Queer Friendliness",
+        "test": "Queer Friendliness Test",
+        "questions": {
+            "0": "Is there a queer character that has their own story line?",
+            "1": "Do they act independently?",
+            "2": "Them being queer is not the sole focus of this character's development?"
+        }
+    }
+]

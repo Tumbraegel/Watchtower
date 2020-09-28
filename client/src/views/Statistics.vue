@@ -151,7 +151,6 @@ export default {
       this.selectedChart = chartType
       this.isChartVisible = true
       const chartData = await FilmService.getChart(chartType, value, status)
-      console.log(chartData.layout)
       Plotly.newPlot(chartType, chartData.data.data, chartData.data.layout)
     }
   }

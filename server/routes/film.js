@@ -113,7 +113,6 @@ router.get('/statistics/:type/:value/:status', (req, res) => {
 
 // retrieve all existing genres
 router.get('/lists', async (req, res) => {
-  await filmRepo.calculateHighestRatedFilms('Diversity')
     getAllGenres().then(genres => {
         res.json(genres)
     }).catch(error => {

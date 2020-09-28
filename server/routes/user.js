@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const userRepo = require('../repositories/UserRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
-const filmAPI = require('../imdb_data/film_api')
+const filmAPI = require('../data_imdb/film_api')
 
 // create new user
 router.post('/register', [check('username', 'Please enter a valid username.').not().isEmpty(), 

@@ -17,7 +17,6 @@ class SearchRepository {
   }
 
   simpleSearch(query) {
-    console.log('simpleTitleSearch')
     return this.titleSearch(query)
   }
 
@@ -101,7 +100,6 @@ class SearchRepository {
 
   /* ADVANCED SEARCH */
   async advancedSearch(query) {
-    console.log('advancedSearch')
     const selectedGenres = query.selectedGenre
     const selectedReviewCriteria = query.selectedReviewCriteria
     const selectedReleaseDate = query.selectedReleaseDate
@@ -115,7 +113,6 @@ class SearchRepository {
         selectedReviewCriteria.constructor != Object) &&
       selectedReleaseDate != ''
     ) {
-      console.log('ReviewCriteria & Genre & Year selected')
       await this.filterEntriesBasedOnUserSelection(
         selectedReviewCriteria,
         selectedGenres,
@@ -132,7 +129,6 @@ class SearchRepository {
       selectedReviewCriteria.constructor != Object ||
       selectedReleaseDate != ''
     ) {
-      console.log('ReviewCriteria OR Genre OR Year selected')
       await this.filterEntriesBasedOnUserSelection(
         selectedReviewCriteria,
         selectedGenres,
@@ -156,8 +152,6 @@ class SearchRepository {
       selectedReviewCriteria
     )
     const preparedGenres = this.querySelectedGenres(selectedGenres)
-    console.log(preparedGenres)
-    console.log(reviewsContainingSelectedCriteria)
 
     if (operator == 'and') {
       await this.model

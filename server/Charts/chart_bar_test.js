@@ -3,8 +3,6 @@ const criterionRepo = require('../repositories/CriterionRepository')
 class BarChart {
 
   async createPlot(testResults, list2, comparisonValue) {
-    console.log(testResults)
-    console.log(list2)
     const result = {}
     const data = []
     const xAxis = list2

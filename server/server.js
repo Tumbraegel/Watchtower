@@ -12,8 +12,8 @@ const mongoose = require('mongoose')
 const config = require('./config/db_config')
 const film = require('./routes/film')
 const user = require('./routes/user')
-const testDataImporter = require('./imdb_data/test_data_importer')
-const filmAPI = require('./imdb_data/film_api')
+const testDataImporter = require('./data_test/test_data_importer')
+const filmAPI = require('./data_imdb/film_api')
 
 const app = express()
 
@@ -27,6 +27,7 @@ const url = config.DB
 mongoose.connect(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useCreateIndex: true
 })
 
 const db = mongoose.connection
@@ -42,8 +43,7 @@ app.use('/', film)
 app.use('/api/auth', user)
 
 // Prepare initial test data
-testDataImporter.createFilmData()
-testDataImporter.createCriteriaData()
+testDataImporter.importData()
 
 // Server listening on port
 app.listen(config.APP_PORT)

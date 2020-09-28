@@ -122,13 +122,11 @@ export default {
       if (type == 'genre') {
         FilmService.getListOfFilmsPer(value).then(res => {
           this.filteredFilms = res.data
-          console.log(this.filteredFilms)
         })
       }
       if (type == 'criterion') {
         FilmService.getListOfHighestRankingFilms(value).then(res => {
           this.filteredFilms = res.data
-          console.log(this.filteredFilms)
         })
       }
     }

@@ -1,7 +1,6 @@
 const Review = require('../models/Review')
 const userRepo = require('../repositories/UserRepository')
 const criterionRepo = require('../repositories/CriterionRepository')
-const { getThreeRandomReviewedFilms } = require('../repositories/FilmRepository')
 
 class ReviewRepository {
   constructor(model) {
@@ -54,7 +53,7 @@ class ReviewRepository {
       await newReview
         .save()
         .then(function () {
-          console.log('Review was successfully overwritten in database.')
+          //
         })
         .catch((error) => console.log(error))
     }
@@ -85,8 +84,8 @@ class ReviewRepository {
       film.overallRating = median
       film
         .save()
-        .then((res) => {
-          console.log('Overall film rating was successfully updated.')
+        .then(() => {
+          //
         })
         .catch((error) => console.log(error))
     }

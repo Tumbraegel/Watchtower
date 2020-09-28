@@ -7,7 +7,7 @@ const readline = require('readline')
 class IMDbData {
     async getListOfIDs() {
         const listOfIDs = []
-        const fileStream = fs.createReadStream('./imdb_data/test.tsv')
+        const fileStream = fs.createReadStream('./data_imdb/test.tsv')
 
         const rl = readline.createInterface({
             input: fileStream,

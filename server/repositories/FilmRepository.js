@@ -25,7 +25,7 @@ class FilmRepository {
 
   // Retrieve film by specific genre
   findByGenre(genre) {
-    return this.model.find({ genres: genre })
+    return this.model.find({ genres: {$regex: genre}})
   }
 
   // Retrieve all films that have been reviewed at least once
@@ -39,10 +39,12 @@ class FilmRepository {
     const films = await this.findAllReviewedFilms()
     const featuredFilms = []
 
-    for (var i = 0; i < 3; i++) {
-      const film = films[Math.floor(Math.random() * films.length)]
-      if (featuredFilms.includes(film)) i -= 1
-      else featuredFilms.push(film)
+    if(films.length > 3) {
+      for (var i = 0; i < 3; i++) {
+        const film = films[Math.floor(Math.random() * films.length)]
+        if (featuredFilms.includes(film)) i -= 1
+        else featuredFilms.push(film)
+      }
     }
     return featuredFilms
   }
@@ -120,13 +122,6 @@ class FilmRepository {
     return releaseYears
   }
 
-  // Add reference to respective reviews
-  async addReview(id, review) {
-    const film = await this.model.findOne({ imdbID: id })
-    film.reviews.push(review._id)
-    film.save()
-  }
-
   // Get film data from IMDb api and store in db
   async createEntry(film) {
     const entry = {
@@ -150,8 +145,12 @@ class FilmRepository {
     const newFilm = await new this.model(entry)
     return await newFilm
       .save()
-      .then(() => {
-        "'" + film.Title + "'" + '  successfully stored in database.'
+      .then(function (err, res) {
+        if (err) {
+          console.log("'" + film.Title + "'" + '  successfully stored in database.')
+        } else {
+          console.log("'" + film.Title + "'" + ' already exists in database.')
+        }
       })
       .catch((error) => console.log(error))
   }

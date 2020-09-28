@@ -5,9 +5,10 @@ A fullstack project generated with MEVN stack technologies (MongoDB, ExpressJS, 
 
 ## Prerequisites
 NodeJS: https://nodejs.org/en/download/
-MongoDB: https://docs.mongodb.com/manual/installation/
+MongoDB Community Edition: https://docs.mongodb.com/manual/installation/
 
 > start MongoDB on your computer with the `mongod` command.
+> Note: There may need to be a `data/db` folder structure located in your root directory
 
 ## To run the project on a local machine
 1. Clone the repository with git clone git@github.com:Tumbraegel/Watchtower.git (or via HTTPS)
@@ -17,12 +18,14 @@ MongoDB: https://docs.mongodb.com/manual/installation/
 3. Open client
 ```
 cd client
+npm install
 npm run serve
 ```
 
 4. Open server
 ```
 cd server
+npm install
 npm start
 ```
 

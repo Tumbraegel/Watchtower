@@ -122,7 +122,6 @@ class FilmRepository {
 
   // Add reference to respective reviews
   async addReview(id, review) {
-    // MISSING error handling on save
     const film = await this.model.findOne({ imdbID: id })
     film.reviews.push(review._id)
     film.save()
@@ -146,9 +145,7 @@ class FilmRepository {
       awards: film.Awards,
       poster: film.Poster,
       imdbID: film.imdbID,
-      otherRatings: film.Ratings,
-      metascore: film.Metascore,
-      imdbRating: film.imdbRating,
+      overallRating: 0
     }
     const newFilm = await new this.model(entry)
     return await newFilm

@@ -12,6 +12,7 @@ const mongoose = require('mongoose')
 const config = require('./config/db_config')
 const film = require('./routes/film')
 const user = require('./routes/user')
+const testDataImporter = require('./imdb_data/test_data_importer')
 const filmAPI = require('./imdb_data/film_api')
 
 const app = express()
@@ -40,8 +41,9 @@ db.on('error', (err) => {
 app.use('/', film)
 app.use('/api/auth', user)
 
-// Run API script
-//filmAPI.requestFilms()
+// Prepare initial test data
+testDataImporter.createFilmData()
+testDataImporter.createCriteriaData()
 
 // Server listening on port
 app.listen(config.APP_PORT)

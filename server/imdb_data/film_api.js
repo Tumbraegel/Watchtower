@@ -29,7 +29,7 @@ class IMDbAPI {
   }
 
   requestFilms() {
-    // getListOfIDs returns up to a thousand IMDb ids
+    // get list of IDs from test file
     imdbData.getListOfIDs().then(list => {
       list.forEach(id => {
         this.requestFilmDataFor(id)

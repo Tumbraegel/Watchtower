@@ -1,24 +1,12 @@
 # client
 
 ## Project setup
-```
+
+# install dependencies
 npm install
-```
 
-### Compiles and hot-reloads for development
-```
+# serve with hot reload at localhost:8080
 npm run serve
-```
 
-### Compiles and minifies for production
-```
+# build for production with minification
 npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

@@ -153,14 +153,8 @@ class FilmRepository {
     const newFilm = await new this.model(entry)
     return await newFilm
       .save()
-      .then(function (err, res) {
-        if (err) {
-          console.log("'" + film.Title + "'" + ' already exists in database.')
-        } else {
-          console.log(
-            "'" + film.Title + "'" + '  successfully stored in database.'
-          )
-        }
+      .then(() => {
+        "'" + film.Title + "'" + '  successfully stored in database.'
       })
       .catch((error) => console.log(error))
   }

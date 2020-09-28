@@ -37,7 +37,7 @@ router.post('/register', [check('username', 'Please enter a valid username.').no
 
             const salt = await bcrypt.genSalt(10)
             user.password = await bcrypt.hash(password, salt)
-            user.role = 'user'
+            user.role = 'admin'
 
             await userRepo.create(user)
             res.status(200).json({ message: 'Registration successful' })

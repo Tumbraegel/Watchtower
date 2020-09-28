@@ -170,7 +170,7 @@ export default {
         this.nextSlide = false
     },
 
-    submitReview() {
+    async submitReview() {
       const id = this.$route.params.id
       const payload = {
         filmId: id,
@@ -194,6 +194,7 @@ export default {
           }
         )
         this.close()
+        await this.fetchFilmContext()
       }
     }
   }

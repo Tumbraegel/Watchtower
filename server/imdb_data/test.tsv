@@ -1,4 +1,12 @@
 tconst	titleType	primaryTitle	originalTitle	isAdult	startYear	endYear	runtimeMinutes	genres
-tt8613070	movie	Portrait of a Lady on Fire	Portrait de la jeune fille en feu	0	2020	\N	122	Drama,Romance
-tt6751668	movie	Parasite	Gisaengchung	0	2020	\N	132	Comedy,Drama,Thriller
-tt1706620	movie	Snowpiercer	Snowpiercer	0	2020	\N	126	Action,Drama,Sci-Fi
+tt8613070	movie	Portrait of a Lady on Fire	Portrait de la jeune fille en feu	0	2019	\N	122	Drama,Romance
+tt6751668	movie	Parasite	Gisaengchung	0	2019	\N	132	Comedy,Drama,Thriller
+tt1706620	movie	Snowpiercer	Snowpiercer	0	2013	\N	126	Action,Drama,Sci-Fi
+tt2557478	movie	Pacific Rim: Uprising	Pacific Rim: Uprising	0	2018	\N	111	Action,Adventure,Sci-Fi
+tt5052448	movie	Get Out	Get Out	0	2017	\N	104	Horror,Mystery,Thriller
+tt4846340	movie	Hidden Figures	Hidden Figures	0	2016	\N	127	Biography,Drama,History
+tt4154664	movie	Captain Marvel	Captain Marvel	0	2019	\N	123	Action,Adventure,Sci-Fi
+tt3748528	movie	Rogue One	Rogue One	0	2016	\N	133	Action,Adventure,Sci-Fi
+tt7556122	movie	The Old Guard	The Old Guard	0	2020	\N	125	Action,Adventure,Fantasy
+tt0317248	movie	City of God Cidade de Deus	0	2002	\N	130	Crime,Drama
+tt4975722	movie	Moonlight	Moonlight	0	2016	\N	111	Drama

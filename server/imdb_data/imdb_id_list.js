@@ -7,7 +7,6 @@ const readline = require('readline')
 class IMDbData {
     async getListOfIDs() {
         const listOfIDs = []
-        let finalListOfIDs = []
         const fileStream = fs.createReadStream('./imdb_data/test.tsv')
 
         const rl = readline.createInterface({
@@ -19,27 +18,11 @@ class IMDbData {
 
         for await (const line of rl) {
             // replace everything after the first tab with an empty string to only get the IMDb ID from each line
-            const firstValue = line.replace(/\t.*/, '');
-
-            const splitString = line.split("\t");
-
-            // check if film is from the year 2020
-            if (splitString.includes("2018") && splitString.includes("movie")) {
-                listOfIDs.push(firstValue)
-            }
+            const filmId = line.replace(/\t.*/, '')
+            listOfIDs.push(filmId)
         }
         
-        //>> Count actual length of list to splice accordingly
-        var count1 = 0;
-        for (var i = 0; i < listOfIDs.length; ++i) {
-            count1++;
-        }
-
-        // DONT RUN THIS BEFORE CHECKING IF SPLICE ACTUALLY ONLY REQUESTS UNDER 1000 ITEMS!!!!
-        finalListOfIDs = listOfIDs.splice(0, 140);
-
-        console.log(finalListOfIDs)
-        return finalListOfIDs
+        return listOfIDs
     }
 }
 

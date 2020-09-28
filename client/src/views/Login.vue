@@ -75,8 +75,8 @@ export default {
             () => {
               router.push({name: 'home'})
             },
-            error => {
-              this.message = error.response.data.message
+            () => {
+              this.message = 'The email or password was incorrect!' 
             }
           )
         }

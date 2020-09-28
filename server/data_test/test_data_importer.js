@@ -7,14 +7,15 @@ const testDataCriteria = require('../data_test/test_data_criteria.json')
 const testDataUsers = require('../data_test/test_data_users.json')
 
 class TestDataImporter {
-    importData() {
-        this.createCriteriaData()
-        this.createFilmData()
+    async importData() {
+        await this.createCriteriaData().then(() => {
+            this.createFilmData()
+        })
     }
 
-    createCriteriaData() {       
+    async createCriteriaData() {       
         for(const entry of testDataCriteria) {
-            criterionRepo.addCriterion(entry)
+            await criterionRepo.addCriterion(entry)
         }
     }
 

@@ -6,10 +6,10 @@
         <div v-show="isAuthorized" class="row" style="margin-top: 15px;">
           <button class="col-md-3  btn btn-outline-custom" @click="openModal('admin')">Add new admin user</button>
         </div>
-        <div class="row" style="margin-top: 15px;">
+        <div v-show="isAuthorized" class="row" style="margin-top: 15px;">
           <button class="col-md-3  btn btn-outline-custom" @click="openModal('')">Add new film</button>
         </div>
-        <div class="row" style="margin-top: 15px;">
+        <div v-show="isAuthorized" class="row" style="margin-top: 15px;">
           <button class="col-md-3 btn btn-outline-custom" @click="openModal('review')">Add review criterion</button>
         </div>
       </div> 

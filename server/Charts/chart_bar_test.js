@@ -2,10 +2,10 @@ const criterionRepo = require('../repositories/CriterionRepository')
 
 class BarChart {
 
-  async createPlot(testResults, list2, comparisonValue) {
+  async createPlot(testResults, testStatus, dataset, comparisonValue) {
     const result = {}
     const data = []
-    const xAxis = list2
+    const xAxis = dataset
     let titleAddition = ''
     const colorArray = ['#b30059','#3cba9f','#4d79ff','#e83e8c']
     let count = -1
@@ -27,8 +27,10 @@ class BarChart {
     if(comparisonValue == 'reviewCriteria') titleAddition = 'in Relation to Review Criteria Themselves.'
 
     const layout = {
-      title: 'Review Criteria Tests ' + titleAddition,
-      titlefont: {size: 14},
+      title: 'Review Criteria Tests with a ' + testStatus.toUpperCase() + ' Test Result ' + titleAddition,
+      titlefont: {size: 18},
+      paper_bgcolor: 'rgb(243, 243, 243)',
+      plot_bgcolor: 'rgb(243, 243, 243)',
     }
     result.data = data
     result.layout = layout

@@ -98,7 +98,7 @@ class PieChart {
       legend: {
         orientation:'h',
       },
-      height: 250,
+      height: 300,
       width: 300,
       showlegend: true
     }

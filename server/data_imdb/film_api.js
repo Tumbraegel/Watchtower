@@ -1,4 +1,5 @@
 // https://rapidapi.com/rapidapi/api/movie-database-imdb-alternative
+// The appliaction key can be found in the 
 // LAST ACCESSED 25/05
 const axios = require("axios")
 const filmRepo = require("../repositories/FilmRepository")
@@ -12,7 +13,7 @@ class IMDbAPI {
       "headers":{
       "content-type":"application/octet-stream",
       "x-rapidapi-host":"movie-database-imdb-alternative.p.rapidapi.com",
-      "x-rapidapi-key":"993e3ceeecmsh49752a202dcc09ap147bf2jsn467fea76b0fd",
+      "x-rapidapi-key":"",
       "useQueryString":true
       },"params":{
       "i":IMDbId,

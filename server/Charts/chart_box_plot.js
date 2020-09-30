@@ -82,6 +82,7 @@ class BoxPlot {
           
         const layout = {
             title: 'Collected Review Scores Regarding "' + criterion + '" for all Genres',
+            titlefont: {size: 18},
             yaxis: {
                 autorange: true,
                 showgrid: true,
@@ -100,7 +101,7 @@ class BoxPlot {
             },
             paper_bgcolor: 'rgb(243, 243, 243)',
             plot_bgcolor: 'rgb(243, 243, 243)',
-            showlegend: false
+            showlegend: true
         }
 
         result.data = data

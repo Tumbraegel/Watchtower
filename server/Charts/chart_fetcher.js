@@ -33,7 +33,7 @@ class ChartFetcher {
         dataset = await criterionRepo.getAllReviewCriteria()
         testResults = await reviewRepo.getAllTestResults('reviewCriteria', dataset, status)
       }
-      result = barChartTest.createPlot(testResults, dataset, value)
+      result = barChartTest.createPlot(testResults, status, dataset, value)
     }
     return result
   }

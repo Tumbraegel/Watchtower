@@ -43,7 +43,7 @@ app.use('/', film)
 app.use('/api/auth', user)
 
 // Prepare initial test data
-testDataImporter.importData()
+//testDataImporter.importData()
 
 // Server listening on port
 app.listen(config.APP_PORT)

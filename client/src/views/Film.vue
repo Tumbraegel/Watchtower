@@ -1,106 +1,122 @@
 <template>
   <div class="container-fluid">
     <div class="banner-border">
-    <header class="banner-image">
-      <div class="h-100">
-        <div class="row h-100 align-items-center">
-          <div class="col-11 banner-text">
-            <h1 class="font-weight-light">
-              {{ film.title }} ({{ film.year }})
-              <svg
-                width="0.5em"
-                height="0.5em"
-                viewBox="0 0 16 16"
-                class="bi bi-heart favourite_icon"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"
-                />
-              </svg>
-            </h1>
-            <div class="row">
-              <div class="lead col-9" v-if="currentUserRating != 0">
-                Your score: {{ currentUserRating }}
+      <header class="banner-image">
+        <div class="h-100">
+          <div class="row h-100 align-items-center">
+            <div class="col-11 banner-text">
+              <h1 class="font-weight-light">
+                {{ film.title }} ({{ film.year }})
+                <svg
+                  width="0.5em"
+                  height="0.5em"
+                  viewBox="0 0 16 16"
+                  class="bi bi-heart favourite_icon"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"
+                  />
+                </svg>
+              </h1>
+              <div class="row" v-if="currentUserReview != 0">
+                <div class="lead col-2">
+                  Your score: {{ currentUserReview.rating }}
                 </div>
-                <div class="lead col-4">
+                <div class="lead col-10">
+                  <div
+                    style="font-size: 0.8rem"
+                    v-for="criterion of currentUserReview.reviewCriteria"
+                    :key="criterion.index"
+                  >
+                    {{ criterion.name }} : {{ criterion.result }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="lead col-2">
                   <button
-                  v-if="currentUserRating != 0"
-                  class="btn btn-custom"
-                  @click="checkifUserLoggedIn()"
-                >
-                  Review again
-                </button>
-                <button
-                  v-else
-                  class="btn btn-custom"
-                  @click="checkifUserLoggedIn()"
-                >
-                  Review
-                </button>
+                    v-if="currentUserReview != 0"
+                    class="btn btn-custom"
+                    @click="checkifUserLoggedIn()"
+                  >
+                    Review again
+                  </button>
+                  <button
+                    v-else
+                    class="btn btn-custom"
+                    @click="checkifUserLoggedIn()"
+                  >
+                    Review
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
     </div>
 
     <div class="row film-content" style="margin: 40px 0px 30px 0px;">
-          <div class="col-md-1"></div>
-          <div class="col-md-7">
-            <p v-if="film.overallRating != 0">
-              <strong>Rating:</strong>
-              {{ film.overallRating }}
-            </p>
-            <p v-else>
-              <strong>Rating:</strong>
-              TBD
-            </p>
-            <p>
-              <strong>Plot:</strong>
-              {{ film.plot }}
-            </p>
-            <p>
-              <strong>Genre:</strong>
-              {{ film.genres }}
-            </p>
-            <p>
-              <strong>Directors:</strong>
-              {{ film.directors }}
-            </p>
-            <p>
-              <strong>Cast:</strong>
-              {{ film.actors }}
-            </p>
-            <p>
-              <strong>Language:</strong>
-              {{ film.language }}
-            </p>
-            <p>
-              <strong>Rated:</strong>
-              {{ film.rated }}
-            </p>
-            <p>
-              <strong>Awards:</strong>
-              {{ film.awards }}
-            </p>
-            <div class="col-md-7">
-              <chart-item v-if="dataLoaded" />
-            </div>
-          </div>
+      <div class="col-md-1"></div>
+      <div class="col-md-7">
+        <p v-if="film.overallRating != 0">
+          <strong>Rating:</strong>
+          {{ film.overallRating }}
+        </p>
+        <p v-else>
+          <strong>Rating:</strong>
+          TBD
+        </p>
+        <p>
+          <strong>Plot:</strong>
+          {{ film.plot }}
+        </p>
+        <p>
+          <strong>Genre:</strong>
+          {{ film.genres }}
+        </p>
+        <p>
+          <strong>Directors:</strong>
+          {{ film.directors }}
+        </p>
+        <p>
+          <strong>Cast:</strong>
+          {{ film.actors }}
+        </p>
+        <p>
+          <strong>Language:</strong>
+          {{ film.language }}
+        </p>
+        <p>
+          <strong>Rated:</strong>
+          {{ film.rated }}
+        </p>
+        <p>
+          <strong>Awards:</strong>
+          {{ film.awards }}
+        </p>
+        <div class="col-md-7">
+          <chart-item v-if="dataLoaded" />
+        </div>
+      </div>
 
-          <div class="col-md-4">
-            <div style="margin: auto">
-              <img v-if="film.poster=='N/A'" src="../assets/film-placeholder.jpg" :alt="film.title" class="placeholder-img"/>
-              <img v-else :src="film.poster" :alt="film.title" />
-            </div>
-            <div style="padding-top: 20px">
-              <comment-list />
-            </div>
-          </div>
+      <div class="col-md-4">
+        <div style="margin: auto">
+          <img
+            v-if="film.poster == 'N/A'"
+            src="../assets/film-placeholder.jpg"
+            :alt="film.title"
+            class="placeholder-img"
+          />
+          <img v-else :src="film.poster" :alt="film.title" />
+        </div>
+        <div style="padding-top: 20px">
+          <comment-list />
+        </div>
+      </div>
     </div>
 
     <modal-review v-show="isModalVisible" @close="closeModal()" />
@@ -132,23 +148,19 @@ export default {
   },
 
   computed: {
-    ...mapState('film', [
-      'film',
-      'chartData'
-    ]),
+    ...mapState('film', ['film', 'chartData']),
 
     currentUser() {
       return this.$store.state.auth.user
     },
 
-    currentUserRating() {
+    currentUserReview() {
       let userScore = 0
       if (this.user.reviews != undefined) {
         const userReviewForThisFilm = this.user.reviews.filter(
           review => review.film._id == this.film._id
         )
-        if (userReviewForThisFilm.length)
-          userScore = userReviewForThisFilm[0].rating
+        if (userReviewForThisFilm.length) userScore = userReviewForThisFilm[0]
       }
       return userScore
     }
@@ -158,12 +170,17 @@ export default {
     await this.fetchFilmContext(this.$route.params.id).then(async () => {
       await this.fetchReviewCriteriaContext()
       if (this.chartData != undefined) this.dataLoaded = true
-      if (this.$store.state.auth.status.loggedIn == true) await this.getUserInformation()
+      if (this.$store.state.auth.status.loggedIn == true)
+        await this.getUserInformation()
     })
   },
 
   methods: {
-    ...mapActions('film', ['fetchFilmContext', 'fetchReviewCriteriaContext', 'deleteComment']),
+    ...mapActions('film', [
+      'fetchFilmContext',
+      'fetchReviewCriteriaContext',
+      'deleteComment'
+    ]),
 
     checkifUserLoggedIn() {
       if (this.currentUser) this.showModal()

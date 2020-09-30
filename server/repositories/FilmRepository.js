@@ -49,19 +49,6 @@ class FilmRepository {
     return featuredFilms
   }
 
-  async getInitialStatistics(reviewCriteria) {
-    const results = {}
-    let listOfFilms = []
-
-    await this.filterForFilmsWithReviewCriterion(reviewCriteria).then(
-      (response) => {
-        listOfFilms = response
-        results.films = listOfFilms
-      }
-    )
-    return results
-  }
-
   async filterForFilmsWithReviewCriterion(criterion) {
     let matches = []
 

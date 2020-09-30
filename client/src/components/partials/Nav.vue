@@ -106,8 +106,7 @@ export default {
   name: 'Nav',
   data() {
     return {
-      query: '',
-      searchedForFilms: [],
+      query: ''
     }
   },
 

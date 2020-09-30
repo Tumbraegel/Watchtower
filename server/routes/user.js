@@ -119,7 +119,6 @@ router.get('/me', auth, async (req, res) => {
     )
     res.json(user)
   } catch (error) {
-    console.log(error.message)
     res.status(500).send('Error in fetching user.')
   }
 })
@@ -128,10 +127,9 @@ router.get('/me', auth, async (req, res) => {
 router.delete("/delete-user/:email", async (req, res) => {
   const email = req.params.email
   userRepo.deleteUser(email).then(() => {
-      console.log('User was deleted successfully.')
+      res.status(200).send('User was deleted successfully.')
       res.json(req.body)
     }).catch(error => {
-      console.log(error.message)
       res.status(500).send('Error in deleting user.')
     })
 })
@@ -144,19 +142,19 @@ router.post('/admin/data', auth, async (req, res) => {
       if(req.body.hasOwnProperty('username')) {
         userRepo.addAdminUser(req.body.username).then(() => {
           res.send('This user is now an admin user.')
-        })
+        }).catch(() => res.status(500).send("An error occured!"))
       }
       if (req.body.hasOwnProperty('criterion')) {
         await criterionRepo.addCriterion(req.body).then(() => {
           res.send('The new review criterion has been added.')
-        })
-      } else {
+        }).catch(() => res.status(500).send("An error occured!"))
+      } 
+      if((req.body.hasOwnProperty('imdbID'))) {
           filmAPI.requestFilmDataFor(req.body.imdbID).then(() => {
-            res.send('The new film has been added.')
-          })
+            res.status(200).send('The new film has been added.')
+          }).catch(() => res.status(403).send("An error occured!"))
         }
-      } catch(error ) {
-      console.log(error)
+      } catch(error) {
       res.status(401).send('Action not allowed, missing authentication!')
     }   
   })

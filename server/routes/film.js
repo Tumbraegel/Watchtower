@@ -38,7 +38,7 @@ async function getReviewDataOfOneFilm(id) {
     const film = await getFilmById(id)
     reviews = await reviewRepo.getReviewDataOfOneFilm(film._id)
   } catch (error) {
-    return next(error)
+    return console.log(error)
   }
   return reviews
 }
@@ -92,8 +92,7 @@ router.get('/film/:id', async (req, res) => {
       charts: data.charts
     }
     res.json(context)
-  }).catch(error => {
-    console.log(error.message)
+  }).catch(() => {
     res.status(500).send('Error in retrieving film data.')
   })
 })
@@ -105,8 +104,7 @@ router.get('/statistics/:type/:value/:status', (req, res) => {
   const status = req.params.status
   chartFetcher.fetchChart(type, value, status).then((films) => {
       res.json(films)
-  }).catch(error => {
-    console.log(error.message)
+  }).catch(() => {
     res.status(500).send('Error in retrieving chart data.')
   })
 })
@@ -115,8 +113,7 @@ router.get('/statistics/:type/:value/:status', (req, res) => {
 router.get('/lists', async (req, res) => {
     getAllGenres().then(genres => {
         res.json(genres)
-    }).catch(error => {
-      console.log(error.message)
+    }).catch(() => {
       res.status(500).send('Error in retrieving chart data.')
     })
 })
@@ -126,8 +123,7 @@ router.get('/lists/genre/:genre', (req, res) => {
     const genre = Object(req.params.genre)
     filmRepo.findByGenre(genre).then(films => {
         res.json(films)
-    }).catch(error => {
-      console.log(error.message)
+    }).catch(() => {
       res.status(500).send('Error in retrieving genre data.')
     })
 })
@@ -137,8 +133,7 @@ router.get('/lists/criterion/:criterion', (req, res) => {
   const criterion = Object(req.params.criterion)
   filmRepo.calculateHighestRatedFilms(criterion).then(films => {
       res.json(films)
-  }).catch(error => {
-    console.log(error.message)
+  }).catch(() => {
     res.status(500).send('Error in retrieving films.')
   })
 })
@@ -149,8 +144,7 @@ router.get('/review-criteria', async (req, res) => {
   getAllReviewCriteriaData().then(criteria => {
     const context = {criteriaData: criteria, listOfReviewCriteria: reviewCriteria}
     res.json(context)
-  }).catch(error => {
-    console.log(error.message)
+  }).catch(() => {
     res.status(500).send('Error in retrieving review criteria.')
   })
 })
@@ -160,8 +154,7 @@ router.get('/search/:query', (req, res) => {
     const query = Object(req.params.query)
     searchRepo.findByUserSearch(query).then(films => {
         res.json(films)
-    }).catch(error => {
-      console.log(error.message)
+    }).catch(() => {
       res.status(500).send('Error in retrieving data for search query.')
     })
 })
@@ -170,8 +163,7 @@ router.get('/search/:query', (req, res) => {
 router.post('/advanced-search', (req, res) => {
     searchRepo.findByUserSearch(req.body).then(films => {
         res.json(films)
-    }).catch(error => {
-      console.log(error.message)
+    }).catch(() => {
       res.status(500).send('Error in retrieving data for search query.')
     })
 })
@@ -182,8 +174,7 @@ router.post('/film/:id/review', auth, async (req, res) => {
     const film = await getFilmById(id)
     reviewRepo.createReview(film, req.body, req.user).then(response => {
         res.json(response)
-    }).catch(error => {
-      console.log(error.message)
+    }).catch(() => {
       res.status(500).send('Error in saving.')
     })
 })
@@ -194,8 +185,7 @@ router.post('/film/:id/comment', auth, async (req, res) => {
     const film = await getFilmById(id)
     commentRepo.addComment(film, req.body, req.user).then(response => {
         res.json(response)
-    }).catch(error => {
-      console.log(error.message)
+    }).catch(() => {
       res.status(500).send('Error in saving.')
     })
 })
@@ -206,8 +196,7 @@ router.post('/film/:id/comment/vote', auth, async (req, res) => {
     const film = await getFilmById(filmId)
     commentRepo.addVote(film._id, req.body, req.user).then(response => {
         res.json(response)
-    }).catch(error => {
-      console.log(error.message)
+    }).catch(() => {
       res.status(500).send('Error in saving.')
     })
 })
@@ -219,8 +208,7 @@ router.delete("/film/:id/comment/:commentId", auth, async (req, res) => {
   const film = await getFilmById(filmId)
   commentRepo.deleteComment(film._id, commentId).then(response => {
       res.json(response)
-    }).catch(error => {
-      console.log(error.message)
+    }).catch(() => {
       res.status(500).send('Error in removal process.')
     })
 })

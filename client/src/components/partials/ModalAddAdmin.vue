@@ -89,7 +89,7 @@ export default {
               'success',
               { buttons: false, timer: 2500 }
             )
-          }).catch(error => { console.log(error)
+          }).catch(() => {
           swal(
             'That didn\'t work :(',
             'Something went wrong. Check if this user actually exists.',

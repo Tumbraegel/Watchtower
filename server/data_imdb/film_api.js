@@ -24,8 +24,8 @@ class IMDbAPI {
       .then(response => {
         this.addFilmToDatabase(response.data)
       })
-      .catch(error => {
-        console.log(error)
+      .catch((err, res) => {
+        res.status(403).send("Something went wrong trying to fetch film data.")
       })
   }
 
